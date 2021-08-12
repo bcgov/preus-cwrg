@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "Application Evaluation";
+}
+
+<div ng-controller="ApplicationEvaluationPrint" ng-grant-application-id="@ViewBag.GrantApplicationId">
+    <div class="application-body">
+        <div>
+            @Html.ActionLink("Return", "ApplicationDetailsView", "Application", new { grantApplicationId = ViewBag.GrantApplicationId }, new { @class = "link--back" })
+        </div>
+        <style>
+            .form__group {
+                border-bottom: 0 !important;
+            }
+        </style>
+
+        <div class="form form--2-col">
+            <div class="col-50p">
+                <div class="form__group">
+                    <div class="form__label">File number:</div>
+                    <div class="form__control">{{summary.FileNumber}}</div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Intake:</div>
+                    <div class="form__control">
+                        {{toPST(summary.TrainingPeriodStartDate)}} to {{toPST(summary.TrainingPeriodEndDate)}}
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Skills Training Provider:</div>
+                    <div class="form__control">
+                        <div ng-repeat="provider in summary.SkillTrainingProviders">
+                            <span ng-bind="provider.Name" ng-if="provider.Id <= 0"></span>
+                            <a href="/Int/Training/Provider/History/View/{{provider.Id}}" ng-if="provider.Id > 0" target="_self">{{provider.Name}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">CWRG Stream:</div>
+                    <div class="form__control">
+                        <div>{{ summary.GrantStreamFullName }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-50p">
+                <div class="form__group">
+                    <div class="form__label">Assessor:</div>
+                    <div class="form__control">
+                        <div>{{summary.Assessor ? (summary.Assessor.FirstName + " " + summary.Assessor.LastName) : "Unassigned"}}</div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Applicant:</div>
+                    <div class="form__control">
+                        <a href="/Int/Organization/History/View/{{summary.OrganizationId}}" target="_self">{{summary.OrganizationLegalName}}</a>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Employment Support Services Provider:</div>
+                    <div class="form__control">
+                        <div ng-repeat="provider in summary.ESSTrainingProviders">
+                            <span ng-bind="provider.Name" ng-if="provider.Id <= 0"></span>
+                            <a href="/Int/Training/Provider/History/View/{{provider.Id}}" ng-if="provider.Id > 0" target="_self">{{provider.Name}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear-both"></div>
+            <div class="col-100p">
+                <div class="form__group">
+                    <div class="form__label">Stream Intent:</div>
+                    <div class="form__control">
+                        <div>{{summary.StreamIntent}}</div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">High Level Rationale:</div>
+                    <div class="form__control">
+                        <div class="control-wrapper input--full">
+                            <div ng-bind="summary.HighLevelRationale"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Application Notes:</div>
+                    <div class="form__control">
+                        <div class="control-wrapper input--full">
+                            <div ng-bind="summary.ApplicationNotes"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear-both"></div>
+
+        <h3 style="margin-top: 2em;">EVALUATION QUESTIONS</h3>
+        <div class="form-section-container evaluation-questions">
+            <div ng-repeat="question in questions.QuestionsWithAnswers">
+                <hr ng-show="!$first" />
+                <div class="form__group">
+                    <div ng-if="question.EvaluationFormQuestionType == 0">
+                        <label class="form__label">
+                            {{ question.Text }}
+                        </label>
+                    </div>        
+                    <div class="label-wrapper" ng-if="question.EvaluationFormQuestionType > 0">
+                        <label class="form__label">
+                            {{ question.Number }}.
+                        </label>
+                    </div>
+                    <div class="control-wrapper form-control" ng-if="question.EvaluationFormQuestionType > 0">
+                        <div ng-bind-html="question.Text" class="question-text"></div>
+                        <div>
+                            <span ng-bind="question.FullAnswer"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

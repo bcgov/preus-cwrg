@@ -1,0 +1,90 @@
+﻿<div ng-controller="ApplicationEvaluationSummary">
+    <span class="panel-section-item">
+        <span class="panel-section-title" ng-click="toggle($event)">Evaluation Summary</span>
+        <span class="panel-section-buttons">
+            <span><button class="btn btn--empty" style="pointer-events: none;" tabindex="-1">&nbsp;</button></span>
+            <section-edit-buttons ng-model="section.editing" ng-if="$parent.grantFile.EditSummary && (!$parent.grantFile.EvaluationIsComplete || $parent.grantFile.EvaluationIsEditableWhileComplete)"></section-edit-buttons>
+            <span class="small" ng-class="section.show ? 'up-arrow': 'down-arrow'" ng-click="toggle($event)"></span>
+        </span>
+    </span>
+    <div class="panel-section-content" ng-show="section.show">
+        <div class="form form--2-col">
+            <div class="col-50p">
+                <div class="form__group">
+                    <div class="form__label">File number:</div>
+                    <div class="form__control">{{model.FileNumber}}</div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Intake:</div>
+                    <div class="form__control">
+                        {{toPST(model.TrainingPeriodStartDate)}} to {{toPST(model.TrainingPeriodEndDate)}}
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Skills Training Provider:</div>
+                    <div class="form__control">
+                        <div ng-repeat="provider in model.SkillTrainingProviders">
+                            <span ng-bind="provider.Name" ng-if="provider.Id <= 0"></span>
+                            <a href="/Int/Training/Provider/History/View/{{provider.Id}}" ng-if="provider.Id > 0" target="_self">{{provider.Name}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">CWRG Stream:</div>
+                    <div class="form__control">
+                        <div>{{ model.GrantStreamFullName }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-50p">
+                <div class="form__group">
+                    <div class="form__label">Assessor:</div>
+                    <div class="form__control">
+                        <div>{{model.Assessor ? (model.Assessor.FirstName + " " + model.Assessor.LastName) : "Unassigned"}}</div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Applicant:</div>
+                    <div class="form__control">
+                        <a href="/Int/Organization/History/View/{{model.OrganizationId}}" target="_self">{{model.OrganizationLegalName}}</a>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Employment Support Services Provider:</div>
+                    <div class="form__control">
+                        <div ng-repeat="provider in model.ESSTrainingProviders">
+                            <span ng-bind="provider.Name" ng-if="provider.Id <= 0"></span>
+                            <a href="/Int/Training/Provider/History/View/{{provider.Id}}" ng-if="provider.Id > 0" target="_self">{{provider.Name}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear-both"></div>
+            <div class="col-100p">
+                <div class="form__group">
+                    <div class="form__label">Stream Intent:</div>
+                    <div class="form__control">
+                        <div>{{model.StreamIntent}}</div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">High Level Rationale:</div>
+                    <div class="form__control">
+                        <div class="control-wrapper input--full">
+                            <textarea ng-model="model.HighLevelRationale" class="input--full textarea--short" ng-validation ng-editing></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <div class="form__label">Application Notes:</div>
+                    <div class="form__control">
+                        <div class="control-wrapper input--full">
+                            <textarea ng-model="model.ApplicationNotes" class="input--full textarea--short" ng-validation ng-editing></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

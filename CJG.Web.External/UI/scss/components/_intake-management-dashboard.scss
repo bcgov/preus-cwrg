@@ -1,0 +1,249 @@
+.button-group.table--horizontal-nav {
+  margin: $gutter 0;
+}
+
+.table--intake-management-dashboard {
+  $grey-background: #f8f8f8;
+
+  max-width: 979px;
+  width: 100%;
+  margin: 0;
+
+  tr {
+    position: relative;
+
+    td, th {
+      border-left: none;
+      border-right: none;
+      text-align: left;
+      padding: 10px;
+      background-clip: padding-box;
+    }
+
+    .text-align-right {
+      text-align: right;
+    }
+  }
+
+  thead {
+    tr {
+      td:nth-child(even) {
+        background-color: $grey-background;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td:nth-child(4n-1),
+      td:nth-child(4n-2) {
+        background-color: $grey-background;
+      }
+    }
+  }
+
+  .row--reservation {
+    th, td {
+      padding-top: $gutter * 1.5;
+    }
+  }
+}
+
+.budget-overview-container {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  margin: auto;
+  overflow: auto;
+
+  .fixed-column {
+    position: -webkit-sticky;
+    position: sticky;
+    width: 19em;
+    min-width: 19em;
+    max-width: 19em;
+    left: 0;
+    z-index: 999;
+    background-color: #fff;
+  }
+}
+
+.table--global-budget-dashboard {
+  max-width: initial;
+  width: 100%;
+  margin: 0;
+
+  tr {
+    position: relative;
+
+    td, th {
+      border-left: none;
+      border-right: none;
+      text-align: left;
+      padding: 10px;
+      background-clip: padding-box;
+      white-space: normal;
+    }
+
+    th {
+      padding-top: 1.5em;
+      width: 7.5%;
+    }
+
+    th.stream-name,
+    td.stream-name {
+      width: 17.5% !important;
+    }
+
+    .text-align-right {
+      text-align: right;
+    }
+  }
+
+  tbody {
+    tr {
+      td:nth-child(even) {
+        background-color: #f8f8f8;
+      }
+    }
+
+    tr.totals {
+      td {
+        background-color: #f3f3f3 !important;
+      }
+    }
+  }
+
+  input[type=text] {
+    width: 120px;
+    text-align: right;
+  }
+}
+
+.table--global-budget-summary {
+  max-width: initial;
+  width: 400px;
+  margin: 0;
+
+  tr {
+    position: relative;
+
+    td, th {
+      border-left: none;
+      border-right: none;
+      text-align: left;
+      padding: 10px;
+      background-clip: padding-box;
+      white-space: normal;
+      padding-left: 1.5em;
+    }
+
+    td {
+      padding-left: 1.5em;
+    }
+
+    &.summary-header {
+      th {
+        padding-left: 10px;
+        padding-top: 1.5em;
+        width: 100%;
+        background-color: #f3f3f3 !important;
+        border-top: 0;
+      }
+    }
+
+    td {
+      text-align: right;
+    }
+  }
+
+  tbody {
+    tr {
+      td:nth-child(even) {
+        background-color: #f8f8f8;
+      }
+    }
+  }
+
+  input[type=text] {
+    width: 120px;
+    text-align: right;
+  }
+}
+
+.table--accounts-receivable-summary {
+  max-width: initial;
+  width: 800px;
+  margin: 0;
+
+  tr {
+    position: relative;
+
+    td, th {
+      border-left: none;
+      border-right: none;
+      text-align: left;
+      padding: 10px;
+      background-clip: padding-box;
+      white-space: normal;
+      padding-left: 1.5em;
+    }
+
+    td {
+      padding-left: 1.5em;
+    }
+
+    td {
+      text-align: right;
+    }
+  }
+
+  thead {
+    th {
+      background-color: #f3f3f3 !important;
+      border-top: 0;
+    }
+  }
+
+  tbody {
+    tr {
+      td:first-child {
+        background-color: #f8f8f8;
+      }
+
+      td:nth-child(even) {
+/*        background-color: #f8f8f8;*/
+
+      }
+    }
+  }
+
+  input[type=text] {
+    width: 120px;
+    text-align: right;
+  }
+}
+
+.table--accounts-receivable-breakdowns {
+  width: auto;
+  min-width: 800px;
+  max-width: 1400px;
+
+  tr {
+    td {
+      text-align: left;
+
+      &.text-align-right {
+        text-align: right;
+      }
+    }
+  }
+
+  tfoot {
+    th {
+      font-weight: bold;
+      text-align: right;
+    }
+  }
+}
+

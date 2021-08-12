@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Evaluation Form Management";
+}
+<div ng-controller="EvaluationFormManagement">
+    <div class="row row--alert" ng-if="alert.message">
+        <div class="alert alert--default" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message">
+        </div>
+    </div>
+    <div class="form-section">
+        <div>
+            <h2 class="header__title">Evaluation Form Management</h2>
+        </div>
+    </div>
+
+    <div class="details-block">
+        <ul class="panel-section-list">
+            <li>@Html.Partial("~/Areas/Int/Views/EvaluationForm/_Questions.cshtml")</li>
+            <li>@Html.Partial("~/Areas/Int/Views/EvaluationForm/_Resources.cshtml")</li>
+            <li>@Html.Partial("~/Areas/Int/Views/EvaluationForm/_ClaimQuestions.cshtml")</li>
+        </ul>
+    </div>
+</div>

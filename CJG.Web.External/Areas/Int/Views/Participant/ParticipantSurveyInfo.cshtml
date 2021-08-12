@@ -1,0 +1,79 @@
+@using CJG.Core.Entities
+@model CJG.Web.External.Areas.Int.Models.ParticipantSurveyInfoViewModel
+
+@if(!Model.HasExitSurvey && !Model.HasEarlyWithdrawal)
+{
+    <div class="infoTable">
+        <div class="infotable-spanned">
+            <div class="spanned--header">This participant has not completed an Early Withdrawal or an Exit Form</div>
+        </div>
+    </div>
+}
+
+@if (Model.HasExitSurvey)
+{
+    <div class="infoTable with--header">
+        <h3>Exit Form</h3>
+        
+        <div class="infotable-spanned">
+            <div class="spanned--header">Exit Date:</div>
+            <div class="spanned--data">
+                @if (Model.ExitDate.HasValue)
+                {
+                    @Model.ExitDate.Value.ToStringLocalTime()
+                }
+                else
+                {
+                    <span>---</span>
+                }
+            </div>
+        </div>
+
+        @foreach (var question in Model.ExitSurveyQuestions)
+        {
+            <div class="infotable-spanned">
+                <div class="spanned--header">@question.Question</div>
+                <div class="spanned--data">
+                    @foreach (var answer in question.Answers)
+                    {
+                        @Html.Raw(answer)<br/>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (Model.HasEarlyWithdrawal)
+{
+    <div class="infoTable with--header">
+        <h3>Early Withdrawal Form</h3>
+        
+        <div class="infotable-spanned">
+            <div class="spanned--header">Training Withdrawal Date:</div>
+            <div class="spanned--data">
+                @if (Model.WithdrawalDate.HasValue)
+                {
+                    @Model.WithdrawalDate.Value.ToStringLocalTime()
+                }
+                else
+                {
+                    <span>---</span>
+                }
+            </div>
+        </div>
+
+        @foreach (var question in Model.WithdrawalSurveyQuestions)
+        {
+            <div class="infotable-spanned">
+                <div class="spanned--header">@question.Question</div>
+                <div class="spanned--data">
+                    @foreach (var answer in question.Answers)
+                    {
+                        @Html.Raw(answer)<br/>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}

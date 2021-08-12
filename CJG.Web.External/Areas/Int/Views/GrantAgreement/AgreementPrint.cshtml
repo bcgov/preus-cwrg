@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Grant Agreement";
+}
+
+<div ng-controller="GrantAgreementPrint" ng-grant-application-id="@ViewBag.GrantApplicationId" ng-version="@ViewBag.Version">
+    <div class="application-body">
+        <div>
+            @Html.ActionLink("Return", "AgreementView", "GrantAgreement", new { grantApplicationId = ViewBag.GrantApplicationId }, new { @class = "link--back" })
+        </div>
+        <h3 style="margin-bottom: 2em;">Grant Agreement (Version @ViewBag.Version)</h3>
+
+        <h3 style="margin-top: 2em;">Approval Letter</h3>
+        <div ng-bind-html="grantAgreement.CoverLetterBody"></div>
+
+        <h3 style="margin-top: 2em; page-break-before: always">Schedule A - Grant Services</h3>
+        <div ng-bind-html="grantAgreement.ScheduleABody"></div>
+        
+        <h3 style="margin-top: 2em; page-break-before: always">Schedule B - Definitions and General Terms</h3>
+        <div ng-bind-html="grantAgreement.ScheduleBBody"></div>
+    </div>
+</div>

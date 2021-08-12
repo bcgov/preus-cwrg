@@ -1,0 +1,135 @@
+@{
+    ViewBag.Title = "Intake Budget Summary";
+}
+
+<div id="global-budget-dashboard" ng-controller="GlobalBudgetDashboard">
+    <div>
+        <h2>Intake Budget Summary</h2>
+    </div>
+
+    <div class="form__group-set">
+        <div class="form__group">
+            <label class="form__label" for="">Fiscal Year</label>
+            <div class="form__control">
+                <div class="selectmenu">
+                    <select ng-model="model.SelectedFiscalYearId" ng-options="item.Key as item.Value for item in fiscalYears" ng-change="refresh()"></select>
+                </div>
+            </div>
+        </div>
+        <div class="form__group">
+            <label class="form__label" for="">&nbsp;</label>
+            <div class="form__control">
+                <button class="btn btn--primary" ng-click="refresh()" ng-disabled="!model.SelectedFiscalYearId">Refresh</button>
+            </div>
+        </div>
+        <div  class="form__group" style="flex: auto; text-align: right;" ng-if="model.CanEditBudget">
+            <span style="display: inline-block; margin-right: 1.5em;" ng-if="model.BudgetLastUpdated != null">Last updated: {{ toPST(model.BudgetLastUpdated, 'MMMM Do, YYYY HH:mm') }}</span> <button class="btn btn--primary btn--forward" @*ng-if="model.CanUpdateBudget"*@ ng-click="save()">Save</button>
+        </div>
+    </div>
+
+    <div ng-if="alert.message" class="row row--alert">
+        <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
+    </div>
+    <h3>{{ intakeSlot }}</h3>
+
+    <div ng-if="model && model.IntakePeriodSlots && model.IntakePeriodSlots.length == 0">
+        <p>There are no Grant Streams configured for this fiscal year.</p>
+    </div>
+
+    <div ng-if="model && model.IntakePeriodSlots && model.IntakePeriodSlots.length != 0">
+        <div class="table--horizontal-wrapper budget-overview-container">
+            <div>
+                <table class="table--horizontal table--datatable-horizontal nowrap table--global-budget-dashboard" cellspacing="0" width="100%">
+                    <thead ng-repeat-start="intakeSlot in model.IntakePeriodSlots">
+                    <tr>
+                        <th colspan="8">Intake {{ intakeSlot.SlotSequence }}</th>
+                    </tr>
+                    <tr>
+                        <th class="stream-name">Stream</th>
+                        <th>Intake {{ intakeSlot.SlotSequence }} Budget</th>
+                        <th>Forecasted Commitment $ (Ask)</th>
+                        <th>Committed $</th>
+                        <th># Applications Approved (Committed)</th>
+                        <th>Total Spent (Paid)</th>
+                        <th>Slippage $</th>
+                        <th>Over/Under Allocation</th>
+                    </tr>
+                    </thead>
+                    <tbody ng-repeat-end>
+                    <tr ng-repeat="stream in intakeSlot.Streams">
+                        <td class="stream-name">{{ stream.StreamName }}</td>
+                        <td class="text-align-right"><input type="text" ng-editing="model.CanEditBudget" ng-model="stream.StreamBudget" ng-change="recalculateBudget()" ng-model-options="{ debounce: 250 }" ng-currency /></td>
+                        <td class="text-align-right">{{ stream.ForecastedCommitment | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ stream.CommittedAmount | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ stream.ApplicationsApproved }}</td>
+                        <td class="text-align-right">{{ stream.TotalSpent | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ stream.SlippageAmount | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ stream.OverUnderAllocation | currencyParentheses : "$" : 2 }}</td>
+                    </tr>
+                    <tr class="totals">
+                        <td>Totals</td>
+                        <td class="text-align-right">{{ SlotSum(intakeSlot, 'StreamBudget') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ SlotSum(intakeSlot, 'ForecastedCommitment') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ SlotSum(intakeSlot, 'CommittedAmount') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ SlotSum(intakeSlot, 'ApplicationsApproved') }}</td>
+                        <td class="text-align-right">{{ SlotSum(intakeSlot, 'TotalSpent') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ SlotSum(intakeSlot, 'SlippageAmount') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ SlotSum(intakeSlot, 'OverUnderAllocation') | currencyParentheses : "$" : 2 }}</td>
+                    </tr>
+                    <tr ng-if="$last">
+                        <td><strong>Total of Fiscal Year Budget</strong></td>
+                        <td class="text-align-right"><strong>{{ GrandSum() | currencyParentheses : "$" : 2 }}</strong></td>
+                        <td colspan="6"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br/>
+    @*<div class="table--horizontal-wrapper">
+        <div>
+            <table class="table--horizontal table--datatable-horizontal nowrap table--global-budget-summary" cellspacing="0" width="100%">        
+                <tr class="summary-header">
+                    <th colspan="2">Committed (Unclaimed)</th>
+                </tr>
+                <tr ng-repeat="block in model.BudgetSummary.CommittedUnclaimed">
+                    <th><span ng-if="!$last">{{ block.Key }}</span></th>
+                    <td>{{ block.Value | currencyParentheses : "$" : 2 }}</td>
+                </tr>
+                <tr class="summary-header">
+                    <th colspan="2">Committed (Claimed)</th>
+                </tr>
+                <tr ng-repeat="block in model.BudgetSummary.CommittedClaimed">
+                    <th><span ng-if="!$last">{{ block.Key }}</span></th>
+                    <td>{{ block.Value | currencyParentheses : "$" : 2 }}</td>
+                </tr>
+                <tr class="summary-header">
+                    <th colspan="2">Total Forecasted Commitment (ASK)</th>
+                </tr>
+                <tr ng-repeat="block in model.BudgetSummary.Forecast">
+                    <th><span ng-if="!$last">{{ block.Key }}</span></th>
+                    <td>{{ block.Value | currencyParentheses : "$" : 2 }}</td>
+                </tr>
+                <tr class="summary-header">
+                    <th colspan="2">Total Spent (Paid Out)</th>
+                </tr>
+                <tr ng-repeat="block in model.BudgetSummary.TotalSpent">
+                    <th><span ng-if="!$last">{{ block.Key }}</span></th>
+                    <td>{{ block.Value | currencyParentheses : "$" : 2 }}</td>
+                </tr>
+                <tr class="summary-header">
+                    <th colspan="2">Slippage</th>
+                </tr>
+                <tr ng-repeat="block in model.BudgetSummary.Slippage">
+                    <th><span ng-if="!$last">{{ block.Key }}</span></th>
+                    <td>{{ block.Value | currencyParentheses : "$" : 2 }}</td>
+                </tr>
+                <tr>
+                    <th style="padding-left: 10px;">Grand Total</th>
+                    <td><strong>{{ model.BudgetSummary.GrandTotal | currencyParentheses : "$" : 2  }}</strong></td>
+                </tr>
+            </table>
+        </div>
+    </div>*@
+</div>

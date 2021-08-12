@@ -1,0 +1,294 @@
+﻿@{
+    ViewBag.Title = "Stream Agreement Details";
+}
+<style>
+    .layout-internal {
+        width: fit-content;
+    }
+</style>
+
+<div id="manage-intake-periods">
+    <div ng-controller="ReportsStreamAgreementDetails" ng-fiscal-year-id="@ViewBag.FiscalYearId">
+        <div ng-if="alert.message" class="row row--alert">
+            <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
+        </div>
+        <div style="position: sticky; top: 0; background-color: #fff; width: 100%;">
+            <div>
+                <h2 class="header__title">Stream Agreement Details</h2>
+            </div>
+            <div class="row row--alert" ng-if="model.SummaryMessage">
+                <div class="alert alert--default" ng-class="'alert--' + model.SummaryType" role="alert" ng-bind-html="model.SummaryMessage"></div>
+            </div>
+            <div class="form__group-set">
+                <div class="form__group" style="margin-top: 0;">
+                    <label class="form__label">Fiscal Year</label>
+                    <div class="form__control">
+                        <div class="selectmenu">
+                            <select class="form-control" ng-model="filter.FiscalYearId" ng-options="item.Id as item.Caption for item in filterLookups.FiscalYears" ng-change="onFiscalYearChange()">
+                                <option value="">&lt; All Fiscal Years &gt;</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group form__group--multiselect">
+                    <div class="label-wrapper">
+                        <label class="form__label">Grant Stream</label>
+                    </div>
+                    <div class="search-wrapper">
+                        <div class="control-wrapper">
+                            <select class="input--full form-control" ng-model="filter.GrantStreamIds" multiple size="5" ng-options="item.Id as item.ShorterName for item in grantStreams"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group form__group--multiselect">
+                    <div class="label-wrapper">
+                        <label class="form__label">Status</label>
+                    </div>
+                    <div class="search-wrapper">
+                        <div class="control-wrapper">
+                            <select class="input--full form-control" ng-model="filter.ApplicationStatuses" multiple size="5" ng-options="item.Key as item.Value for item in filterLookups.ApplicationStatuses"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group form__group--multiselect">
+                    <div class="label-wrapper">
+                        <label class="form__label">Regions</label>
+                    </div>
+                    <div class="search-wrapper">
+                        <div class="control-wrapper">
+                            <select class="input--full form-control" ng-model="filter.RegionNames" multiple size="5" ng-options="item.Id as item.Name for item in regions"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group form__group--multiselect">
+                    <div class="label-wrapper">
+                        <label class="form__label">Skills Training Course Title</label>
+                    </div>
+                    <div class="search-wrapper">
+                        <div class="control-wrapper">
+                            <select class="input--full form-control" ng-model="filter.CourseTitles" multiple size="5" ng-options="item as item for item in dataFilterLookups.SkillsTrainingCourseTitles"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form__group-set">
+                <div class="form__group">
+                    <label class="form__label">Intake</label>
+                    <div class="form__control">
+                        <div class="form__control">
+                            <div class="selectmenu">
+                                <select class="form-control" ng-model="filter.Intake" ng-options="item.Key as item.Value for item in dataFilterLookups.IntakePeriods">
+                                    <option value="" class="">&lt; Select value &gt;</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <label class="form__label">Keywords</label>
+                    <div class="form__control">
+                        <input type="text" class="form-control input--medium" ng-model="filter.Keywords" ng-keypress="search($event)">
+                    </div>
+                </div>
+                <div class="form__group">
+                    <label class="form__label">Agreement Holder</label>
+                    <div class="form__control">
+                        <input type="text" class="form-control input--medium" ng-model="filter.AgreementHolder" ng-keypress="search($event)">
+                    </div>
+                </div>
+                <div class="form__group">
+                    <label class="form__label">NOC</label>
+                    <div class="form__control">
+                        <div class="selectmenu">
+                            <select class="form-control" ng-model="filter.NocId" ng-options="item.Id as item.ShorterName for item in nocs">
+                                <option value="" class="">&lt; Select value &gt;</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form__group-set">
+                <div class="form__group">
+                    <label class="form__label">Communities</label>
+                    <div class="form__control">
+                        <div class="selectmenu">
+                            <select class="form-control" ng-model="filter.CommunityId" ng-options="item.Id as item.Name for item in communities">
+                                <option value="" class="">&lt; Select value &gt;</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <label class="form__label">Training Provider</label>
+                    <div class="form__control">
+                        <input type="text" class="form-control input--medium" ng-model="filter.TrainingProvider" ng-keypress="search($event)">
+                    </div>
+                </div>
+                <div class="form__group">
+                    <label class="form__label">Training Location</label>
+                    <div class="form__control">
+                        <div class="selectmenu">
+                            <select class="form-control" ng-model="filter.TrainingLocationName" ng-options="item.Id as item.Name for item in trainingLocations">
+                                <option value="" class="">&lt; Select value &gt;</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <label class="form__label" for="">&nbsp;</label>
+                    <div class="form__control">
+                        <button class="btn btn--primary" ng-click="refresh()">Refresh</button>
+                        <button class="btn btn--primary" ng-click="exportToExcel()">Export</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="reports--scrolling-container">
+            <div class="form-table table--reports">
+                <div class="form-table-heading" ng-if="model.length > 0" style="position: sticky; top: 360px; background-color: #fff">
+                    <div class="form-table-cell" style="min-width: 160px; max-width: 240px">
+                        <label class="action {{sortDirection('GrantStreamName')}}" ng-click="sort('GrantStreamName')">Stream</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 120px;">
+                        <label class="action {{sortDirection('FileNumber')}}" ng-click="sort('FileNumber')">Agreement&nbsp;#</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 180px;">
+                        <label class="action {{sortDirection('ApplicationStateInternalCaption')}}" ng-click="sort('ApplicationStateInternalCaption')">Status</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 180px;">
+                        <label class="action {{sortDirection('DateStatusChangedToClosed')}}" ng-click="sort('DateStatusChangedToClosed')">Date Status changed to Closed</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 180px;">
+                        <label class="action {{sortDirection('Applicant')}}" ng-click="sort('Applicant')">Agreement Holder</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 250px;">
+                        <label class="action {{sortDirection('TrainingCourseTitle')}}" ng-click="sort('TrainingCourseTitle')">Skills Training Course Title</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 300px;">
+                        <label class="action {{sortDirection('ProgramDescription')}}" ng-click="sort('ProjectDescription')">Project Description</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 200px;">
+                        <label class="action {{sortDirection('TrainingProviderName')}}" ng-click="sort('TrainingProviderName')">Training Provider</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 200px;">
+                        <label class="action {{sortDirection('ESSTrainingProviderName')}}" ng-click="sort('ESSTrainingProviderName')">ESS Training Provider</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 180px;">
+                        <label class="action {{sortDirection('ScheduleAAmount')}}" ng-click="sort('ScheduleAAmount')">Schedule A Amount</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 180px;">
+                        <label class="action {{sortDirection('TotalClaimAssessment')}}" ng-click="sort('TotalClaimAssessment')">Total Claim Assessment</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 180px;">
+                        <label class="action {{sortDirection('AverageCostPerParticipant')}}" ng-click="sort('AverageCostPerParticipant')">Avg. Cost per Participant</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 160px;">
+                        <label class="action {{sortDirection('NumberOfPIFsInClaim')}}" ng-click="sort('NumberOfPIFsInClaim')">Number of PIFs in Claim</label>
+                    </div>
+                    <div class="form-table-cell">
+                        <label class="action {{sortDirection('NAIC')}}" ng-click="sort('NAIC')">NAIC</label>
+                    </div>
+                    <div class="form-table-cell">
+                        <label class="action {{sortDirection('NOC')}}" ng-click="sort('NOC')">NOC</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 110px;">
+                        <label class="action {{sortDirection('DeliveryStartDate')}}" ng-click="sort('DeliveryStartDate')">Delivery Start Date</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 110px;">
+                        <label class="action {{sortDirection('DeliveryEndDate')}}" ng-click="sort('DeliveryEndDate')">Delivery End Date</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 110px;">
+                        <label class="action {{sortDirection('TrainingStartDate')}}" ng-click="sort('TrainingStartDate')">Training Start Date</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 110px;">
+                        <label class="action {{sortDirection('TrainingEndDate')}}" ng-click="sort('TrainingEndDate')">Training End Date</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 180px;">
+                        <label class="action {{sortDirection('RequestedNumberOfParticipants')}}" ng-click="sort('RequestedNumberOfParticipants')">Number of Participants (requested)</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 250px;">
+                        <label>Training Location</label>
+                    </div>
+                    <div class="form-table-cell">
+                        <label class="action {{sortDirection('ModeOfInstruction')}}" ng-click="sort('ModeOfInstruction')">Mode of Instruction</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 160px;">
+                        <label class="action {{sortDirection('CommunityNames')}}" ng-click="sort('CommunityNames')">Community Names</label>
+                    </div>
+                    <div class="form-table-cell" style="min-width: 190px;">
+                        <label class="action {{sortDirection('Region')}}" ng-click="sort('Region')">Regions</label>
+                    </div>
+                </div>
+                <div ng-if="model.length <= 0">
+                    There are no applications matching your search criteria.
+                </div>
+                <div ng-repeat="application in model" class="form-table-row">
+                    <div class="form-table-cell">
+                        {{application.GrantStreamName}}
+                    </div>
+                    <div class="form-table-cell width-125px">
+                        <a href="/Int/Application/Details/View/{{application.GrantApplicationId}}">{{ application.FileNumber || '*******' }}</a>
+                    </div>
+                    <div class="form-table-cell">
+                        {{application.ApplicationStateInternalCaption}}
+                    </div>
+                    <div class="form-table-cell">
+                        {{toPST(application.DateStatusChangedToClosed, 'YYYY-MM-DD')}}
+                    </div>
+                    <div class="form-table-cell">
+                        <img class="center" ng-if="application.RiskFlag" src="../../../../images/icons/risk-flag.png"/>
+                        <a href="/Int/Organization/History/View/{{application.OrgId}}">{{application.Applicant}}</a>
+                    </div>
+                    <div class="form-table-cell multi-value" ng-bind="application.TrainingCourseTitle"></div>
+                    <div class="form-table-cell">
+                        <div class="multi-value scrollable-cell" ng-bind="application.ProjectDescription"></div>
+                    </div>
+                    <div class="form-table-cell multi-value" ng-bind="application.TrainingProviderName"></div>
+                    <div class="form-table-cell multi-value" ng-bind="application.ESSTrainingProviderName"></div>
+                    <div class="form-table-cell">
+                        {{ application.ScheduleAAmount | currency : '$' : 2 }}
+                    </div>
+                    <div class="form-table-cell">
+                        {{ application.TotalClaimAssessment | currency : '$' : 2 }}
+                    </div>
+                    <div class="form-table-cell">
+                        {{ application.AverageCostPerParticipant | currency : '$' : 2 }}
+                    </div>
+                    <div class="form-table-cell">
+                        {{ application.NumberOfPIFsInClaim }}
+                    </div>
+                    <div class="form-table-cell">
+                        {{ application.NAIC }}
+                    </div>
+                    <div class="form-table-cell">
+                        {{ application.NOC }} ({{ application.NOCVersion }})
+                    </div>
+                    <div class="form-table-cell date-value">
+                        {{toPST(application.DeliveryStartDate, 'YYYY-MM-DD')}}
+                    </div>
+                    <div class="form-table-cell date-value">
+                        {{toPST(application.DeliveryEndDate, 'YYYY-MM-DD')}}
+                    </div>
+                    <div class="form-table-cell date-value">
+                        {{toPST(application.TrainingStartDate, 'YYYY-MM-DD')}}
+                    </div>
+                    <div class="form-table-cell date-value">
+                        {{toPST(application.TrainingEndDate, 'YYYY-MM-DD')}}
+                    </div>
+                    <div class="form-table-cell">
+                        {{ application.RequestedNumberOfParticipants }}
+                    </div>
+                    <div class="form-table-cell multi-value" ng-bind="application.TrainingLocation"></div>
+                    <div class="form-table-cell multi-value" ng-bind="application.ModeOfInstruction"></div>
+                    <div class="form-table-cell">
+                        <div class="multi-value scrollable-cell" ng-bind="application.CommunityNames"></div>
+                    </div>
+                    <div class="form-table-cell">
+                        <div class="multi-value scrollable-cell" ng-bind="application.Region"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

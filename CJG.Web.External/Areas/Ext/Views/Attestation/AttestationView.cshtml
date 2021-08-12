@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "Participant Financial Supports Attestation";
+}
+
+<div class="row" ng-controller="AttestationView" ng-grant-application-id="@ViewBag.GrantApplicationId" ng-redirect-url="@Url.Action("GrantFileView", "Reporting", new { grantApplicationId = (int)ViewBag.GrantApplicationId })">
+    <div class="row">
+        @Html.ActionLink("Return", "GrantFileView", "Reporting", new { grantApplicationId = ViewBag.GrantApplicationId }, new { @class = "link--back" })
+    </div>
+    <program-title-label ng-model="model.ProgramTitleLabel"></program-title-label>
+
+    <h2>Participant Financial Supports Attestation</h2>
+
+    <div class="attestations">
+        <div ng-if="alert.message" class="row row--alert">
+            <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
+        </div>
+
+        <div>
+            <p>IF NO PARTICIPANT FINANCIAL SUPPORT WAS CLAIMED, PLEASE:</p>
+            <ul>
+                <li>SKIP THE INSTRUCTIONS BELOW</li>
+                <li>SELECT ATTESTATION NOT APPLICABLE</li>
+                <li>COMPLETE THIS SECTION</li>
+            </ul>
+
+            <h3>Participant Financial Support Attestation *</h3>
+            <p>* This document only needs to be completed if Participant Financial Supports (PFS) were claimed for project costs.</p>
+
+            <ol>
+                <li>As a CWRG Agreement Holder, I confirm that the Participant Financial Supports (PFS) funds, as set out in Schedule A of the contract, were spent to support participants as required. The intention of these funds was to remove barriers to participants&rsquo; successful participation, completion of training, and outcomes.&nbsp; CWRG may contact Participants randomly after the project to confirm their receipt of funds for Participant Financial Supports.</li>
+                <li>I confirm that all original documents pertaining to PFS expenses will be retained for up to seven years and may be subject to audit or requested for verification purposes. Examples of documents may include receipts, mileage logs, books of account, and vouchers.&nbsp;</li>
+                <li>
+                    If the total amount of funds claimed for Participant Financial Supports per Schedule A of the contract is greater than the amount provided to participants as PFS expenses, I will contact a CWRG Program Manager to initiate repayment of any unspent PFS funding.
+
+                    <table class="table--attestations">
+                        <tbody>
+                        <tr>
+                            <td>
+                                Reimbursed PFS Costs
+                            </td>
+                            <td>
+                                {{ model.ClaimedCosts | currency : '$' : 2 }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Total PFS allocated to participants<br/>
+                                (as can be supported by receipts in your records)
+                            </td>
+                            <td>
+                                <input type="text" class="input-inline-align input-right-align input--small" ng-model="model.AllocatedCosts" ng-disabled="model.IsComplete" ng-validation ng-currency="13" ng-change="recalculateAttestation()">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Unused PFS funds to be returned to Province
+                            </td>
+                            <td>
+                                {{ model.UnusedFunds | currency : '$' : 2 }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </li>
+                <li>
+                    <p>
+                        If you have unused funds to be returned, you <strong>MUST</strong> email <a href="mailto:CWRG@gov.bc.ca">CWRG@gov.bc.ca</a> and cc your Program Manager.<br/>
+                        Please include the following information in your email:
+                    </p>
+                    <ul>
+                        <li>CWRG Agreement Number</li>
+                        <li>Amount to be returned to Province</li>
+                        <li>Reason for returning funds</li>
+                    </ul>
+                    <p>Once we have received your email, instructions for how to return the funds will be provided.</p>
+                </li>
+            </ol>
+        </div>
+        <br/>
+
+        <div class="form__group">
+            <div class="proof-not-applicable-block">
+                <input type="checkbox" class="check-box" id="proof-not-applicable" ng-model="model.AttestationNotApplicable" ng-disabled="model.IsComplete" />
+                <label class="checkbox" for="proof-not-applicable">Attestation Not Applicable</label>
+            </div>
+        </div>
+
+        <div class="form__group">
+            <div class="completion-block">
+                <input type="checkbox" class="check-box" id="complete-confirmed" ng-model="model.CompleteAttestation" ng-disabled="model.IsComplete" ng-checked="model.IsComplete" />
+                <label class="checkbox" for="complete-confirmed">By checking this box, I attest that all the information provided is true and correct to the best of my knowledge and belief.</label>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn--secondary" ng-click="cancel()">Cancel</button>
+            <button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="model.IsComplete || !model.CompleteAttestation">Save</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Report Participant Withdrawal";
+}
+
+<div class="row" ng-controller="ParticipantInvitationView" ng-grant-application-id="@ViewBag.GrantApplicationId">
+    <div class="row">
+        @Html.ActionLink("Return", "ParticipantReportingView", "ParticipantReporting", new { grantApplicationId = ViewBag.GrantApplicationId }, new { @class = "link--back" })
+    </div>
+
+    <program-title-label ng-model="model"></program-title-label>
+
+    <div class="grant-files">
+        <div class="margin-bottom container-full-width">
+            <h2>Report Participant Withdrawal</h2>
+            <div ng-if="alert.message" class="row row--alert">
+                <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
+            </div>
+
+            <div>
+                <p>
+                    Reporting the withdrawal of participants is a requirement under your contract with the Province.<br/>
+                    Please forward the link below to the participant '@ViewBag.ParticipantName' who has now been withdrawn from training.
+                </p>
+                <p><a href="@ViewBag.WithdrawalInvitationUrlLink">@ViewBag.WithdrawalInvitationUrlLink</a></p>
+
+                <div class="wrapper--btn">
+                    <button type="button" class="btn btn--primary copy-to-clipboard" data-clipboard-text="@ViewBag.WithdrawalInvitationUrlLink">Copy Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

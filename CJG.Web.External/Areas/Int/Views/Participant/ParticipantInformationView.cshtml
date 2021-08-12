@@ -1,0 +1,37 @@
+﻿@model CJG.Web.External.Areas.Int.Models.ParticipantInfoViewModel
+@{
+    ViewBag.Title = "Participant Information - " + Model.ContactInfo.FullName;
+}
+
+<div class="clearfix" ng-controller="ViewParticipantInfo">
+    <h2>@Model.ContactInfo.FullName</h2>
+
+    <div class="view-participant-info--container">
+        @Html.Partial("~/Areas/Int/Views/Participant/ParticipantInfo.cshtml", Model)
+    </div>
+    
+    <div class="view-participant-info--container">
+        <div class="k-content">
+            <ul class="view-participant-info--wrapper">
+                <li class="view-participant-info--tab" ng-class="{'active': showTab == 'contact'}" ng-click="toggleEmployerInfo('contact')">
+                    Contact and Demographic
+                </li>
+                <li class="view-participant-info--tab" ng-class="{'active': showTab == 'employer'}" ng-click="toggleEmployerInfo('employer')">
+                    Employment
+                </li>
+                <li class="view-participant-info--tab" ng-class="{'active': showTab == 'survey'}" ng-click="toggleEmployerInfo('survey')">
+                    Early Withdrawal / Exit Form
+                </li>
+            </ul>
+            <div class="view-participant-info--content" ng-show="showTab == 'contact'">
+                @Html.Partial("~/Areas/Int/Views/Participant/ParticipantContactInfo.cshtml", Model.ContactInfo)
+            </div>
+            <div class="view-participant-info--content" ng-show="showTab == 'employer'">
+                @Html.Partial("~/Areas/Int/Views/Participant/ParticipantEmployerInfo.cshtml", Model.EmployerInfo)
+            </div>
+            <div class="view-participant-info--content" ng-show="showTab == 'survey'">
+                @Html.Partial("~/Areas/Int/Views/Participant/ParticipantSurveyInfo.cshtml", Model.SurveyInfo)
+            </div>
+        </div>
+    </div>
+</div>

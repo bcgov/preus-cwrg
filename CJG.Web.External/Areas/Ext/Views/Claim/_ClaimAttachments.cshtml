@@ -1,0 +1,42 @@
+﻿@using CJG.Web.External.Areas.Ext.Controllers
+    
+<div ng-controller="ClaimAttachmentsView" ng-claim-id="@ViewBag.ClaimId" ng-claim-version="@ViewBag.ClaimVersion">
+<div>
+    <h2 class="text--uppercase">{{model.Title}}</h2>
+    <div>
+        <p>Please attach all necessary documentation to support your claim. For details on claim and invoice requirements for your funding stream, please review the <a href="https://www.workbc.ca/find-loans-and-grants/community/community-workforce-response-grant/claim-submission-guidelines" target="_blank">Claim Submission Guidelines</a>.</p>
+        <p>For each attachment, enter a description to identify what part of your claim it supports.</p>
+        <p>Accepted file types: PDF, JPG, JPEG, PNG, GIF. Maximum file size is {{model.MaxUploadSize}} MB.</p>
+    </div>
+</div>
+
+<div>
+    <div class="form__group" ng-if="model.Attachments.length != 0">
+        <table style="width:100%;">
+            <thead>
+                <tr>
+                    <th style="padding:5px 5px 5px 0;text-align:left; width:40%;" class="claim-title-font">Attachment</th>
+                    <th style="padding:5px 5px 5px 0;text-align:left; width:40%;" class="claim-title-font">Description</th>
+                    <th style="padding:5px 5px 5px 0;"></th>
+                </tr>
+            </thead>
+
+            <tr ng-repeat="attachment in model.Attachments">
+                <td style="padding:5px 5px 5px 0;width:40%;vertical-align:top;word-wrap: break-word;word-break: break-all;">
+                    <a ng-if="attachment.Id" target="_blank" href="/Ext/Claim/Attachment/Download/{{model.Id}}/{{model.ClaimVersion}}/{{attachment.Id}}">{{attachment.FileName}}</a>
+                    <span ng-if="!attachment.Id">{{attachment.FileName}}</span>
+                </td>
+                <td style="padding:5px 5px 5px 0;width:40%;vertical-align:top;word-wrap: break-word;word-break: break-all;">
+                    {{attachment.Description}}
+                </td>
+                <td style="padding:5px 5px 5px 0;vertical-align:top">
+                    <a ng-click="changeAttachment(attachment)">Edit</a>
+                    /
+                    <a ng-click="removeAttachment($index)">Remove</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <button ng-if="model.MaximumNumberOfAttachmentsAllowed > model.Attachments.length" class="btn btn--secondary" ng-click="addAttachment()" data-disableonsubmit="false">Add attachment</button>
+</div>
+</div>

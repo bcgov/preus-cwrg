@@ -1,0 +1,106 @@
+﻿@using CJG.Core.Entities
+@model CJG.Web.External.Areas.Part.Models.ExitSurvey.WithdrawalSurveyModel
+@{
+    ViewBag.Title = "Participant Early Withdrawal Form";
+}
+
+<div ng-controller="WithdrawalSurveyView" ng-session-duration="@Model.TimeoutPeriod" ng-invitation-key="@ViewBag.InvitationKey" ng-withdrawal-key="@ViewBag.WithdrawalKey">
+    <div class="form-section">
+        <div class="float-left">
+            <h1 class="header__title">Participant Early Withdrawal Form</h1>
+        </div>
+    </div>
+    
+    <div ng-if="alert.message" class="row row--alert">
+        <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
+    </div>
+
+    <div id="withdrawal-form-info">
+        <div ng-if="model.WithdrawalKey">
+            <p>Answers provided will be submitted directly to the Community Workforce Response Grant program and used to make improvements to the Grant. We take your comments seriously and greatly appreciate your feedback to improve the Grant and its service to British Columbians.</p>
+
+            <div class="form__group">
+                <div class="form__label">Agreement Number:</div>
+                <div class="form__control">
+                    {{ model.AgreementNumber }}
+                </div>
+            </div>
+
+            <div class="form__group">
+                <div class="form__label">Skills training course title:</div>
+                <div class="form__control">
+                    {{ model.TrainingProgramTitle }}
+                </div>
+            </div>
+
+            <div class="form__group">
+                <div class="form__label">Date of withdrawal from training: <abbr title="Required">*</abbr></div>
+                <div class="form__control">
+                    <datedropdown ng-model="model.WithdrawalDate"
+                                  default="true"
+                                  ng-min-date="model.EarliestWithdrawal"
+                                  ng-max-date="model.LatestWithdrawal"
+                                  ng-editing="true">
+                    </datedropdown>
+                </div>
+            </div>
+
+            <div ng-repeat="question in model.Questions">
+                <div class="form__group" ng-if="question.QuestionType == @SurveyQuestionType.RadioButtonList.ToInt()">
+                    <label class="form__label">{{ question.QuestionText}} <abbr title="Required">*</abbr></label>
+                    <div class="form__control" ng-validation="errors.Question{{question.QuestionId}}">
+                        <div class="form-item" style="display: block;" ng-repeat="option in question.Options">
+                            <input id="option-{{option.OptionId}}" type="checkbox" ng-model="option.AnswerGiven" name="OptionGroup-{{question.QuestionId}}" ng-click="updateSelection($index, question.Options)"/>
+                            <label for="option-{{option.OptionId}}">{{ option.OptionText }}<span ng-if="option.AllowOther">:</span></label>
+                            <div ng-if="option.AllowOther" style="padding-left: 1.3em; margin-bottom: 0.5em;">
+                                <input type="text" ng-model="option.TextAnswer" name="Other-{{option.OptionId}}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form__group form__group--checkbox-list" ng-if="question.QuestionType == @SurveyQuestionType.CheckboxList.ToInt()">
+                    <label class="form__label">
+                        {{ question.QuestionText}} <abbr title="Required">*</abbr>
+                        <div style="font-weight: normal; font-style: italic">Check all that apply:</div>
+                    </label>
+                    <div class="form__control" ng-validation="errors.Question{{question.QuestionId}}">
+                        <div class="form-item" style="display: block;" ng-repeat="option in question.Options">
+                            <input id="option-{{option.OptionId}}" type="checkbox" ng-model="option.AnswerGiven" name="OptionGroup-{{question.QuestionId}}" ng-value="true"/>
+                            <label for="option-{{option.OptionId}}">{{ option.OptionText }}<span ng-if="option.AllowOther">:</span></label>
+                            <div ng-if="option.AllowOther" style="padding-left: 1.3em; margin-bottom: 0.5em;">
+                                <input type="text" ng-model="option.TextAnswer" name="Other-{{option.OptionId}}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form__group" ng-if="question.QuestionType == @SurveyQuestionType.FreeText.ToInt()">
+                    <label class="form__label">[Optional] {{ question.QuestionText }}</label>
+                    <div class="form-item" style="display: block;" ng-repeat="option in question.Options" ng-validation="errors.Question{{question.QuestionId}}">
+                        <input id="option-{{option.OptionId}}" type="hidden" ng-model="option.AnswerGiven" name="OptionGroup-{{question.QuestionId}}" ng-value="true"/>
+                        <textarea class="input--full textarea--short"  name="Text-{{option.OptionId}}" ng-model="option.TextAnswer"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="model.WithdrawalKey">
+            <div class="margin-bottom" id="recaptcha" data-site-key="@Model.RecaptchaSiteKey"></div>
+
+            <div>
+                @if (Model.RecaptchaEnabled)
+                {
+                    <button type="submit" id="BtnS1Submit" ng-click="save();" class="btn btn--primary js-btn-submit" ng-disabled="!section.validRecaptcha">Submit Early Withdrawal Form</button>
+                }
+                else
+                {
+                    <button type="submit" id="BtnS1Submit" ng-click="save();" class="btn btn--primary js-btn-submit">Submit Early Withdrawal Form</button>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="survey--block--sponsor">
+        <img src="/images/logo--funding_partner.png" alt="Funding Partners">
+    </div>
+</div>

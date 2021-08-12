@@ -1,0 +1,50 @@
+﻿<div ng-controller="EvaluationClaimQuestions" class="form-section">
+    <span class="panel-section-item">
+        <span class="panel-section-title" ng-click="toggle($event)">Claim Evaluation Questions</span>
+        <span class="panel-section-buttons">
+            <span><button class="btn btn--empty" style="pointer-events: none;" tabindex="-1">&nbsp;</button></span>
+            <section-edit-buttons ng-model="section.editing"></section-edit-buttons>
+            <span class="small" ng-class="section.show ? 'up-arrow': 'down-arrow'" ng-click="toggle($event)"></span>
+        </span>
+    </span>
+
+    <div class="panel-section-content" ng-if="section.show">
+        <div ng-show="claimModel.Questions.length == 0" class="form-section-container font-weight-bold">There are no questions to display.</div>
+        <div class="form-section-container evaluation-questions">
+            <div ng-repeat="question in claimModel.Questions | orderBy: RowSequence">
+                <hr ng-show="!$first" />
+                <div class="form__group">
+                    <div class="control-wrapper form-control">
+                        <div class="wrapper--dropdown selectmenu input--small" ng-show="section.editing">
+                            <select ng-model="question.ClaimEvaluationFormQuestionType" ng-options="item.Key as item.Value for item in claimQuestionTypes" class="input--small" ng-editing></select>
+                        </div>
+                        <input type="text"
+                               class="input--large"
+                               style="margin-right: 2em"
+                               ng-model="question.Text"
+                               ng-validation="errors.Questions_{{$index}}_.Text"
+                               ng-show="section.editing" />
+                        <span ng-bind-html="question.Text" ng-show="!section.editing" class="question-text"></span>
+                        
+                        <div ng-show="section.editing" style="display: inline-block">
+                            <span>
+                                <span ng-click="removeItem(question)" style="cursor: pointer;">Remove Item</span>
+                            </span>
+
+                            <span style="margin-left: 2em">
+                                Move Item
+                                <span class="small up-arrow" ng-if="!$first" ng-click="moveQuestion(question, 1)"></span>
+                                <span class="small down-arrow" ng-if="!$last" ng-click="moveQuestion(question, 0)"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="panel-section-buttons">
+            <span style="margin: 0 0 0 3em;" ng-show="section.editing">
+                <button class="btn btn--primary btn--forward" ng-click="createQuestion()">Add New Question</button>
+            </span>
+        </span>
+    </div>
+</div>

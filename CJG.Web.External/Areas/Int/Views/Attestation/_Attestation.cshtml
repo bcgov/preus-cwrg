@@ -1,0 +1,59 @@
+﻿<div ng-controller="Attestation" ng-if="grantFile.ShowAttestation">
+    <span class="panel-section-item">
+        <span class="panel-section-title" ng-click="toggle($event)">Attestation @*<span class="icon-attention" ng-show="grantFile.AttestationState === 1"></span>*@</span>
+        <span class="panel-section-buttons">
+            <span ng-if="section.show && grantFile.EditAttestation">
+                <a class="btn btn--empty text--link" ng-click="toggleAttestation()">Set as {{grantFile.AttestationState === 0 ? 'Complete' : 'Incomplete'}}</a>
+            </span>
+            <span><button class="btn btn--empty" style="pointer-events: none;" tabindex="-1">&nbsp;</button></span>
+            <span ng-if="section.show">
+                Status: {{ grantFile.AttestationStateDescription }}
+            </span>
+            <span><button class="btn btn--empty" style="pointer-events: none;" tabindex="-1">&nbsp;</button></span>
+            <section-edit-buttons ng-model="section.editing" ng-if="grantFile.EditAttestation"></section-edit-buttons>
+            <span class="small" ng-class="section.show ? 'up-arrow': 'down-arrow'" ng-click="toggle($event)"></span>
+        </span>
+    </span>
+
+    <div class="panel-section-content" ng-if="section.show">
+        <div class="form form--2-col">
+            <div class="col-50p">
+                <div class="form__group form__group--radio-inline">
+                    <div class="form__label">Attestation Not Applicable</div>
+                    <div class="form__control">
+                        <div class="control-wrapper" ng-validation="errors.AttestationNotApplicable">
+                            <input type="radio" ng-model="model.AttestationNotApplicable" id="attestation-not-applicable-yes-{{section.name}}" name="attestation-not-applicable-{{section.name}}" ng-value="true" class="form__group--radio-inline" ng-editing />
+                            <label for="attestation-not-applicable-yes-{{section.name}}">Yes</label>
+                            <input type="radio" ng-model="model.AttestationNotApplicable" id="attestation-not-applicable-no-{{section.name}}" name="attestation-not-applicable-{{section.name}}" ng-value="false" class="form__group--radio-inline" ng-editing />
+                            <label for="attestation-not-applicable-no-{{section.name}}">No</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-50p">
+                <div class="table--horizontal-wrapper-wide">
+                    <table class="clearfix table table--attestations js-table-expense-list">
+                        <tbody>
+                        <tr>
+                            <td>Reimbursed PFS Costs</td>
+                            <td>{{ model.ClaimedCosts | currency : '$' : 2 }}</td>
+                        </tr>
+                        <tr>
+                            <td>Total PFS allocated to participants</td>
+                            <td>
+                                <input type="text" ng-model="model.AllocatedCosts" class="input--small" ng-currency ng-validation ng-editing ng-change="recalculateAttestation()" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Unused PFS funds to be returned to Province</td>
+                            <td>{{ model.UnusedFunds | currency : '$' : 2 }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

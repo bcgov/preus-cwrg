@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "Proof of Payment";
+}
+
+<div class="row" ng-controller="ProofOfPaymentsView" ng-grant-application-id="@ViewBag.GrantApplicationId" ng-redirect-url="@Url.Action("GrantFileView", "Reporting", new { grantApplicationId = (int)ViewBag.GrantApplicationId })">
+    <div class="row">
+        @Html.ActionLink("Return", "GrantFileView", "Reporting", new { grantApplicationId = ViewBag.GrantApplicationId }, new { @class = "link--back" })
+    </div>
+    <program-title-label ng-model="model.ProgramTitleLabel"></program-title-label>
+
+    <h2>Proof of Payment</h2>
+
+    <div class="grant-files">
+        <div ng-if="alert.message" class="row row--alert">
+            <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
+        </div>
+
+        <div ng-if="!model.IsSkillsTrainingForEconomicRecoveryStream">
+            <p>Instructions:</p>
+            <p>Proof of Payment is required for all projects where a third-party provider provided Skills training and/or Employment Support Services (ESS). Proof of Payment should include all the following information:</p>
+            <ul>
+                <li>Date of the transaction (invoice date)</li>
+                <li>Name of the Agreement Holder</li>
+                <li>Name of the training and/or service provider (where applicable)</li>
+                <li>Name of training and/or services provided</li>
+                <li>Start and end dates of training and/or services rendered</li>
+                <li>Total number of participants</li>
+                <li>Names of participants who will receive or have received training and/or services</li>
+                <li>Dollar amounts for each itemized expense type (e.g., ESS, skills training) must match the claim value, otherwise an overpayment will be initiated.</li>
+                <li>Clearly show that the payment has been made in full (examples include invoice initialed, dated and stamped as “Paid”, general ledger entry, image of cheque used to pay invoice (front and back required) or bookkeeping entries demonstrating the amounts were paid in full).</li>
+            </ul>
+            <p>PLEASE NOTE: If a participant has paid (out-of-pocket) for any of the project expenses while in training, the Agreement Holder must submit a <a href="https://www.workbc.ca/media/316/download?inline=" target="_blank">Reimbursement Verification Form (RVF)</a> signed by the participant. The RVF certifies that the Agreement Holder has reimbursed the participant in full. The RVF must be submitted to the Agreement Holder with the receipt.</p>
+            <p>IMPORTANT: The Agreement Holder must retain all original documents related to the project for at least seven years after the end of the project for audit and verification purposes. Such documentation would include books of account, invoices, receipts, RVFs, and vouchers for all administrative expenses incurred by the Agreement Holder, as well as a record of financial contribution to the project from other parties (where applicable).</p>
+        </div>
+
+        <div ng-if="model.IsSkillsTrainingForEconomicRecoveryStream">
+            <p>IF NO THIRD-PARTY PROVIDER WAS USED FOR ANY COMPONENT OF TRAINING, PLEASE:</p>
+            <ul>
+                <li>SKIP THE INSTRUCTIONS BELOW</li>
+                <li>UPLOAD YOUR PARTICIPANT LIST</li>
+                <li>SELECT PROOF OF PAYMENT NOT APPLICABLE </li>
+                <li>COMPLETE THIS SECTION</li>
+            </ul>
+
+            <p>Instructions:</p>
+            <p>Proof of Payment is required for all projects where a third-party provider provided Skills training and/or Employment Support Services (ESS). Proof of Payment should include all the following information:</p>
+            <ul>
+                <li>Date of the transaction (invoice date)</li>
+                <li>Name of the Agreement Holder</li>
+                <li>Name of the training and/or service provider (where applicable)</li>
+                <li>Name of training and/or services provided</li>
+                <li>Start and end dates of training and/or services rendered</li>
+                <li>Total number of participants</li>
+                <li>Names of participants who will receive or have received training and/or services</li>
+                <li>Dollar amounts for each itemized expense type (e.g., ESS, skills training) must match the claim value, otherwise an overpayment will be initiated.</li>
+                <li>Clearly show that the payment has been made in full (examples include invoice initialed, dated and stamped as “Paid”, general ledger entry, image of cheque used to pay invoice (front and back required) or bookkeeping entries demonstrating the amounts were paid in full).</li>
+            </ul>
+
+            <p>PLEASE NOTE: If a participant has paid (out-of-pocket) for any of the project expenses while in training, the Agreement Holder must submit a <a href="https://www.workbc.ca/media/316/download?inline=" target="_blank">Reimbursement Verification Form (RVF)</a> signed by the participant. The RVF certifies that the Agreement Holder has reimbursed the participant in full. The RVF must be submitted to the Agreement Holder with the receipt.</p>
+            <p>IMPORTANT: The Agreement Holder must retain all original documents related to the project for at least seven years after the end of the project for audit and verification purposes. Such documentation would include books of account, invoices, receipts, RVFs, and vouchers for all administrative expenses incurred by the Agreement Holder, as well as a record of financial contribution to the project from other parties (where applicable).</p>
+        </div>
+
+        <h2 class="text--uppercase">SUPPORTING DOCUMENTATION</h2>
+        <p>Please clearly name each document</p>
+
+        <p>Accepted file types: PDF, JPG, JPEG, PNG, GIF. Maximum file size is 5 MB. You may attach up to {{model.AttachmentsMaximum}} attachments.</p>
+
+        <div class="form__group" ng-if="model.Attachments">
+            <table style="width: 100%;">
+                <tr ng-repeat="attachment in model.Attachments">
+                    <td style="width: 10%; vertical-align: top">{{$index + 1}}</td>
+                    <td style="width: 60%; vertical-align: top; word-wrap: break-word; word-break: break-all;">
+                        <a ng-if="attachment.Id" target="_blank" href="/Ext/Application/ProofOfPayment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a>
+                        <span ng-if="!attachment.Id">{{attachment.FileName}}</span>
+                        <br/>{{attachment.Description}}
+                    </td>
+                    <td style="vertical-align: top" ng-if="!model.IsComplete" >
+                        <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index)">Remove</button>
+                        <button class="btn btn--secondary pull-right margin-left-10" ng-click="changeAttachment(attachment)">Change</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="form__group" ng-if="!model.IsComplete">
+            <button ng-if="model.AttachmentsMaximum > model.Attachments.length" class="btn btn--secondary" ng-click="addAttachment()" data-disableonsubmit="false">Add Attachment</button>
+        </div>
+
+        <div class="form__group" ng-if="model.IsSkillsTrainingForEconomicRecoveryStream">
+            <div class="proof-not-applicable-block">
+                <input type="checkbox" class="check-box" id="proof-not-applicable" ng-model="model.ProofNotApplicable" ng-disabled="model.IsComplete" />
+                <label class="checkbox" for="proof-not-applicable">Proof of Payment Not Applicable</label>
+            </div>
+        </div>
+
+        <div ng-if="!model.IsSkillsTrainingForEconomicRecoveryStream">
+            <input type="hidden" id="proof-not-applicable" ng-model="model.ProofNotApplicable" value="" ng-disabled="model.IsComplete"  />
+        </div>
+        
+        <div class="form__group">
+            <div class="completion-block">
+                <input type="checkbox" class="check-box" id="complete-confirmed" ng-model="completeProofOfPayment" ng-disabled="model.IsComplete" ng-checked="model.IsComplete" />
+                <label class="checkbox" for="complete-confirmed">I am ready to Complete my Proof of Payment Submissions</label>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn--secondary" ng-click="cancel()">Cancel</button>
+            <button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="model.IsComplete">Save</button>
+        </div>
+    </div>
+</div>

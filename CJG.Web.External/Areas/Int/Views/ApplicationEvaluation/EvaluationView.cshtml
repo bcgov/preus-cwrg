@@ -1,0 +1,69 @@
+﻿@using CJG.Core.Entities
+@{
+    ViewBag.Title = $"Grant Application {ViewBag.GrantFileNumber}";
+}
+<div ng-controller="ApplicationEvaluation" grant-application-id="@ViewBag.GrantApplicationId" class="application">
+	<div class="application-header">
+        <div class="clearfix">
+            <p class="grant-summary__filenbr" style="text-overflow: inherit;">
+                {{grantFile.WorkflowViewModel.ApplicationWorkflowViewModel.FileNumber}} {{grantFile.WorkflowViewModel.ApplicationWorkflowViewModel.FileName}} (start date {{toPST(grantFile.DeliveryStartDate)}})
+            </p>
+            <h1><img class="center" ng-if="grantFile.WorkflowViewModel.ApplicationWorkflowViewModel.RiskFlag" src="../../../../images/icons/risk-flag.png" />{{grantFile.WorkflowViewModel.ApplicationWorkflowViewModel.OrganizationLegalName}}</h1>
+        </div>
+        
+        <div class="display-inline-block">
+            <span>
+                <button class="btn btn--secondary" ng-click="returnToEvaluation()">
+                    View Application
+                </button>
+            </span>
+            <span>
+                <button class="btn btn--secondary" ng-show="grantFile.AllowEvaluationSubmission" ng-class="!grantFile.AllEvaluationQuestionsAnswered? 'disabled':''" ng-click="submitEvaluation()">
+                    Submit Evaluation
+                </button>
+            </span>
+            <span>
+                <button class="btn btn--secondary" ng-show="grantFile.AllowEvaluationWithdrawal" ng-click="withdrawEvaluation()">
+                    Withdraw Evaluation
+                </button>
+            </span>
+            <span>
+                <button class="btn btn--secondary" ng-show="grantFile.AllowEvaluationPrint" ng-click="printEvaluation()">
+                    Print Evaluation
+                </button>
+            </span>
+        </div>
+    </div>
+
+    <div class="application-body">
+        <div ng-if="!grantFile.AllEvaluationQuestionsAnswered" class="notice notice--icon">
+            <p>High Level Rationale and all evaluation questions must be answered before you can submit the evaluation.</p>
+        </div>
+
+        <div ng-if="alert.message" class="row row--alert">
+            <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
+        </div>
+ 
+        <div class="panel-section-list panel-summary-section-list">
+            @Html.Partial("~/Areas/Int/Views/ApplicationEvaluation/_Summary.cshtml")
+            @Html.Partial("~/Areas/Int/Views/ApplicationEvaluation/_Evaluation.cshtml")
+        </div>
+    </div>
+
+    <div class="application-sidebar">
+        <h3>Evaluation Resources</h3>
+        <div class="form__group resource-list">
+            <div ng-show="resources.Attachments.length == 0" class="form-section-container">There are no resources to display.</div>
+            <table style="width: 100%;" ng-if="resources.Attachments.length > 0">
+                <tr ng-repeat="attachment in resources.Attachments">
+                    <td style="width: 60%; vertical-align: top; word-wrap: break-word; word-break: break-all;">
+                        <strong>{{attachment.Description}}</strong><br/>
+                        <a href="/Int/Application/Evaluation/Resource/{{attachment.Id}}">{{attachment.FileName}}</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        @Html.Partial("~/Areas/Int/Views/ApplicationEvaluation/_Notes.cshtml")
+    </div>
+</div>

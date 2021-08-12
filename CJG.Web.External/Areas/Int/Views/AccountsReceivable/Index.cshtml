@@ -1,0 +1,106 @@
+@{
+    ViewBag.Title = "Accounts Receivable Summary";
+}
+
+<div id="accounts-receivable-dashboard" ng-controller="AccountsReceivableDashboard">
+    <div>
+        <h2>Accounts Receivable Summary</h2>
+    </div>
+    
+    <div class="form__group-set">
+        <div class="form__group">
+            <label class="form__label" for="">Fiscal Year</label>
+            <div class="form__control">
+                <div class="selectmenu">
+                    <select ng-model="model.SelectedFiscalYearId" ng-options="item.Key as item.Value for item in fiscalYears" ng-change="refresh()"></select>
+                </div>
+            </div>
+        </div>
+        <div class="form__group">
+            <label class="form__label" for="">&nbsp;</label>
+            <div class="form__control">
+                <button class="btn btn--primary" ng-click="refresh()" ng-disabled="!model.SelectedFiscalYearId">Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="alert.message" class="row row--alert">
+        <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
+    </div>
+
+    <div ng-if="model && model.FiscalYearBreakdowns && model.FiscalYearBreakdowns.length == 0">
+        <p>There are no fiscal year breakdowns.</p>
+    </div>
+
+    <div ng-if="model && model.FiscalYearBreakdowns && model.FiscalYearBreakdowns.length > 0">
+        <div class="table--horizontal-wrapper budget-overview-container">
+            <div>
+                <table class="table--horizontal table--datatable-horizontal nowrap table--accounts-receivable-summary"width="600">
+                    <thead>
+                    <tr>
+                        <th class="stream-name">Fiscal Year</th>
+                        <th>Total AR # Core Streams</th>
+                        <th>Total AR # CRS</th>
+                        <th>Total AR $ Core Streams</th>
+                        <th>Total AR $ CRS</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="breakdown in model.FiscalYearBreakdowns | filter: { FiscalYearId: model.SelectedFiscalYearId }">
+                        <td class="stream-name">{{ breakdown.FiscalYear }}</td>
+                        <td class="text-align-right">{{ breakdown.CoreApplicationNumber }}</td>
+                        <td class="text-align-right">{{ breakdown.CRSApplicationNumber }}</td>
+                        <td class="text-align-right">{{ breakdown.CoreApplicationTotal | currencyParentheses : "$" : 2 }}</td>
+                        <td class="text-align-right">{{ breakdown.CRSApplicationTotal | currencyParentheses : "$" : 2 }}</td>
+                    </tr>
+                    <tr ng-if="(model.FiscalYearBreakdowns | filter: { FiscalYearId: model.SelectedFiscalYearId }).length <= 0">
+                        <td colspan="5" style="text-align: left">There is no AR Summary data available for this Fiscal Year</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="(model.FiscalYearBreakdowns | filter: { FiscalYearId: model.SelectedFiscalYearId }).length > 0">
+        <div ng-if="!accountBreakdowns || accountBreakdowns.length > 0">
+            <br/><br/><br/>
+            <h3>Fiscal Year Account Receivables Breakdown</h3>
+    
+            <div class="table--horizontal-wrapper budget-overview-container" ng-if="accountBreakdowns && accountBreakdowns.length > 0">
+                <div>
+                    <table class="table--datatable-horizontal nowrap table--accounts-receivable-summary table--accounts-receivable-breakdowns" width="900">
+                        <thead>
+                        <tr>
+                            <th>FY</th>
+                            <th>Agreement #</th>
+                            <th>Overpayment $</th>
+                            <th>Date Created</th>
+                            <th>Overpayment Category</th>
+                            <th>Stream</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="breakdown in accountBreakdowns">
+                            <td>{{ breakdown.FiscalYear }}</td>
+                            <td><a href="/Int/Application/Details/View/{{breakdown.GrantApplicationId}}" target="_blank">{{ breakdown.ApplicationNumber }}</a></td>
+                            <td class="text-align-right">{{ breakdown.Overpayment | currencyParentheses : "$" : 2 }}</td>
+                            <td>{{ toPST(breakdown.DateCreated) }}</td>
+                            <td>{{ breakdown.OverpaymentCategory }}</td>
+                            <td>{{ breakdown.StreamName }}</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Total:</th>
+                            <th></th>
+                            <th>{{ breakdownTotal(accountBreakdowns) | currencyParentheses : "$" : 2 }}</th>
+                            <th colspan="3"></th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

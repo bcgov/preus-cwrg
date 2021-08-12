@@ -1,0 +1,38 @@
+﻿<div ng-controller="ClaimAssessmentEvaluation">
+    <h2 class="display-inline-block">Claim Evaluation <span style="display: inline-block; font-size: 1rem; font-weight: normal; padding-left: 2em;">Evaluation questions need to be complete for claim approval</span></h2>
+    <span class="panel-section-item">
+        <span class="panel-section-title" ng-click="toggle($event)">Claim Evaluation Questions @*<span class="icon-attention" ng-show="model.EvaluationIsComplete"></span>*@</span>
+        <span class="panel-section-buttons">
+            <span><button class="btn btn--empty" style="pointer-events: none;" tabindex="-1">&nbsp;</button></span>
+            <section-edit-buttons ng-model="section.editing" @*ng-if="$parent.grantFile.EditSummary && !$parent.grantFile.EvaluationIsComplete"*@></section-edit-buttons>
+            <span class="small" ng-class="section.show ? 'up-arrow': 'down-arrow'" ng-click="toggle($event)"></span>
+        </span>
+    </span>
+    
+    <div class="panel-section-content" ng-show="section.show">
+        <div ng-show="model.QuestionsWithAnswers.length == 0" class="form-section-container font-weight-bold">There are no questions to display.</div>
+        <div class="form-section-container evaluation-questions">
+            <div ng-repeat="question in model.QuestionsWithAnswers">
+                <hr ng-show="!$first"/>
+                <div class="form__group">
+                    <div ng-if="question.ClaimEvaluationFormQuestionType == 0">
+                        <label class="form__label">
+                            {{ question.Text }}
+                        </label>
+                    </div>
+                    <div class="label-wrapper" ng-if="question.ClaimEvaluationFormQuestionType > 0">
+                        <label class="form__label">
+                            {{ question.Number }}.
+                        </label>
+                    </div>
+                    <div class="control-wrapper form-control" ng-if="question.ClaimEvaluationFormQuestionType == 1">
+                        <div ng-bind-html="question.Text" class="question-text"></div>
+                        <div class="wrapper--dropdown selectmenu input--small">
+                            <select ng-model="question.Answer" ng-options="item.Key as item.Value for item in questionTypes.YesNoAnswers" class="input--small" ng-editing></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

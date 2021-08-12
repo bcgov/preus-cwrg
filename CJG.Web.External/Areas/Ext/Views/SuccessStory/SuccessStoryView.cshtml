@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "Success Stories";
+}
+
+<div class="row" ng-controller="SuccessStoryView" ng-grant-application-id="@ViewBag.GrantApplicationId" ng-redirect-url="@Url.Action("GrantFileView", "Reporting", new { grantApplicationId = (int)ViewBag.GrantApplicationId })">
+    <div class="row">
+        @Html.ActionLink("Return", "GrantFileView", "Reporting", new { grantApplicationId = ViewBag.GrantApplicationId }, new { @class = "link--back" })
+    </div>
+    <program-title-label ng-model="model.ProgramTitleLabel"></program-title-label>
+
+    <h2>Success Stories</h2>
+
+    <div class="grant-files">
+        <div ng-if="alert.message" class="row row--alert">
+            <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
+        </div>
+
+        <div>
+            <p>Success stories raise awareness about the Community Workforce Response Grant, inspires others to enroll in future training projects, and ultimately highlights the success of your project, thereby supporting future funding applications.</p>
+            <p>Sharing a participant’s success story with the Ministry can be done through a testimonial, a photo, a video or a combination of all three. To assist participants in submitting their story, please forward the <a href="https://www.workbc.ca/find-loans-and-grants/community/community-workforce-response-grant/success-stories-participant-questions" target="_blank">Participant Success Story Questions</a> to each participant prior to the end of training. For examples of success stories, please read the following <a href="https://www.workbc.ca/success-story/community-workforce-response-grant-participants" target="_blank">submissions</a>.</p>
+            <p>Do you have any Success Stories from your current project to report?</p>
+        </div>
+
+        <div class="form__group form__group--radio-inline">
+            <label class="form__label" ng-validation="errors.SuccessfulOutcome">
+                Do you have any Success Stories from your current project to report?
+            </label>
+            <div class="form__control" ng-validation="errors.SuccessfulOutcome">
+                <div class="form-item">
+                    <input type="radio" id="successful-outcome-no" ng-value="false" ng-disabled="model.IsComplete" ng-model="model.SuccessfulOutcome" name="model.SuccessfulOutcome">
+                    <label for="successful-outcome-no">No</label>
+                </div>
+                <div class="form-item">
+                    <input type="radio" id="successful-outcome-yes" ng-value="true" ng-disabled="model.IsComplete" ng-model="model.SuccessfulOutcome" name="model.SuccessfulOutcome">
+                    <label for="successful-outcome-yes">Yes</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form__group" ng-if="model.SuccessfulOutcome === false">
+            <label class="form__label" ng-validation="errors.NoOutcomeReason">
+                Please provide a reason as to why you do not have any success stories
+            </label>
+            <div class="control-wrapper form-control">
+                <textarea class="input--full textarea--short" ng-disabled="model.IsComplete" ng-model="model.NoOutcomeReason" ng-validation="errors.NoOutcomeReason"></textarea>
+            </div>
+        </div>
+
+        <div class="form__group" ng-if="model.SuccessfulOutcome === true">
+            <ol>
+                <li>Download and print the <a href="https://www.workbc.ca/media/357/download?inline=" target="_blank">testimonial consent and release form</a>.</li>
+                <li>Forward the form to the participant for signature, and once returned, upload both signed consent form and participants success story.</li>
+                <li>Only upload stories that have a signed consent form.</li>
+                <li>Please note: If you wish to have a success story posted on your own website or other media, you must have the participant's consent as required under the privacy legislation that is applicable to you. To obtain the participant's consent, you may use your own consent form, or you may use the Testimonial Consent and Release form. If you choose to use the Ministry’s Testimonial Consent and Release form, the signed copy must be submitted to the Province at <a href="mailto: CWRG@gov.bc.ca" target="_blank">CWRG@gov.bc.ca</a> prior to posting the story on your website.</li>
+            </ol>
+            
+            <h2 class="text--uppercase">Success Story Attachments</h2>
+            <p>Please clearly name each document</p>
+
+            <p>Accepted file types: PDF, JPG, JPEG, PNG, GIF. Maximum file size is 5 MB. You may attach up to {{model.AttachmentsMaximum}} attachments.</p>
+
+            <div class="form__group" ng-if="model.Attachments">
+                <table style="width: 100%;">
+                    <tr ng-repeat="attachment in model.Attachments">
+                        <td style="width: 10%; vertical-align: top">{{$index + 1}}</td>
+                        <td style="width: 15%; vertical-align: top; word-wrap: break-word; word-break: break-all;">
+                            {{ attachment.AttachmentTypeName }}
+                        </td>
+                        <td style="width: 60%; vertical-align: top; word-wrap: break-word; word-break: break-all;">
+                            <a ng-if="attachment.Id" target="_blank" href="/Ext/Application/SuccessStory/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a>
+                            <span ng-if="!attachment.Id">{{attachment.FileName}}</span>
+                            <br/>{{attachment.Description}}
+                        </td>
+                        <td style="vertical-align: top" ng-if="!model.IsComplete" >
+                            <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index)">Remove</button>
+                            <button class="btn btn--secondary pull-right margin-left-10" ng-click="changeAttachment(attachment, model.AttachmentTypes)">Change</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form__group" ng-if="!model.IsComplete">
+                <button ng-if="model.AttachmentsMaximum > model.Attachments.length" class="btn btn--secondary" ng-click="addAttachment(model.AttachmentTypes)" data-disableonsubmit="false">Add Attachment</button>
+            </div>
+        </div>
+
+        <div class="form__group">
+            <div class="completion-block">
+                @*<input type="checkbox" class="check-box" id="complete-confirmed" ng-model="completeProofOfPayment" ng-disabled="model.IsComplete" ng-checked="model.IsComplete" />*@
+                <input type="checkbox" class="check-box" id="complete-confirmed" ng-value="true" ng-model="completeSuccessStory" ng-disabled="model.IsComplete" ng-checked="model.IsComplete"/>
+                <label class="checkbox" for="complete-confirmed">I am ready to complete my Success Story submissions</label>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn--secondary" ng-click="cancel()">Cancel</button>
+            <button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="!canSubmit()">Save</button>
+        </div>
+    </div>
+</div>

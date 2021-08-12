@@ -1,0 +1,90 @@
+﻿<div ng-controller="SuccessStories" ng-if="grantFile.ShowSuccessStories">
+    <span class="panel-section-item">
+        <span class="panel-section-title" ng-click="toggle($event)">Success Stories @*<span class="icon-attention" ng-show="grantFile.SuccessStoriesState === 1"></span>*@</span>
+        <span class="panel-section-buttons">
+            <span ng-if="section.show && grantFile.EditSuccessStories">
+                <a class="btn btn--empty text--link" ng-click="toggleSuccessStory()">Set as {{grantFile.SuccessStoriesState === 0 ? 'Complete' : 'Incomplete'}}</a>
+            </span>
+            <span><button class="btn btn--empty" style="pointer-events: none;" tabindex="-1">&nbsp;</button></span>
+            <span ng-if="section.show">
+                Status: {{ grantFile.SuccessStoriesStateDescription }}
+            </span>
+            <span><button class="btn btn--empty" style="pointer-events: none;" tabindex="-1">&nbsp;</button></span>
+            <section-edit-buttons ng-model="section.editing" ng-if="grantFile.EditSuccessStories"></section-edit-buttons>
+            <span class="small" ng-class="section.show ? 'up-arrow': 'down-arrow'" ng-click="toggle($event)"></span>
+        </span>
+    </span>
+    <div class="panel-section-content" ng-if="section.show">
+        <div class="form">
+            <div class="form__group form__group--radio-inline">
+                <div class="form__label">Success Stories from your project to report?</div>
+                <div class="form__control">
+                    <div class="control-wrapper" ng-validation="errors.SuccessfulOutcome">
+                        <input type="radio" ng-model="model.SuccessfulOutcome" id="successful-outcome-no-{{section.name}}" name="successful-outcome-{{section.name}}" ng-value="false" class="form__group--radio-inline" ng-editing/>
+                        <label for="successful-outcome-no-{{section.name}}">No</label>
+                        <input type="radio" ng-model="model.SuccessfulOutcome" id="successful-outcome-yes-{{section.name}}" name="successful-outcome-{{section.name}}" ng-value="true" class="form__group--radio-inline" ng-editing/>
+                        <label for="successful-outcome-yes-{{section.name}}">Yes</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form__group" ng-show="!model.SuccessfulOutcome">
+                <div class="form__label">Please provide a reason as to why you do not have any success stories</div>
+                <div class="control-wrapper form-control">
+                    <textarea class="input--full textarea--short" ng-model="model.NoOutcomeReason" ng-validation="errors.NoOutcomeReason" ng-editing></textarea>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+
+            <div ng-show="section.editing">
+                <p>
+                    Use Add Success Story Attachment below to attach new documents. You may attach up to {{ model.MaximumDocuments }} documents. Accepted file types: PDF, JPG, JPEG, PNG, GIF.
+                    <br/>Note: the Attachments section is visible internally regardless of Outcome.
+                </p>
+            </div>
+            <div>
+                <div class="form__group" ng-if="model.Documents">
+                    <table style="width: 100%;">
+                        <tr ng-show="model.Documents.length === 0">
+                            <td colspan="5">There are no Success Story documents uploaded.</td>
+                        </tr>
+                        <tr ng-repeat="document in model.Documents">
+                            <td style="width: 5%; vertical-align: top">{{$index + 1}}</td>
+                            <td style="width: 15%; vertical-align: top; word-wrap: break-word; word-break: break-all; font-weight: bold;">
+                                {{ document.AttachmentTypeName }}
+                            </td>
+                            <td style="width: 20%; vertical-align: top; word-wrap: break-word; word-break: break-all;"><a href="/Int/Application/ProofOfPayment/Download/{{grantFile.Id}}/{{document.Id}}">{{document.FileName}}</a></td>
+                            <td style="width: 35%; vertical-align: top; word-wrap: break-word; word-break: break-all;">{{document.Description}}</td>
+                            <td style="vertical-align: top" ng-if="section.editing">
+                                <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeDocument($index)">Remove</button>
+                                <button class="btn btn--secondary pull-right margin-left-10" ng-click="changeDocument(document, model.AttachmentTypes)">Change</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <button ng-if="section.editing && model.MaximumDocuments > model.Documents.length" class="btn btn--secondary" ng-click="addDocument(model.AttachmentTypes)" data-disableonsubmit="false">Add Success Story Attachment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    ul.k-upload-files {
+        display: none;
+    }
+
+    .k-upload-selected {
+        display: none !important;
+    }
+
+    .k-upload-status-total {
+        display: none !important;
+    }
+
+    .narrow-space-list ul {
+        margin-bottom: 0;
+    }
+
+    .narrow-space-list ul:not([class]) li {
+        margin-bottom: 0;
+    }
+</style>
