@@ -1,14 +1,13 @@
-﻿using CJG.Application.Services;
-using CJG.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CJG.Application.Services;
+using CJG.Core.Entities;
 
 namespace CJG.Web.External.Models.Shared.Reports
 {
-	public class CompletionReportQuestionDetailsViewModel : BaseViewModel
+    public class CompletionReportQuestionDetailsViewModel : BaseViewModel
 	{
-		#region Properties
 		public int CompletionReportId { get; set; }
 		public string Question { get; set; }
 		public string Description { get; set; }
@@ -26,9 +25,7 @@ namespace CJG.Web.External.Models.Shared.Reports
 
 		public ICollection<CompletionReportAnswerDetailsViewModel> Level1Answers { get; set; } = new List<CompletionReportAnswerDetailsViewModel>();
 		public ICollection<CompletionReportAnswerDetailsViewModel> Level2Answers { get; set; } = new List<CompletionReportAnswerDetailsViewModel>();
-		#endregion
 
-		#region Constructors
 		public CompletionReportQuestionDetailsViewModel()
 		{
 		}
@@ -37,9 +34,14 @@ namespace CJG.Web.External.Models.Shared.Reports
 			CompletionReportQuestion completionReportQuestion,
 			IEnumerable<ParticipantForm> participants)
 		{
-			if (grantApplication == null) throw new ArgumentNullException(nameof(grantApplication));
-			if (completionReportQuestion == null) throw new ArgumentNullException(nameof(completionReportQuestion));
-			if (participants == null) throw new ArgumentNullException(nameof(participants));
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
+
+			if (completionReportQuestion == null)
+				throw new ArgumentNullException(nameof(completionReportQuestion));
+
+			if (participants == null)
+				throw new ArgumentNullException(nameof(participants));
 
 			Utilities.MapProperties(completionReportQuestion, this);
 
@@ -184,6 +186,5 @@ namespace CJG.Web.External.Models.Shared.Reports
 
 			this.TableHeadings = this.AnswerTableHeadings?.Split(',') ?? new string[] { };
 		}
-		#endregion
 	}
 }
