@@ -113,7 +113,6 @@ namespace CJG.Application.Services
 			}
 		}
 
-
 		/// <summary>
 		/// Format Canadian Postal code - add space between 2 code segments  & convert to upper case.
 		/// </summary>
@@ -164,18 +163,22 @@ namespace CJG.Application.Services
 		/// By default will attempt to convert byte[] into string and vise-versa.
 		/// If the property is an object it will only copy if it is the same type.
 		/// </summary>
-		/// <typeparam name="From"></typeparam>
-		/// <typeparam name="To"></typeparam>
+		/// <typeparam name="TFrom"></typeparam>
+		/// <typeparam name="TTo"></typeparam>
 		/// <param name="source"></param>
 		/// <param name="target"></param>
 		/// <param name="excludeItems"></param>
-		public static void MapProperties<From, To>(From source, To target, Func<From, object> excludeItems = null)
+		public static void MapProperties<TFrom, TTo>(TFrom source, TTo target, Func<TFrom, object> excludeItems = null)
 		{
-			if (source == null) return;
-			if (target == null) throw new ArgumentNullException(nameof(target));
+			if (source == null)
+				return;
+
+			if (target == null)
+				throw new ArgumentNullException(nameof(target));
 
 			var excludedProperties = excludeItems?.Invoke(source).GetType().GetProperties().Select(o => o.Name).ToList();
-			var sourceProperties = typeof(From).GetProperties().Where(x => x.CanRead && (excludedProperties == null || !excludedProperties.Contains(x.Name))).ToList();
+			var sourceProperties = typeof(TFrom).GetProperties().Where(x => x.CanRead && (excludedProperties == null || !excludedProperties.Contains(x.Name))).ToList();
+
 			MapProperties(source, target, sourceProperties);
 		}
 
@@ -184,16 +187,20 @@ namespace CJG.Application.Services
 		/// By default will attempt to convert byte[] into string and vise-versa.
 		/// If the property is an object it will only copy if it is the same type.
 		/// </summary>
-		/// <typeparam name="From"></typeparam>
-		/// <typeparam name="To"></typeparam>
+		/// <typeparam name="TFrom"></typeparam>
+		/// <typeparam name="TTo"></typeparam>
 		/// <param name="source"></param>
 		/// <param name="target"></param>
-		public static void MapProperties<From, To>(From source, To target) where To : new()
+		public static void MapProperties<TFrom, TTo>(TFrom source, TTo target) where TTo : new()
 		{
-			if (source == null) return;
-			if (target == null) throw new ArgumentNullException(nameof(target));
+			if (source == null)
+				return;
+
+			if (target == null)
+				throw new ArgumentNullException(nameof(target));
 
 			var sourceProperties = source.GetType().GetProperties().Where(p => p.CanRead && !p.GetGetMethod().IsVirtual);
+
 			MapProperties(source, target, sourceProperties);
 		}
 
@@ -202,41 +209,46 @@ namespace CJG.Application.Services
 		/// By default will attempt to convert byte[] into string and vise-versa.
 		/// If the property is an object it will only copy if it is the same type.
 		/// </summary>
-		/// <typeparam name="From"></typeparam>
-		/// <typeparam name="To"></typeparam>
+		/// <typeparam name="TFrom"></typeparam>
+		/// <typeparam name="TTo"></typeparam>
 		/// <param name="source"></param>
 		/// <param name="target"></param>
 		/// <param name="properties"></param>
-		private static void MapProperties<From, To>(From source, To target, IEnumerable<PropertyInfo> properties)
+		private static void MapProperties<TFrom, TTo>(TFrom source, TTo target, IEnumerable<PropertyInfo> properties)
 		{
-			var targetProperties = typeof(To).GetProperties().Where(p => p.CanWrite && !p.GetGetMethod().IsVirtual);
+			var targetProperties = typeof(TTo)
+				.GetProperties()
+				.Where(p => p.CanWrite && !p.GetGetMethod().IsVirtual)
+				.ToList();
+
 			foreach (var from in properties)
 			{
 				var to = targetProperties.FirstOrDefault(p => p.Name.Equals(from.Name));
-				if (to != null)
+
+				if (to == null)
+					continue;
+
+				var value = from.GetValue(source);
+
+				if (value != null && from.PropertyType.IsArray && @from.PropertyType.GetElementType() == typeof(byte) && to.PropertyType == typeof(string))
 				{
-					object value = from.GetValue(source);
-					
-					if (value != null && from.PropertyType.IsArray && from.PropertyType.GetElementType() == typeof(byte) && to.PropertyType == typeof(string))
-					{
-						to.SetValue(target, Convert.ToBase64String((byte[])value));
-					}
-					else if (value != null && from.PropertyType == typeof(string) && to.PropertyType.IsArray && to.PropertyType.GetElementType() == typeof(byte))
-					{
-						to.SetValue(target, Convert.FromBase64String((string)value));
-					}
-					else if (from.PropertyType == typeof(string) && to.PropertyType.IsEnum)
-					{
-						to.SetValue(target, Enum.Parse(to.PropertyType, (string)value));
-					}
-					else if (from.PropertyType.IsEnum && to.PropertyType == typeof(string))
-					{
-						to.SetValue(target, Enum.GetName(from.PropertyType, value));
-					}
-					else if (from.PropertyType.IsValueType || from.PropertyType.IsEnum || from.PropertyType == typeof(string) || from.PropertyType == to.PropertyType)
-					{
-						to.SetValue(target, value);
-					}
+					to.SetValue(target, Convert.ToBase64String((byte[]) value));
+				}
+				else if (value != null && from.PropertyType == typeof(string) && to.PropertyType.IsArray && to.PropertyType.GetElementType() == typeof(byte))
+				{
+					to.SetValue(target, Convert.FromBase64String((string) value));
+				}
+				else if (from.PropertyType == typeof(string) && to.PropertyType.IsEnum)
+				{
+					to.SetValue(target, Enum.Parse(to.PropertyType, (string) value));
+				}
+				else if (from.PropertyType.IsEnum && to.PropertyType == typeof(string))
+				{
+					to.SetValue(target, Enum.GetName(from.PropertyType, value));
+				}
+				else if (from.PropertyType.IsValueType || from.PropertyType.IsEnum || from.PropertyType == typeof(string) || from.PropertyType == to.PropertyType)
+				{
+					to.SetValue(target, value);
 				}
 			}
 		}
@@ -253,7 +265,7 @@ namespace CJG.Application.Services
 
 			foreach (var error in errors)
 			{
-				if (!String.IsNullOrWhiteSpace(error.Key))
+				if (!string.IsNullOrWhiteSpace(error.Key))
 				{
 					var property = typeof(T).GetProperty(error.Key);
 
@@ -307,9 +319,9 @@ namespace CJG.Application.Services
 			Dictionary<string, object> values = new Dictionary<string, object>();
 
 			var includedProperties = properties?.Invoke(source).GetType().GetProperties().Select(o => o.Name).ToList();
-			var sourcePropertities = typeof(T).GetProperties().Where(x => x.CanRead && (includedProperties == null || includedProperties.Contains(x.Name))).ToList();
+			var sourceProperties = typeof(T).GetProperties().Where(x => x.CanRead && (includedProperties == null || includedProperties.Contains(x.Name))).ToList();
 
-			foreach (var property in sourcePropertities)
+			foreach (var property in sourceProperties)
 				if (!property.GetGetMethod().IsVirtual)
 					values.Add(property.Name, property.GetValue(source, null));
 
@@ -321,12 +333,11 @@ namespace CJG.Application.Services
 			if (source == null || values == null)
 				return false;
 
-			var sourcePropertities = typeof(T).GetProperties().Where(t => !t.GetGetMethod().IsVirtual).ToList();
+			var sourceProperties = typeof(T).GetProperties().Where(t => !t.GetGetMethod().IsVirtual).ToList();
 
-			foreach (var property in sourcePropertities)
+			foreach (var property in sourceProperties)
 				if (values.ContainsKey(property.Name))
-					if (!(property.GetValue(source, null) == null && values[property.Name] == null) &&
-						property.GetValue(source, null)?.Equals(values[property.Name]) != true)
+					if (!(property.GetValue(source, null) == null && values[property.Name] == null) && property.GetValue(source, null)?.Equals(values[property.Name]) != true)
 						return true;
 
 			return false;
