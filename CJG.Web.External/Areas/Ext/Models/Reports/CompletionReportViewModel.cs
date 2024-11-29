@@ -1,15 +1,14 @@
-﻿using CJG.Core.Entities;
-using CJG.Core.Interfaces.Service;
-using CJG.Web.External.Models.Shared;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CJG.Core.Entities;
+using CJG.Core.Interfaces.Service;
+using CJG.Web.External.Models.Shared;
 
 namespace CJG.Web.External.Areas.Ext.Models.Reports
 {
-	public class CompletionReportViewModel : BaseViewModel
+    public class CompletionReportViewModel : BaseViewModel
 	{
-		#region Properties
 		public int GrantApplicationId { get; set; }
 		public string ProgramName { get; set; }
 		public int[] CompletionReportGroupIds { get; set; }
@@ -17,24 +16,29 @@ namespace CJG.Web.External.Areas.Ext.Models.Reports
 		public ProgramTitleLabelViewModel ProgramTitleLabel { get; set; }
 		public IEnumerable<CompletionReportGroupViewModel> CompletionReportGroups { get; set; } = new List<CompletionReportGroupViewModel>();
 		public bool? AreAllRequiredDocsUploaded { get; set; }
-		#endregion
 
-		#region Constructors
 		public CompletionReportViewModel()
 		{
 		}
 
 		public CompletionReportViewModel(GrantApplication grantApplication, ICompletionReportService completionReportService)
 		{
-			if (grantApplication == null) throw new ArgumentNullException(nameof(grantApplication));
-			if (completionReportService == null) throw new ArgumentNullException(nameof(completionReportService));
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
 
-			this.GrantApplicationId = grantApplication.Id;
-			this.ProgramName = grantApplication.GrantOpening.GrantStream.GrantProgram.Name;
-			this.CompletionReportGroupIds = completionReportService.GetCompletionReportGroups(grantApplication.Id, o => o.Id).ToArray();
-			this.Participants = grantApplication.ParticipantForms.OrderBy(o => o.LastName).Select(o => new ParticipantFormViewModel(o)).ToArray();
-			this.ProgramTitleLabel = new ProgramTitleLabelViewModel(grantApplication);
+			if (completionReportService == null)
+				throw new ArgumentNullException(nameof(completionReportService));
+
+			ProgramTitleLabel = new ProgramTitleLabelViewModel(grantApplication);
+
+			GrantApplicationId = grantApplication.Id;
+			ProgramName = grantApplication.GrantOpening.GrantStream.GrantProgram.Name;
+			CompletionReportGroupIds = completionReportService
+				.GetCompletionReportGroups(grantApplication.Id, o => o.Id)
+				.ToArray();
+			Participants = grantApplication.ParticipantForms
+				.OrderBy(o => o.LastName)
+				.Select(o => new ParticipantFormViewModel(o)).ToArray();
 		}
-		#endregion
 	}
 }

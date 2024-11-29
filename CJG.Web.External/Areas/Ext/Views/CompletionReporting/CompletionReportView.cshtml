@@ -57,6 +57,10 @@
                             ng-if="step > 1">
                         Back
                     </button>
+                    <button class="btn btn--secondary" type="button"
+                            ng-click="saveForLaterCompletionReport($event, 1)">
+                        Save for Later
+                    </button>
                     <button class="btn btn--primary" type="button"
                             ng-click="gotoCompletionReportStep($event, 1)"
                             ng-if="step < model.CompletionReportGroupIds.length"
