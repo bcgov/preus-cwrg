@@ -329,13 +329,14 @@ namespace CJG.Application.Services
 			CommitTransaction();
 		}
 
-		public IEnumerable<string> GetTrainingLocationCities()
+		public IEnumerable<string> GetTrainingLocationCities(int? fiscalYearId)
 		{
 			var defaultGrantProgramId = GetDefaultGrantProgramId();
 
 			var trainingsAddresses = _dbContext.TrainingPrograms
 				.AsNoTracking()
 				.Where(ga => ga.GrantApplication.GrantOpening.GrantStream.GrantProgramId == defaultGrantProgramId)
+				.Where(ga => (fiscalYearId == null || fiscalYearId == 0) || ga.GrantApplication.GrantOpening.TrainingPeriod.FiscalYearId == fiscalYearId.Value)
 				.ToList()
 				.Where(ga => ga.TrainingProvider.TrainingAddress != null)
 				.Select(tp => tp.TrainingProvider.TrainingAddress)

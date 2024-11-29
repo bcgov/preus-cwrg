@@ -37,6 +37,16 @@
   float: left;
 }
 
+.form__group {
+  &.top-aligned {
+    margin-top: 0;
+  }
+
+  select[multiple] {
+      padding: 2px;
+  }
+}
+
 .form-section-container {
   padding: 0px 20px;
   width: 100%;

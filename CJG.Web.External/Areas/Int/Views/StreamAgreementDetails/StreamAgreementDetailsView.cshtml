@@ -20,7 +20,7 @@
                 <div class="alert alert--default" ng-class="'alert--' + model.SummaryType" role="alert" ng-bind-html="model.SummaryMessage"></div>
             </div>
             <div class="form__group-set">
-                <div class="form__group" style="margin-top: 0;">
+                <div class="form__group top-aligned">
                     <label class="form__label">Fiscal Year</label>
                     <div class="form__control">
                         <div class="selectmenu">
@@ -72,31 +72,29 @@
                 </div>
             </div>
             <div class="form__group-set">
-                <div class="form__group">
-                    <label class="form__label">Intake</label>
-                    <div class="form__control">
-                        <div class="form__control">
-                            <div class="selectmenu">
-                                <select class="form-control" ng-model="filter.Intake" ng-options="item.Key as item.Value for item in dataFilterLookups.IntakePeriods">
-                                    <option value="" class="">&lt; Select value &gt;</option>
-                                </select>
-                            </div>
+                <div class="form__group form__group--multiselect">
+                    <div class="label-wrapper">
+                        <label class="form__label">Intake</label>
+                    </div>
+                    <div class="search-wrapper">
+                        <div class="control-wrapper">
+                            <select class="input--full form-control" ng-model="filter.Intake" multiple size="3" ng-options="item.Key as item.Value for item in dataFilterLookups.IntakePeriods"></select>
                         </div>
                     </div>
                 </div>
-                <div class="form__group">
+                <div class="form__group top-aligned">
                     <label class="form__label">Keywords</label>
                     <div class="form__control">
                         <input type="text" class="form-control input--medium" ng-model="filter.Keywords" ng-keypress="search($event)">
                     </div>
                 </div>
-                <div class="form__group">
+                <div class="form__group top-aligned">
                     <label class="form__label">Agreement Holder</label>
                     <div class="form__control">
                         <input type="text" class="form-control input--medium" ng-model="filter.AgreementHolder" ng-keypress="search($event)">
                     </div>
                 </div>
-                <div class="form__group">
+                <div class="form__group top-aligned">
                     <label class="form__label">NOC</label>
                     <div class="form__control">
                         <div class="selectmenu">
@@ -147,6 +145,9 @@
         <div class="reports--scrolling-container">
             <div class="form-table table--reports">
                 <div class="form-table-heading" ng-if="model.length > 0" style="position: sticky; top: 360px; background-color: #fff">
+                    <div class="form-table-cell" style="min-width: 160px; max-width: 240px">
+                        <label class="action">Fiscal Year</label>
+                    </div>
                     <div class="form-table-cell" style="min-width: 160px; max-width: 240px">
                         <label class="action {{sortDirection('GrantStreamName')}}" ng-click="sort('GrantStreamName')">Stream</label>
                     </div>
@@ -224,6 +225,9 @@
                     There are no applications matching your search criteria.
                 </div>
                 <div ng-repeat="application in model" class="form-table-row">
+                    <div class="form-table-cell">
+                        {{ application.FiscalYear }}
+                    </div>
                     <div class="form-table-cell">
                         {{application.GrantStreamName}}
                     </div>
