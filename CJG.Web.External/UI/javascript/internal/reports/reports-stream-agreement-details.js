@@ -65,7 +65,7 @@ app.controller('ReportsStreamAgreementDetails', function ($scope, $attrs, $contr
 
   function loadTrainingLocations() {
     return $scope.load({
-      url: '/Int/Admin/Reports/StreamAgreementDetails/TrainingLocations/',
+      url: '/Int/Admin/Reports/StreamAgreementDetails/TrainingLocations/' + ($scope.filter.FiscalYearId != null ? $scope.filter.FiscalYearId : 0),
       set: 'trainingLocations'
     });
   }
@@ -83,6 +83,7 @@ app.controller('ReportsStreamAgreementDetails', function ($scope, $attrs, $contr
 
     loadDataFilterLookups();
     loadGrantStreams();
+    loadTrainingLocations();
   }
 
   $scope.refresh = function() {

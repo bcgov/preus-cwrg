@@ -7,13 +7,14 @@ namespace CJG.Application.Business.Models
 		public StreamAgreementDetailsFilterModel()
 		{
 			GrantStreamIds = new List<int>();
+			Intake = new List<string>();
 			ApplicationStatuses = new List<int>();
 			RegionNames = new List<string>();
 			CourseTitles = new List<string>();
 		}
 
 		public List<int> ApplicationStatuses { get; set; }
-		public string Intake { get; set; }
+		public List<string> Intake { get; set; }
 		public string AgreementHolder { get; set; }
 		public string TrainingProvider { get; set; }
 		public string Keywords { get; set; }

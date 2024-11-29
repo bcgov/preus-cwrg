@@ -908,13 +908,14 @@ namespace CJG.Application.Services
 
 			if (!string.IsNullOrWhiteSpace(filter.Keywords))
 			{
-				var keywords = filter.Keywords.ToLower();
+				var keywords = filter.Keywords.ToLower().Trim();
 
 				query = query.Where(ga => ga.FileNumber.Contains(keywords)
 				                          || ga.Organization.LegalName.Contains(keywords)
 				                          || ga.ProgramDescription.Description.Contains(keywords)
 				                          || ga.ProgramDescription.PubliclyAvailableDescription.Contains(keywords)
 				                          || ga.TrainingProviders.Any(p => p.Name.Contains(keywords))
+				                          || ga.TrainingPrograms.Any(p => p.CourseTitle.Contains(keywords))
 				                          || ga.TrainingPrograms.Any(t => t.TrainingProviders.Any(tp => tp.Name.Contains(keywords)))
 				);
 			}
@@ -942,8 +943,11 @@ namespace CJG.Application.Services
 				query = query.Where(ga => filter.GrantStreamIds.Contains(ga.GrantOpening.GrantStreamId));
 			}
 
-			if (!string.IsNullOrWhiteSpace(filter.Intake))
-				query = query.Where(ga => ga.GrantOpening.TrainingPeriod.Caption == filter.Intake.Trim());
+			if (filter.Intake.Any())
+			{
+				var intakePeriods = filter.Intake.Select(c => c.Trim());
+				query = query.Where(ga => intakePeriods.Contains(ga.GrantOpening.TrainingPeriod.Caption));
+			}
 
 			if (filter.RegionNames.Any())
 			{
