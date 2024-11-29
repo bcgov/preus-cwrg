@@ -46,6 +46,7 @@ app.controller('CompletionReportView', function ($scope, $attrs, $controller, $t
       condition: !$scope.ESSs || !$scope.ESSs.length
     });
   }
+
   /**
     * Initializes the page with Community data.
     * @function loadCommunities
@@ -265,7 +266,6 @@ app.controller('CompletionReportView', function ($scope, $attrs, $controller, $t
    * @returns {void}
    **/
   $scope.validateCompletionReportStep = function () {
-    
     var model = $scope.model.CompletionReportGroups[$scope.step - 1];    
     if (!model)
       return false;
@@ -338,7 +338,9 @@ app.controller('CompletionReportView', function ($scope, $attrs, $controller, $t
         // the DOM is updated.
         if (!participants.length)
           return true;
-        let question = model.Questions[0];
+
+        var question = model.Questions[0];
+
         for (let i = 0; i < participants.length; i++) {
           let participant = participants[i];
           let currentQuestion = question;
@@ -393,6 +395,7 @@ app.controller('CompletionReportView', function ($scope, $attrs, $controller, $t
           }
         }
         break;
+
       case $scope.CompletionReportCWRGPage4: {
         for (let i = 0; i < model.Questions.length; i++) {
           let question = model.Questions[i];
@@ -403,6 +406,7 @@ app.controller('CompletionReportView', function ($scope, $attrs, $controller, $t
         break;
       }
     }
+
     return true;
   };
 
@@ -419,6 +423,16 @@ app.controller('CompletionReportView', function ($scope, $attrs, $controller, $t
     model.AreAllRequiredDocsUploaded = $scope.model.AreAllRequiredDocsUploaded;
     return $scope.ajax({
       url: '/Ext/Reporting/Completion/Report',
+      method: 'POST',
+      data: model
+    });
+  }
+
+  function saveForLaterCompletionReportStep(event) {
+    var model = $scope.model.CompletionReportGroups[$scope.step - 1];
+    model.SaveOnly = true;
+    return $scope.ajax({
+      url: '/Ext/Reporting/Completion/Report/SaveForLater',
       method: 'POST',
       data: model
     });
@@ -931,6 +945,14 @@ app.controller('CompletionReportView', function ($scope, $attrs, $controller, $t
         }
       }
     }
+  };
+
+  $scope.saveForLaterCompletionReport = function (event, url) {
+    saveForLaterCompletionReportStep(event)
+      .then(function () {
+        window.location = '/Ext/Reporting/Grant/File/View/' + $attrs.grantApplicationId;
+      })
+      .catch(angular.noop);
   };
 
   /**
