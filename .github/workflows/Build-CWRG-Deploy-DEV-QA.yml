@@ -204,6 +204,11 @@ jobs:
       ARTIFACTS_PATH: ${{ github.workspace }}\..\_artifacts\${{ needs.setup_build.outputs.build_number }}\${{ vars.ENVIRONMENT }}
     
     steps:
+    
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: "*-${{ vars.BUILD_CONFIGURATION }}*"
+        merge-multiple: true
       
     - name: Back up DB migration program
       run: xcopy /E /I /Y CJG.Infrastructure.EF\bin\${{ vars.BUILD_CONFIGURATION }} ${{ vars.DB_BACKUP_FOLDER }}\${{ vars.ENVIRONMENT }}\Databases\
