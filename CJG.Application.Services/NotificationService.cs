@@ -664,7 +664,7 @@ namespace CJG.Application.Services
 					return grantApplication.TrainingPrograms.FirstOrDefault()?.StartDate;
 
 				case NotificationMilestoneDateName.TrainingEndDate:
-					return grantApplication.TrainingPrograms.FirstOrDefault()?.EndDate;
+					return grantApplication.GetFurthestTrainingEndDate();
 
 				case NotificationMilestoneDateName.DateCancelled:
 					return grantApplication.DateCancelled;
