@@ -106,10 +106,15 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				if (model.AttestationNotApplicable.HasValue)
 					grantApplication.Attestation.AttestationNotApplicable = model.AttestationNotApplicable.Value;
 
-				if (model.CompleteAttestation.HasValue && model.CompleteAttestation.Value)
-					grantApplication.Attestation.State = AttestationState.Complete;
+				var sendCompletionNotification = false;
 
-				_grantApplicationService.UpdateAttestation(grantApplication);
+				if (model.CompleteAttestation.HasValue && model.CompleteAttestation.Value)
+				{
+					grantApplication.Attestation.State = AttestationState.Complete;
+					sendCompletionNotification = true;
+				}
+
+				_grantApplicationService.UpdateAttestation(grantApplication, sendCompletionNotification);
 
 				model = new AttestationViewModel(grantApplication);
 			}

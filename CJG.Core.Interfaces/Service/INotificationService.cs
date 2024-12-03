@@ -27,7 +27,8 @@ namespace CJG.Core.Interfaces.Service
 
 		NotificationQueue GenerateNotificationMessage(GrantApplication grantApplication, INotificationRecipient user, NotificationType notificationType);
 		NotificationQueue GenerateNotificationMessage(GrantApplication grantApplication, INotificationRecipient user, GrantProgramNotificationType notificationType);
-		
+		NotificationQueue GenerateNotificationMessage(GrantApplication grantApplication, InternalUser user, string subject, string body);
+
 		void HandleWorkflowNotification(GrantApplication grantApplication, NotificationType notificationType);
 		void HandleWorkflowNotification(GrantApplication grantApplication, GrantProgramNotificationType notificationType);
 

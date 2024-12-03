@@ -152,5 +152,31 @@ namespace CJG.Testing.UnitTests.Entities
 
 			result.Should().BeTrue("File number starts with 24");
         }
+
+        [TestMethod]
+        public void GetFurthestEndDateIsAccurate()
+        {
+			var application = new GrantApplication();
+			var trainingProgramEarlier = new TrainingProgram
+			{
+				Id = 37,
+				StartDate = new DateTime(2025, 5, 1),
+				EndDate = new DateTime(2025, 8, 1)
+			};
+
+			var trainingProgramLater = new TrainingProgram
+			{
+				Id = 57,
+				StartDate = new DateTime(2025, 5, 1),
+				EndDate = new DateTime(2025, 10, 1)
+			};
+
+			application.TrainingPrograms.Add(trainingProgramEarlier);
+			application.TrainingPrograms.Add(trainingProgramLater);
+
+			var endDate = application.GetFurthestTrainingEndDate();
+
+			endDate.Should().Be(trainingProgramLater.EndDate);
+        }
     }
 }

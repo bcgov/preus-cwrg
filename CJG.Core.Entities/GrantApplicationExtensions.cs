@@ -1318,6 +1318,19 @@ namespace CJG.Core.Entities
 			return firstTrainingDate?.EndDate ?? grantApplication.EndDate;
 		}
 
+		public static DateTime GetFurthestTrainingEndDate(this GrantApplication grantApplication)
+		{
+			if (!grantApplication.TrainingPrograms.Any())
+				return grantApplication.StartDate;
+
+			var furthestTrainingProgram = grantApplication
+				.TrainingPrograms
+				.OrderByDescending(tp => tp.EndDate)
+				.FirstOrDefault();
+
+			return furthestTrainingProgram?.EndDate ?? grantApplication.EndDate;
+		}
+
 		/// <summary>
 		/// Determine if the applicant can make a change request for a training/service provider.
 		/// If the claim type is single amendable claim, then do not allow a change request if a prior claim has been approved.
