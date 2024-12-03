@@ -303,8 +303,7 @@ namespace CJG.Application.Services
 
 			_stateMachine.Configure(ApplicationStateInternal.Closed)
 				.OnEntryFrom(_closeGrantFileTrigger, reason => OnCloseGrantFile(reason))
-				.OnEntryFrom(ApplicationWorkflowTrigger.SubmitCompletionReport,
-					t => OnCloseGrantFile("Submitted Completion Report"))
+				.OnEntryFrom(ApplicationWorkflowTrigger.SubmitCompletionReport, t => OnCloseGrantFile("Submitted Completion Report", true))
 				.Permits(_grantApplication.ApplicationStateInternal);
 		}
 
@@ -954,7 +953,8 @@ namespace CJG.Application.Services
 		/// The grant application is closed and will no longer be worked on.
 		/// </summary>
 		/// <param name="reason"></param>
-		private void OnCloseGrantFile(string reason)
+		/// <param name="sendCompletionNotification"></param>
+		private void OnCloseGrantFile(string reason, bool sendCompletionNotification = false)
 		{
 			try
 			{
@@ -964,6 +964,19 @@ namespace CJG.Application.Services
 				LogStateChanges();
 
 				UpdateGrantApplication();
+
+				if (sendCompletionNotification && _grantApplication.Assessor != null)
+				{
+					var subject = $"Grant Application #{_grantApplication.FileNumber} - Completion Reporting Completed";
+					var body = $@"Dear {_grantApplication.Assessor.FirstName},
+<br /><br />
+The applicant for Application #{_grantApplication.FileNumber} has completed their Completion Reporting.
+<br /><br />
+Thank you.";
+
+					var notification = _notificationService.GenerateNotificationMessage(_grantApplication, _grantApplication.Assessor, subject, body);
+					_notificationService.SendNotification(notification);
+				}
 
 				_logger.Info($"Grant application {_grantApplication.Id} is closed.");
 			}

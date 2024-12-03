@@ -175,7 +175,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				if (grantApplication.CompletionReportId != Core.Entities.Constants.CompletionReportCWRG)
 					throw new Exception("Cannot report on non-CWRG completion report.");
 
-				//UpdateCompletionReport(model, grantApplication);
+				UpdateCompletionReport(model, grantApplication);
 			}
 			catch (Exception ex)
 			{

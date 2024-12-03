@@ -180,5 +180,45 @@ namespace CJG.Core.Entities
 			Organization = grantApplication.Organization;
 			State = NotificationState.Queued;
 		}
+
+		/// <summary>
+		/// Creates a new instance of a NotificationQueue object, and initializes it with the specified properties.
+		/// This generates a new notification for a grant application.
+		/// </summary>
+		/// <param name="grantApplication"></param>
+		/// <param name="recipient"></param>
+		/// <param name="sender"></param>
+		/// <param name="body"></param>
+		/// <param name="subject"></param>
+		public NotificationQueue(GrantApplication grantApplication, InternalUser recipient, string sender, string body, string subject)
+		{
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
+
+			if (recipient == null)
+				throw new ArgumentNullException(nameof(recipient));
+
+			//if (type == null)
+			//	throw new ArgumentNullException(nameof(type));
+			if (string.IsNullOrWhiteSpace(sender))
+				throw new ArgumentException($"The argument '{nameof(sender)}' is required.", nameof(sender));
+
+			if (string.IsNullOrWhiteSpace(body))
+				throw new ArgumentException($"The argument '{nameof(body)}' is required.", nameof(body));
+
+			if (string.IsNullOrWhiteSpace(subject))
+				throw new ArgumentException($"The argument '{nameof(subject)}' is required.", nameof(subject));
+
+			BatchNumber = $"A-G:{grantApplication.Id}";
+			GrantApplicationId = grantApplication.Id;
+			GrantApplication = grantApplication;
+			EmailSender = sender;
+			EmailBody = body;
+			EmailSubject = subject;
+			EmailRecipients = recipient.Email;
+			OrganizationId = grantApplication.Organization.Id;
+			Organization = grantApplication.Organization;
+			State = NotificationState.Queued;
+		}
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Policy;
 using System.Web;
 using CJG.Application.Business.Models;
 using CJG.Application.Services.Exceptions;
@@ -1641,25 +1642,51 @@ namespace CJG.Application.Services
 			CreateWorkflowStateMachine(grantApplication).EnableCompletionReporting();
 		}
 
-		public void UpdateProofOfPayment(GrantApplication grantApplication)
+		public void UpdateProofOfPayment(GrantApplication grantApplication, bool sendCompletionNotification = false)
 		{
 			if (grantApplication == null)
 				throw new ArgumentNullException(nameof(grantApplication));
 
 			if (_httpContext.User.GetAccountType() == AccountTypes.Internal)
 				_noteService.GenerateUpdateNote(grantApplication);
+
+			if (sendCompletionNotification && grantApplication.Assessor != null)
+			{
+				var subject = $"Grant Application #{grantApplication.FileNumber} - Proof of Payment Completed";
+				var body = $@"Dear {grantApplication.Assessor.FirstName},
+<br /><br />
+The applicant for Application #{grantApplication.FileNumber} has completed their Proof of Payment.
+<br /><br />
+Thank you.";
+
+				var notification = _notificationService.GenerateNotificationMessage(grantApplication, grantApplication.Assessor, subject, body);
+				_notificationService.SendNotification(notification);
+			}
 
 			_dbContext.Update(grantApplication);
 			CommitTransaction();
 		}
 
-		public void UpdateAttestation(GrantApplication grantApplication)
+		public void UpdateAttestation(GrantApplication grantApplication, bool sendCompletionNotification = false)
 		{
 			if (grantApplication == null)
 				throw new ArgumentNullException(nameof(grantApplication));
 
 			if (_httpContext.User.GetAccountType() == AccountTypes.Internal)
 				_noteService.GenerateUpdateNote(grantApplication);
+
+			if (sendCompletionNotification && grantApplication.Assessor != null)
+ 			{
+				var subject = $"Grant Application #{grantApplication.FileNumber} - Attestation Completed";
+				var body = $@"Dear {grantApplication.Assessor.FirstName},
+<br /><br />
+The applicant for Application #{grantApplication.FileNumber} has completed their Attestation.
+<br /><br />
+Thank you.";
+
+				var notification = _notificationService.GenerateNotificationMessage(grantApplication, grantApplication.Assessor, subject, body);
+				_notificationService.SendNotification(notification);
+			}
 
 			_dbContext.Update(grantApplication);
 			CommitTransaction();

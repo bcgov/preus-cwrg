@@ -124,9 +124,9 @@ namespace CJG.Core.Interfaces.Service
 
 		void EnableCompletionReporting(GrantApplication grantApplication);
 
-		void UpdateProofOfPayment(GrantApplication grantApplication);
+		void UpdateProofOfPayment(GrantApplication grantApplication, bool sendCompletionNotification = false);
 
-		void UpdateAttestation(GrantApplication grantApplication);
+		void UpdateAttestation(GrantApplication grantApplication, bool sendCompletionNotification = false);
 		#endregion
 
 		#region Attachments

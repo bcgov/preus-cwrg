@@ -11,7 +11,7 @@
 
     <div class="main grant-files">
         <h2>Completion Report</h2>
-
+        
         <div class="completion-report--steps">
             <div ng-repeat="group in model.CompletionReportGroups">
                 <div ng-switch="group.Id">
@@ -19,35 +19,35 @@
                         {{group.Title}}
                     </h3>
 
-                    <div ng-switch-when="@(Constants.CompletionStepWithMultipleQuestions)">
-                        <div class="block--completion-report">
-                            <div class="table-wrapper">
-                                <table class="form__group--data-grid">
-                                    <thead>
-                                        <tr>
-                                            <th ng-repeat="heading in group.Questions[0].TableHeadings">
-                                                {{heading}}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="participant in model.FilteredParticipants">
-                                            <td class="participant-name-panel">{{participant.ParticipantName}}</td>
-                                            <td ng-repeat="question in group.Questions">
-                                                <div class="form-item">
-                                                    <div class="form__control" ng-if="$index == 0 || getParticipantAnswer(question.Level1Answers, participant.Id).SelectedAnswer">
-                                                        <div class="control-wrapper">
-                                                            {{getParticipantAnswer(question.Level1Answers, participant.Id).SelectedAnswer}}
-                                                        </div>
-                                                    </div>
+                <div ng-switch-when="@(Constants.CompletionStepWithMultipleQuestions)">
+                    <div class="block--completion-report">
+                        <div class="table-wrapper">
+                            <table class="form__group--data-grid">
+                                <thead>
+                                <tr>
+                                    <th ng-repeat="heading in group.Questions[0].TableHeadings">
+                                        {{heading}}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="participant in model.FilteredParticipants">
+                                    <td class="participant-name-panel">{{participant.ParticipantName}}</td>
+                                    <td ng-repeat="question in group.Questions">
+                                        <div class="form-item">
+                                            <div class="form__control" ng-if="$index == 0 || getParticipantAnswer(question.Level1Answers, participant.Id).SelectedAnswer">
+                                                <div class="control-wrapper">
+                                                    {{getParticipantAnswer(question.Level1Answers, participant.Id).SelectedAnswer}}
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
                     <div ng-switch-when="@(Constants.CompletionReportCWRGPage2)">
                         <div class="block--completion-report">
                             <div class="table-wrapper">
@@ -57,7 +57,7 @@
                                 <table class="form__group--data-grid" ng-if="model.FilteredParticipants.length != 0">
                                     <thead>
                                         <tr>
-                                            <th ng-repeat="heading in group.Questions[0].TableHeadings">
+                                            <th ng-repeat="heading in group.Questions[0].TableHeadings" colspan="{{ group.Questions.length + 1 }}">
                                                 {{heading}}
                                             </th>
                                         </tr>

@@ -504,6 +504,33 @@ namespace CJG.Application.Services
 		}
 
 		/// <summary>
+		/// Creates a new instance of a Notification object and generates the notification messages.
+		/// </summary>
+		/// <param name="grantApplication"></param>
+		/// <param name="user"></param>
+		/// <param name="subject"></param>
+		/// <param name="body"></param>
+		/// <returns></returns>
+		public NotificationQueue GenerateNotificationMessage(GrantApplication grantApplication, InternalUser user, string subject, string body)
+		{
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
+
+			if (user == null)
+				throw new ArgumentNullException(nameof(user));
+
+			try
+			{
+				var sender = $"{_notificationSettings.DefaultSenderName} <{_notificationSettings.DefaultSenderAddress}>";
+				return new NotificationQueue(grantApplication, user, sender, body, subject);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception($"Notification creation failed: {ex.Message}", ex);
+			}
+		}
+
+		/// <summary>
 		/// Check to see if the template model contains any invalid "@Models..."
 		/// </summary>
 		/// <param name="text"></param>
