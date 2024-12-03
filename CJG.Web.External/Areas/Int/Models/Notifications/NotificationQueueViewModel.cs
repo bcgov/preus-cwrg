@@ -1,8 +1,8 @@
-﻿using CJG.Application.Services;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using CJG.Application.Services;
 using CJG.Core.Entities;
 using CJG.Web.External.Models.Shared;
-using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace CJG.Web.External.Areas.Int.Models.Notifications
 {
@@ -49,16 +49,17 @@ namespace CJG.Web.External.Areas.Int.Models.Notifications
 
 		public NotificationQueueViewModel(NotificationQueue notification)
 		{
-			if (notification == null) throw new ArgumentNullException("Notification cannot be null.");
+			if (notification == null)
+				throw new ArgumentNullException("Notification cannot be null.");
 
 			Utilities.MapProperties(notification, this);
 
-			this.Name = notification.NotificationType?.Caption;
-			this.Description = notification.NotificationType?.Description;
-			this.Status = notification.State.GetDescription();
-			this.NotificationTypeCaption = notification.NotificationType?.Caption;
-			this.OrganizationCaption = notification.Organization.LegalName;
-			this.SentOn = notification.State == NotificationState.Sent ? notification.DateUpdated ?? notification.DateAdded : (DateTime?)null;
+			Name = notification.NotificationType?.Caption;
+			Description = notification.NotificationType?.Description;
+			Status = notification.State.GetDescription();
+			NotificationTypeCaption = notification.NotificationType != null ? notification.NotificationType.Caption : notification.EmailSubject;
+			OrganizationCaption = notification.Organization.LegalName;
+			SentOn = notification.State == NotificationState.Sent ? notification.DateUpdated ?? notification.DateAdded : (DateTime?)null;
 		}
 		#endregion
 	}
