@@ -119,4 +119,12 @@
                     scope="Web.config"
                     match="/configuration/appSettings/add[@key='ReCaptchaSecret']/@value" />
   </parameter>
+	<parameter name="CanadaPostAutoCompleteApiKey"
+				description="Please provide the Canada Post Autocomplete API key."
+				defaultValue=""
+				tags="">
+		<parameterEntry kind="XmlFile"
+						scope="Web.config"
+						match="/configuration/appSettings/add[@key='CanadaPostAutoCompleteApiKey']/@value" />
+	</parameter>
 </parameters>
