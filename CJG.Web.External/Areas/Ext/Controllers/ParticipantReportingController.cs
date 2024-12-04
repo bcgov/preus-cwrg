@@ -154,7 +154,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			var participantName = $"{participantForm.FirstName} {participantForm.LastName}";
 			var grantProgramName = grantApplication.GetProgramDescription();
 			;
-			var emailContent = $@"Dear {participantName} [{participantForm.EmailAddress}],
+			var emailContent = $@"Dear {participantName},
 
 You have chosen to withdraw from the following training program:
 
