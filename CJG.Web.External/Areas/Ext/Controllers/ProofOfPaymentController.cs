@@ -174,10 +174,15 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				if (proofNotApplicable.HasValue)
 					grantApplication.ProofOfPayment.ProofNotApplicable = proofNotApplicable.Value;
 
+				var sendCompletionNotification = false;
 				if (completeProofOfPayment.HasValue && completeProofOfPayment.Value)
+				{
+					//var viewUrl = Url.Action("ApplicationDetailsView", "Application", new { Area = "Int", grantApplicationId = grantApplication.Id });
 					grantApplication.ProofOfPayment.State = ProofOfPaymentState.Complete;
+					sendCompletionNotification = true;
+				}
 
-				_grantApplicationService.UpdateProofOfPayment(grantApplication);
+				_grantApplicationService.UpdateProofOfPayment(grantApplication, sendCompletionNotification);
 
 				model = new ProofOfPaymentsDocumentsViewModel(grantApplication);
 			}

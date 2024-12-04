@@ -204,6 +204,11 @@ jobs:
       ARTIFACTS_PATH: ${{ github.workspace }}\..\_artifacts\${{ needs.setup_build.outputs.build_number }}\${{ vars.ENVIRONMENT }}
     
     steps:
+    
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: "*-${{ vars.BUILD_CONFIGURATION }}*"
+        merge-multiple: true
       
     - name: Back up DB migration program
       run: xcopy /E /I /Y CJG.Infrastructure.EF\bin\${{ vars.BUILD_CONFIGURATION }} ${{ vars.DB_BACKUP_FOLDER }}\${{ vars.ENVIRONMENT }}\Databases\
@@ -211,7 +216,7 @@ jobs:
       
     - name: Back up database
       run: |
-        ${{ vars.CD_SCRIPTS_FOLDER }}\backupdatabase.ps1 "${{ vars.DB_SERVER }}" "${{ vars.DB_NAME }}" "${{ vars.DB_RELEASE_USER }}" "${{ secrets.DB_RELEASE_PASSWORD }}" "${{ vars.DB_BACKUP_FOLDER }}\${{ vars.ENVIRONMENT }}\Databases" "Pre-release DB Backup ${{ env.BUILD_NUMBER }}.bak" 5
+        ${{ vars.CD_SCRIPTS_FOLDER }}\backupdatabase.ps1 "${{ vars.DB_SERVER }}" "${{ vars.DB_NAME }}" "${{ vars.DB_RELEASE_USER }}" "${{ secrets.DB_RELEASE_PASSWORD }}" "${{ vars.DB_BACKUP_FOLDER }}\${{ vars.ENVIRONMENT }}\Databases" "${{ vars.DB_NAME }}-${{ env.BUILD_NUMBER }}.bak" 5
       shell: powershell
 
     - name: Update database (run EF migration)

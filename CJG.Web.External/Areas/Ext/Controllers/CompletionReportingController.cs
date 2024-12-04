@@ -24,11 +24,8 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 	[ExternalFilter]
 	public class CompletionReportingController : BaseController
 	{
-		private const int FinalCompletionReportStepETG = 4;
-
 		private readonly IGrantApplicationService _grantApplicationService;
 		private readonly ICompletionReportService _completionReportService;
-		private readonly IEligibleCostBreakdownService _eligibleCostBreakdownService;
 		private readonly INaIndustryClassificationSystemService _naIndustryClassificationSystemService;
 		private readonly INationalOccupationalClassificationService _nationalOccupationalClassificationService;
 		private readonly ICommunityService _communityService;
@@ -39,7 +36,6 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		/// <param name="controllerService"></param>
 		/// <param name="grantApplicationService"></param>
 		/// <param name="completionReportService"></param>
-		/// <param name="eligibleCostBreakdownService"></param>
 		/// <param name="naIndustryClassificationSystemService"></param>
 		/// <param name="nationalOccupationalClassificationService"></param>
 		/// <param name="communityService"></param>
@@ -47,14 +43,12 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			IControllerService controllerService,
 			IGrantApplicationService grantApplicationService,
 			ICompletionReportService completionReportService,
-			IEligibleCostBreakdownService eligibleCostBreakdownService,
 			INaIndustryClassificationSystemService naIndustryClassificationSystemService,
 			INationalOccupationalClassificationService nationalOccupationalClassificationService,
 			ICommunityService communityService) : base(controllerService.Logger)
 		{
 			_grantApplicationService = grantApplicationService;
 			_completionReportService = completionReportService;
-			_eligibleCostBreakdownService = eligibleCostBreakdownService;
 			_naIndustryClassificationSystemService = naIndustryClassificationSystemService;
 			_nationalOccupationalClassificationService = nationalOccupationalClassificationService;
 			_communityService = communityService;
@@ -175,274 +169,59 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			try
 			{
 				var grantApplication = _grantApplicationService.Get(model.GrantApplicationId);
-
 				if (!User.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.SubmitCompletionReport))
-				{
 					throw new NotAuthorizedException("You are not authorized to edit the completion report.");
-				}
-				switch (grantApplication.CompletionReportId)
-				{
-					case Core.Entities.Constants.CompletionReportETG:
-						UpdateCompletionReportETG(model, grantApplication);
-						break;
 
-					case Core.Entities.Constants.CompletionReportCWRG:
-						UpdateCompletionReportCWRG(model, grantApplication);
-						break;
-				}
+				if (grantApplication.CompletionReportId != Core.Entities.Constants.CompletionReportCWRG)
+					throw new Exception("Cannot report on non-CWRG completion report.");
+
+				UpdateCompletionReport(model, grantApplication);
 			}
 			catch (Exception ex)
 			{
 				HandleAngularException(ex, model);
 			}
+
 			return Json(model, JsonRequestBehavior.AllowGet);
 		}
 
 		/// <summary>
-		/// ETG: Update and save the specified completion report group answers in the grant application.
-		/// This is the original completion report code, for ETG only.
+		/// Update and save the specified completion report group answers in the grant application.
 		/// </summary>
 		/// <param name="model"></param>
-		/// <param name="grantApplication"></param>
 		/// <returns></returns>
-		private CompletionReportGroupViewModel UpdateCompletionReportETG(CompletionReportGroupViewModel model, GrantApplication grantApplication)
+		[HttpPost]
+		[PreventSpam]
+		[ValidateRequestHeader]
+		[Route("Reporting/Completion/Report/SaveForLater")]
+		public JsonResult SaveForLater(CompletionReportGroupViewModel model)
 		{
-			var participantAnswers = new List<ParticipantCompletionReportAnswer>();
-			var employerAnswers = new List<EmployerCompletionReportAnswer>();
-			var completionReportGroupId = model.Id;
-			var doNotIncludeParticipants = new int[0];
-			var participantFormsForReport = new int[0];
-			var participantIdsForStep = new int[0];
+			try
+			{
+				var grantApplication = _grantApplicationService.Get(model.GrantApplicationId);
+				if (!User.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.SubmitCompletionReport))
+					throw new NotAuthorizedException("You are not authorized to edit the completion report.");
 
-			var claim = grantApplication.GetCurrentClaim();
-			var claimType = grantApplication.GetClaimType();
+				if (grantApplication.CompletionReportId != Core.Entities.Constants.CompletionReportCWRG)
+					throw new Exception("Cannot report on non-CWRG completion report.");
 
-			if (completionReportGroupId == 1)
-			{
-				var participants = grantApplication.ParticipantForms;
-				participantFormsForReport = participants.Select(pf => pf.Id).ToArray();
+				UpdateCompletionReport(model, grantApplication);
 			}
-			else if (claimType == ClaimTypes.SingleAmendableClaim && claim != null)
+			catch (Exception ex)
 			{
-				participantFormsForReport = claim.EligibleCosts.SelectMany(ec => ec.ParticipantCosts.Select(pc => pc.ParticipantForm.Id)).Distinct().Where(peId => !doNotIncludeParticipants.Contains(peId)).ToArray();
-			}
-			else
-			{
-				participantFormsForReport = grantApplication.ParticipantForms.Where(pf => !pf.IsExcludedFromClaim && !doNotIncludeParticipants.Contains(pf.Id)).Select(pe => pe.Id).ToArray();
+				HandleAngularException(ex, model);
 			}
 
-			switch (completionReportGroupId)
-			{
-				case 1:
-				case 2:
-					foreach (var question in model.Questions)
-					{
-						var answer = question.Level1Answers.First();
-						if (!answer.BoolAnswer)
-						{
-							// record any entries where the answer was not in the affirmative
-							foreach (var participantAnswer in question.Level2Answers.Where(o => o.BoolAnswer))
-							{
-								// make sure we don't record the same answer twice for a participant (currently only applies to reasons for training outcomes)
-								if (participantAnswers.Count(pa => pa.AnswerId == participantAnswer.IntAnswer && pa.ParticipantFormId == participantAnswer.ParticipantFormId) == 0)
-								{
-									if (participantAnswer.IntAnswer == 0)
-									{
-										switch (completionReportGroupId)
-										{
-											case 1:
-												throw new InvalidOperationException("A reason must be specified for all participants not completed training.");
-											case 2:
-												throw new InvalidOperationException("A reason must be specified for all participants not employed after completing training.");
-										}
-									}
-
-									participantAnswers.Add(new ParticipantCompletionReportAnswer
-									{
-										GrantApplicationId = grantApplication.Id,
-										QuestionId = participantAnswer.QuestionId,
-										AnswerId = participantAnswer.IntAnswer,
-										ParticipantFormId = participantAnswer.ParticipantFormId ?? 0,
-										OtherAnswer = participantAnswer.StringAnswer ?? string.Empty
-									});
-									if (completionReportGroupId == 2)
-									{
-										var participant = grantApplication.ParticipantForms.FirstOrDefault(o => o.Id == participantAnswer.ParticipantFormId);
-										participant.NocId = null;
-										participant.NaicsId = null;
-										participant.EmployerName = null;
-									}
-								}
-							}
-
-							// get the ids of those that didn't answer in the affirmative
-							doNotIncludeParticipants = participantAnswers.Select(pa => pa.ParticipantFormId).Distinct().ToArray();
-						}
-					}
-					break;
-				case 4:
-					foreach (var question in model.Questions)
-					{
-						foreach (var employerAnswer in question.Level1Answers.OrEmptyIfNull())
-						{
-							employerAnswers.Add(new EmployerCompletionReportAnswer
-							{
-								QuestionId = employerAnswer.QuestionId,
-								AnswerId = employerAnswer.IntAnswer == 0 ? question.DefaultAnswerId : employerAnswer.IntAnswer,
-								GrantApplicationId = grantApplication.Id,
-								OtherAnswer = employerAnswer.StringAnswer
-							});
-						}
-					}
-					break;
-			}
-
-			// either get the completion report for which participant answers have already been given, or get the current one
-			// var completionReport = _completionReportService.GetCompletionReportForParticipants(doNotIncludeParticipants.Length > 0 ? doNotIncludeParticipants : new int[] { 0 }) ?? _completionReportService.GetCurrentCompletionReport();
-			var completionReport = _completionReportService.GetCompletionReportForParticipants(doNotIncludeParticipants.Length > 0
-				? doNotIncludeParticipants : new int[] { 0 })
-				?? _completionReportService.GetCurrentCompletionReport(grantApplication.CompletionReportId);
-
-			var questions = _completionReportService.GetCompletionReportQuestionsForStep(completionReport.Id, completionReportGroupId);
-
-			if (completionReportGroupId == 1)
-			{
-				// exclude any participants that didn't answer in the affirmative from those on the claim
-				participantIdsForStep = participantFormsForReport.ToList().Where(id => !doNotIncludeParticipants.Contains(id)).ToArray();
-
-				// Delete any answers for these participants that are currently saved.
-				_completionReportService.DeleteAnswersFor(doNotIncludeParticipants);
-
-				// Delete saved answer it they originally were not included.
-				var questionIds = questions.Select(q => q.Id).ToArray();
-				_completionReportService.DeleteAnswersFor(participantFormsForReport, questionIds);
-			}
-			else if (completionReportGroupId == 5)
-			{
-				// exclude any participants that didn't answer in the affirmative from those on the claim
-				participantIdsForStep = participantFormsForReport.ToList().Where(id => !doNotIncludeParticipants.Contains(id)).ToArray();
-			}
-			else
-			{
-				// need to exclude any participants that didn't give affirmative answers in the previous step
-				var previousQuestion = _completionReportService.GetCompletionReportQuestionsForStep(completionReport.Id, 1).First();
-				if (previousQuestion.DefaultAnswerId.HasValue)
-				{
-					participantIdsForStep = _completionReportService.GetAffirmativeCompletionReportParticipants(participantFormsForReport, previousQuestion.DefaultAnswerId.Value).Select(pe => pe.Id).Where(peId => !doNotIncludeParticipants.Contains(peId)).ToArray();
-				}
-			}
-
-			// now add all of the other participants with the affirmative answer
-			foreach (var participantId in participantIdsForStep)
-			{
-				switch (completionReportGroupId)
-				{
-					case 1:
-						{
-							participantAnswers.Add(new ParticipantCompletionReportAnswer
-							{
-								GrantApplicationId = grantApplication.Id,
-								QuestionId = questions.First().Id,
-								AnswerId = questions.First().DefaultAnswerId ?? 0,
-								ParticipantFormId = participantId,
-								OtherAnswer = string.Empty
-							});
-						}
-						break;
-					case 2:
-						{
-							var participant = grantApplication.ParticipantForms.FirstOrDefault(o => o.Id == participantId);
-							var answer = model.Questions.First().Level2Answers.FirstOrDefault(o => o.ParticipantFormId == participant.Id);
-							participant.NocId = answer.Noc5Id ?? answer.Noc4Id ?? answer.Noc3Id ?? answer.Noc2Id ?? answer.Noc1Id;
-							participant.NaicsId = answer.Naics5Id ?? answer.Naics4Id ?? answer.Naics3Id ?? answer.Naics2Id ?? answer.Naics1Id;
-							participant.EmployerName = answer.EmployerName;
-							participantAnswers.Add(new ParticipantCompletionReportAnswer
-							{
-								GrantApplicationId = grantApplication.Id,
-								QuestionId = questions.First().Id,
-								AnswerId = questions.First().DefaultAnswerId ?? 0,
-								ParticipantFormId = participantId,
-								OtherAnswer = string.Empty
-							});
-							break;
-						}
-					case Core.Entities.Constants.CompletionStepWithMultipleQuestions:
-						{
-							foreach (var question in model.Questions)
-							{
-								var participantAnswer = question.Level1Answers.FirstOrDefault(o => o.QuestionId == question.Id && o.ParticipantFormId == participantId);
-								participantAnswers.Add(new ParticipantCompletionReportAnswer
-								{
-									GrantApplicationId = grantApplication.Id,
-									QuestionId = participantAnswer.QuestionId,
-									AnswerId = participantAnswer.IntAnswer == 0 ? question.DefaultAnswerId : participantAnswer.IntAnswer,
-									ParticipantFormId = participantAnswer.ParticipantFormId ?? 0,
-									OtherAnswer = participantAnswer.StringAnswer ?? string.Empty
-								});
-							}
-							break;
-						}
-					case 5:
-						{
-							var participant = grantApplication.ParticipantForms.FirstOrDefault(o => o.Id == participantId);
-							foreach (var question in model.Questions)
-							{
-								var eligibleCostBreakdowns = participant.EligibleCostBreakdowns.Select(o => o.Id).ToArray();
-								var eligibleCostBreakdownIds = question.Level1Answers.Where(o => o.ParticipantFormId == participantId).Select(o => o.EligibleCostBreakdownId ?? 0).ToArray();
-								var eligibleCostBreakdownsAdded = eligibleCostBreakdownIds.Except(eligibleCostBreakdowns);
-								var eligibleCostBreakdownsRemoved = eligibleCostBreakdowns.Except(eligibleCostBreakdownIds);
-
-								foreach (var eligibleCostBreakdownId in eligibleCostBreakdownsAdded)
-								{
-									var eligibleCostBreakdown = _eligibleCostBreakdownService.Get(eligibleCostBreakdownId);
-									participant.EligibleCostBreakdowns.Add(eligibleCostBreakdown);
-								}
-
-								foreach (var eligibleCostBreakdownId in eligibleCostBreakdownsRemoved)
-								{
-									var eligibleCostBreakdown = participant.EligibleCostBreakdowns.FirstOrDefault(o => o.Id == eligibleCostBreakdownId);
-									participant.EligibleCostBreakdowns.Remove(eligibleCostBreakdown);
-								}
-							}
-							break;
-						}
-				}
-			}
-
-			if (_completionReportService.RecordCompletionReportAnswersForStep(completionReportGroupId, participantAnswers, employerAnswers, completionReport.Id, participantIdsForStep))
-			{
-				var allParticipantsHaveCompletedReport = false;
-
-				if (claimType == ClaimTypes.SingleAmendableClaim && claim != null)
-				{
-					// need to get all of the participants on the final claim
-					var participantsOnClaim = claim.EligibleCosts.SelectMany(ec => ec.ParticipantCosts.Select(pc => pc.ParticipantFormId)).Distinct().Where(peId => !doNotIncludeParticipants.Contains(peId)).OrderBy(peId => peId).ToArray();
-					allParticipantsHaveCompletedReport = _completionReportService.AllParticipantsHaveCompletedReport(participantsOnClaim, completionReport.Id, Core.Entities.Constants.CompletionReportETGPage1);
-				}
-				else
-				{
-
-					allParticipantsHaveCompletedReport = _completionReportService.AllParticipantsHaveCompletedReport(participantIdsForStep, completionReport.Id, Core.Entities.Constants.CompletionReportETGPage1);
-				}
-
-				if (!model.SaveOnly
-					&& completionReportGroupId == FinalCompletionReportStepETG
-					&& grantApplication.ApplicationStateExternal == ApplicationStateExternal.ReportCompletion
-					&& allParticipantsHaveCompletedReport)
-				{
-					_grantApplicationService.SubmitCompletionReportToCloseGrantFile(grantApplication);
-				}
-			}
-			return model;
+			return Json(model, JsonRequestBehavior.AllowGet);
 		}
 
 		/// <summary>
-		/// CWRG: Update and save the specified completion report group answers in the grant application.
+		/// Update and save the specified completion report group answers in the grant application.
 		/// </summary>
 		/// <param name="model"></param>
 		/// <param name="grantApplication"></param>
 		/// <returns></returns>
-		private CompletionReportGroupViewModel UpdateCompletionReportCWRG(CompletionReportGroupViewModel model, GrantApplication grantApplication)
+		private CompletionReportGroupViewModel UpdateCompletionReport(CompletionReportGroupViewModel model, GrantApplication grantApplication)
 		{
 			var participantAnswers = new List<ParticipantCompletionReportAnswer>();
 			var employerAnswers = new List<EmployerCompletionReportAnswer>();
@@ -468,6 +247,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			{
 				participantFormsForReport = grantApplication.ParticipantForms.Where(pf => !pf.IsExcludedFromClaim && !doNotIncludeParticipants.Contains(pf.Id)).Select(pe => pe.Id).ToArray();
 			}
+
 			// Get the completion report
 			var completionReport = _completionReportService.GetCurrentCompletionReport(grantApplication.CompletionReportId);
 
@@ -506,6 +286,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 						}
 					}
 					break;
+
 				case Core.Entities.Constants.CompletionReportCWRGPage2:
 					foreach (var question in model.Questions)
 					{
@@ -554,6 +335,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 						}
 					}
 					break;
+
 				case Core.Entities.Constants.CompletionReportCWRGPage3:
 					{
 						// There is only 1 question on page 3. MultipleCheckbox, answers are uploaded per participant in the StringAnswer.
@@ -593,6 +375,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 						}
 					}
 					break;
+
 				case Core.Entities.Constants.CompletionReportCWRGPage4: // The employer questions page
 					foreach (var question in model.Questions)
 					{

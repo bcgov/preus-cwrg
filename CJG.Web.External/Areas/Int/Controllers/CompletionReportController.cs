@@ -1,26 +1,16 @@
-﻿using CJG.Web.External.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System;
 using System.Web.Mvc;
-using NLog;
 using CJG.Core.Interfaces.Service;
-using CJG.Web.External.Helpers;
 using CJG.Core.Interfaces.Service.Settings;
-using CJG.Web.External.Areas.Int.Models;
-using CJG.Core.Entities;
-using CJG.Web.External.Helpers.Filters;
-using CJG.Infrastructure.Identity;
-using CJG.Application.Services;
+using CJG.Web.External.Controllers;
+using CJG.Web.External.Helpers;
 using CJG.Web.External.Models.Shared.Reports;
 
 namespace CJG.Web.External.Areas.Int.Controllers
 {
-	[RouteArea("Int")]
+    [RouteArea("Int")]
 	public class CompletionReportController : BaseController
 	{
-		#region Variables
 		private readonly ITrainingProgramService _trainingProgramService;
 		private readonly IGrantApplicationService _grantApplicationService;
 		private readonly IAttachmentService _attachmentService;
@@ -29,9 +19,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		private readonly ITrainingProviderSettings _trainingProviderSettings;
 		private readonly ISettingService _settingService;
 		private readonly ICompletionReportService _completionReportService;
-		#endregion
 
-		#region Constructors
 		/// <summary>
 		/// Creates a new instance of a <typeparamref name="ReportingController"/> object.
 		/// </summary>
@@ -63,7 +51,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			_settingService = settingService;
 			_completionReportService = completionReportService;
 		}
-		#endregion
 
 		// GET: Int/CompletionReport
 		public ActionResult Index()

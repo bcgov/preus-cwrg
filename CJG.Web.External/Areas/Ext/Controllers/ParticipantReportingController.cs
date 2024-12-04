@@ -150,11 +150,40 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 
 			var participantForm = _surveyService.FindParticipantFormForWithdrawalSurvey(grantApplication, withdrawalKey);
 
-			ViewBag.GrantApplicationId = grantApplication.Id;
-			ViewBag.WithdrawalInvitationUrlLink = $"{HttpContext.Request.Url.GetLeftPart(UriPartial.Authority)}/Part/WithdrawalForm/{HttpUtility.UrlEncode(grantApplication.InvitationKey.ToString())}/{HttpUtility.UrlEncode(participantForm.WithdrawalKey.ToString())}";
-			ViewBag.ParticipantName = $"{participantForm.FirstName} {participantForm.LastName}";
+			var withdrawalInvitationUrlLink = $"{HttpContext.Request.Url.GetLeftPart(UriPartial.Authority)}/Part/WithdrawalForm/{HttpUtility.UrlEncode(grantApplication.InvitationKey.ToString())}/{HttpUtility.UrlEncode(participantForm.WithdrawalKey.ToString())}";
+			var participantName = $"{participantForm.FirstName} {participantForm.LastName}";
+			var grantProgramName = grantApplication.GetProgramDescription();
+			;
+			var emailContent = $@"Dear {participantName},
 
-			return View();
+You have chosen to withdraw from the following training program:
+
+Program Name: {grantProgramName}
+Withdrawn Date: {participantForm.TrainingWithdrawalDate:yyyy-MM-dd}
+
+As this training is being funded through the Community Workforce Response Grant (CWRG), we kindly ask you to complete the “Participant Early Withdrawal Form” using the following link:
+
+{withdrawalInvitationUrlLink}
+
+The form will be used to provide the CWRG team with feedback on your early withdrawal from the training program.
+
+To ensure your privacy, once completed, the form is submitted directly and confidentially to the CWRG only.
+
+Kind Regards,
+
+(Your signature)";
+
+			var model = new ParticipantWithdrawalModel
+			{
+				ParticipantEmail = participantForm.EmailAddress,
+				ParticipantName = participantName,
+				WithdrawalInvitationUrlLink = withdrawalInvitationUrlLink,
+				WithdrawalInvitationEmailText = emailContent
+			};
+
+			ViewBag.GrantApplicationId = grantApplication.Id;
+
+			return View(model);
 		}
 
 		/// <summary>

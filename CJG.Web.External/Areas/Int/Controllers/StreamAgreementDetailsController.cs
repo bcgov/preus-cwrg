@@ -214,10 +214,10 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		}
 
 		[HttpGet]
-		[Route("TrainingLocations")]
-		public JsonResult GetTrainingLocations()
+		[Route("TrainingLocations/{fiscalYearId?}")]
+		public JsonResult GetTrainingLocations(int? fiscalYearId)
 		{
-			var cities = _trainingProviderService.GetTrainingLocationCities()
+			var cities = _trainingProviderService.GetTrainingLocationCities(fiscalYearId)
 				.Select(c => new
 				{
 					Id = c,
@@ -318,6 +318,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 				ws.Cell("A2")
 					.InsertData(applications.Select(a => new
 						{
+							a.FiscalYear,
 							a.GrantStreamName,
 							a.FileNumber,
 							a.ApplicationStateInternalCaption,
@@ -327,7 +328,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 							a.ProjectDescription,
 							a.TrainingProviderName,
 							a.ESSTrainingProviderName,
-							a.TrainingCostRequested,
 							a.ScheduleAAmount,
 							a.TotalClaimAssessment,
 							a.AverageCostPerParticipant,
@@ -346,8 +346,8 @@ namespace CJG.Web.External.Areas.Int.Controllers
 						})
 						.ToList());
 
-				ws.Columns("F").Style.Alignment.WrapText = true;
 				ws.Columns("G").Style.Alignment.WrapText = true;
+				ws.Columns("H").Style.Alignment.WrapText = true;
 				ws.ColumnsUsed().AdjustToContents(5d, 50d);
 
 				ws.RowsUsed().CellsUsed().Style.Alignment.Vertical = XLAlignmentVerticalValues.Top;
@@ -361,33 +361,34 @@ namespace CJG.Web.External.Areas.Int.Controllers
 
 		private void CreateExcelHeaders(IXLWorksheet ws)
 		{
-			CreateHeaderCell(ws, 1, "Stream");
-			CreateHeaderCell(ws, 2, "Agreement #");
-			CreateHeaderCell(ws, 3, "Status");
-			CreateHeaderCell(ws, 4, "Date Status changed to Closed");
-			CreateHeaderCell(ws, 5, "Agreement Holder");
-			CreateHeaderCell(ws, 6, "Skills Training Course Title");
-			CreateHeaderCell(ws, 7, "Project Description");
-			CreateHeaderCell(ws, 8, "Training Provider");
-			CreateHeaderCell(ws, 9, "ESS Training Provider");
-			CreateHeaderCell(ws, 10, "Schedule A Amount");
-			CreateHeaderCell(ws, 11, "Total Claim Assessment");
-			CreateHeaderCell(ws, 12, "Avg. Cost per Participant");
-			CreateHeaderCell(ws, 13, "Number of PIFs in Claim");
-			CreateHeaderCell(ws, 14, "NAIC");
-			CreateHeaderCell(ws, 15, "NOC");
-			CreateHeaderCell(ws, 16, "Delivery Start Date");
-			CreateHeaderCell(ws, 17, "Delivery End Date");
-			CreateHeaderCell(ws, 18, "Training Start Date");
-			CreateHeaderCell(ws, 19, "Training End Date");
-			CreateHeaderCell(ws, 20, "Number of Participants (requested)");
-			CreateHeaderCell(ws, 21, "Training Location");
-			CreateHeaderCell(ws, 22, "Mode of Instruction");
-			CreateHeaderCell(ws, 23, "Community Names");
-			CreateHeaderCell(ws, 24, "Regions");
+			CreateHeaderCell(ws, "A", "Fiscal Year");
+			CreateHeaderCell(ws, "B", "Stream");
+			CreateHeaderCell(ws, "C", "Agreement #");
+			CreateHeaderCell(ws, "D", "Status");
+			CreateHeaderCell(ws, "E", "Date Status changed to Closed");
+			CreateHeaderCell(ws, "F", "Agreement Holder");
+			CreateHeaderCell(ws, "G", "Skills Training Course Title");
+			CreateHeaderCell(ws, "H", "Project Description");
+			CreateHeaderCell(ws, "I", "Training Provider");
+			CreateHeaderCell(ws, "J", "ESS Training Provider");
+			CreateHeaderCell(ws, "K", "Schedule A Amount");
+			CreateHeaderCell(ws, "L", "Total Claim Assessment");
+			CreateHeaderCell(ws, "M", "Avg. Cost per Participant");
+			CreateHeaderCell(ws, "N", "Number of PIFs in Claim");
+			CreateHeaderCell(ws, "O", "NAIC");
+			CreateHeaderCell(ws, "P", "NOC");
+			CreateHeaderCell(ws, "Q", "Delivery Start Date");
+			CreateHeaderCell(ws, "R", "Delivery End Date");
+			CreateHeaderCell(ws, "S", "Training Start Date");
+			CreateHeaderCell(ws, "T", "Training End Date");
+			CreateHeaderCell(ws, "U", "Number of Participants (requested)");
+			CreateHeaderCell(ws, "V", "Training Location");
+			CreateHeaderCell(ws, "W", "Mode of Instruction");
+			CreateHeaderCell(ws, "X", "Community Names");
+			CreateHeaderCell(ws, "Y", "Regions");
 		}
 
-		private static void CreateHeaderCell(IXLWorksheet ws, int columnIndex, string columnName)
+		private static void CreateHeaderCell(IXLWorksheet ws, string columnIndex, string columnName)
 		{
 			var headerCell = ws.Cell(1, columnIndex);
 			headerCell.SetValue(columnName);

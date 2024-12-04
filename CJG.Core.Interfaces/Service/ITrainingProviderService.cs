@@ -16,6 +16,6 @@ namespace CJG.Core.Interfaces.Service
 		void DeleteRequestedTrainingProvider(TrainingProvider trainingProvider);
 		void AddAttachment(TrainingProvider trainingProvider, Attachment attachment, TrainingProviderAttachmentTypes type);
 
-		IEnumerable<string> GetTrainingLocationCities();
+		IEnumerable<string> GetTrainingLocationCities(int? fiscalYearId);
 	}
 }

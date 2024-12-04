@@ -64,7 +64,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				return View(model);
 			}
 
-			return RedirectToAction(nameof(HomeController.Index), nameof(HomeController).Replace("Controller", ""));
+			return RedirectToAction("Index", "Home");
 		}
 
 		/// <summary>

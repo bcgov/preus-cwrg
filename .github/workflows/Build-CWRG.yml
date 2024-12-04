@@ -2,7 +2,11 @@
 
 name: Build CWRG
 run-name: Build of commit ${{ github.sha }} by ${{ github.actor }}
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+  push:
+    tags:
+      - '*-uat'
 env:
   NUGET_CERT_REVOCATION_MODE: offline # Bypass cert validation during NuGet Restore
   HTTP_PROXY: ${{ vars.HTTP_PROXY }}
@@ -100,7 +104,13 @@ jobs:
           @{tag='db-user'; val="${{ vars.DB_USER }}"}, 
           @{tag='db-pass'; val="${{ secrets.DB_PASSWORD }}"},
           @{tag='csv-file-path-template'; val="${{ vars.REPORTING_SERVICE_CSV_FILE_PATH_TEMPLATE }}"},
-          @{tag='html-file-path-template'; val="${{ vars.REPORTING_SERVICE_HTML_FILE_PATH_TEMPLATE }}"}
+          @{tag='html-file-path-template'; val="${{ vars.REPORTING_SERVICE_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_SIN_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='html-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_SIN_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-duplicate-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_DUPLICATE_SIN_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='html-duplicate-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_DUPLICATE_SIN_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-exit-survey-file-path-template'; val="${{ vars.REPORTING_SERVICE_EXIT_SURVEY_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-withdrawal-file-path-template'; val="${{ vars.REPORTING_SERVICE_WITHDRAWAL_CSV_FILE_PATH_TEMPLATE }}"}
         )
         ${{ vars.CI_SCRIPTS_FOLDER }}\replacetoken.ps1 "${{ github.workspace }}/CJG.Infrastructure.ReportingService/App.config.template" "${{ github.workspace }}/CJG.Infrastructure.ReportingService/App.config" $configTags
       shell: powershell
@@ -252,7 +262,13 @@ jobs:
           @{tag='db-user'; val="${{ vars.DB_USER }}"}, 
           @{tag='db-pass'; val="${{ secrets.DB_PASSWORD }}"},
           @{tag='csv-file-path-template'; val="${{ vars.REPORTING_SERVICE_CSV_FILE_PATH_TEMPLATE }}"},
-          @{tag='html-file-path-template'; val="${{ vars.REPORTING_SERVICE_HTML_FILE_PATH_TEMPLATE }}"}
+          @{tag='html-file-path-template'; val="${{ vars.REPORTING_SERVICE_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_SIN_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='html-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_SIN_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-duplicate-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_DUPLICATE_SIN_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='html-duplicate-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_DUPLICATE_SIN_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-exit-survey-file-path-template'; val="${{ vars.REPORTING_SERVICE_EXIT_SURVEY_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-withdrawal-file-path-template'; val="${{ vars.REPORTING_SERVICE_WITHDRAWAL_CSV_FILE_PATH_TEMPLATE }}"}
         )
         ${{ vars.CI_SCRIPTS_FOLDER }}\replacetoken.ps1 "${{ github.workspace }}/CJG.Infrastructure.ReportingService/App.config.template" "${{ github.workspace }}/CJG.Infrastructure.ReportingService/App.config" $configTags
       shell: powershell
@@ -404,7 +420,13 @@ jobs:
           @{tag='db-user'; val="${{ vars.DB_USER }}"}, 
           @{tag='db-pass'; val="${{ secrets.DB_PASSWORD }}"},
           @{tag='csv-file-path-template'; val="${{ vars.REPORTING_SERVICE_CSV_FILE_PATH_TEMPLATE }}"},
-          @{tag='html-file-path-template'; val="${{ vars.REPORTING_SERVICE_HTML_FILE_PATH_TEMPLATE }}"}
+          @{tag='html-file-path-template'; val="${{ vars.REPORTING_SERVICE_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_SIN_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='html-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_SIN_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-duplicate-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_DUPLICATE_SIN_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='html-duplicate-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_DUPLICATE_SIN_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-exit-survey-file-path-template'; val="${{ vars.REPORTING_SERVICE_EXIT_SURVEY_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-withdrawal-file-path-template'; val="${{ vars.REPORTING_SERVICE_WITHDRAWAL_CSV_FILE_PATH_TEMPLATE }}"}
         )
         ${{ vars.CI_SCRIPTS_FOLDER }}\replacetoken.ps1 "${{ github.workspace }}/CJG.Infrastructure.ReportingService/App.config.template" "${{ github.workspace }}/CJG.Infrastructure.ReportingService/App.config" $configTags
       shell: powershell
@@ -556,7 +578,13 @@ jobs:
           @{tag='db-user'; val="${{ vars.DB_USER }}"}, 
           @{tag='db-pass'; val="${{ secrets.DB_PASSWORD }}"},
           @{tag='csv-file-path-template'; val="${{ vars.REPORTING_SERVICE_CSV_FILE_PATH_TEMPLATE }}"},
-          @{tag='html-file-path-template'; val="${{ vars.REPORTING_SERVICE_HTML_FILE_PATH_TEMPLATE }}"}
+          @{tag='html-file-path-template'; val="${{ vars.REPORTING_SERVICE_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_SIN_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='html-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_SIN_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-duplicate-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_DUPLICATE_SIN_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='html-duplicate-sin-file-path-template'; val="${{ vars.REPORTING_SERVICE_DUPLICATE_SIN_HTML_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-exit-survey-file-path-template'; val="${{ vars.REPORTING_SERVICE_EXIT_SURVEY_CSV_FILE_PATH_TEMPLATE }}"},
+          @{tag='csv-withdrawal-file-path-template'; val="${{ vars.REPORTING_SERVICE_WITHDRAWAL_CSV_FILE_PATH_TEMPLATE }}"}
         )
         ${{ vars.CI_SCRIPTS_FOLDER }}\replacetoken.ps1 "${{ github.workspace }}/CJG.Infrastructure.ReportingService/App.config.template" "${{ github.workspace }}/CJG.Infrastructure.ReportingService/App.config" $configTags
       shell: powershell

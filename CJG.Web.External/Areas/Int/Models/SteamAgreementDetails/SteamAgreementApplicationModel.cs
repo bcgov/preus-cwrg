@@ -8,6 +8,7 @@ namespace CJG.Web.External.Areas.Int.Models.SteamAgreementDetails
     public class SteamAgreementApplicationModel
 	{
 		public int GrantApplicationId { get; set; }
+		public string FiscalYear { get; set; }
 		public string GrantStreamName { get; set; }
 		public string FileNumber { get; set; }
 		public ApplicationStateInternal ApplicationStateInternal { get; set; }
@@ -47,6 +48,7 @@ namespace CJG.Web.External.Areas.Int.Models.SteamAgreementDetails
 				throw new ArgumentNullException(nameof(grantApplication));
 
 			GrantApplicationId = grantApplication.Id;
+			FiscalYear = grantApplication.GrantOpening.TrainingPeriod.FiscalYear.Caption;
 			GrantStreamName = grantApplication.GrantOpening.GrantStream.Name;
 			FileNumber = grantApplication.FileNumber;
 			ApplicationStateInternalCaption = grantApplication.GetInternalStateCaption();

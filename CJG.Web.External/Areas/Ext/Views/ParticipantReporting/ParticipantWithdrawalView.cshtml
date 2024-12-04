@@ -1,4 +1,5 @@
-﻿@{
+﻿@model CJG.Web.External.Areas.Ext.Models.ParticipantReporting.ParticipantWithdrawalModel
+@{
     ViewBag.Title = "Report Participant Withdrawal";
 }
 
@@ -17,14 +18,29 @@
             </div>
 
             <div>
+                <p>Reporting the withdrawal of participants is a requirement under your contract with the Province.</p>
                 <p>
-                    Reporting the withdrawal of participants is a requirement under your contract with the Province.<br/>
-                    Please forward the link below to the participant '@ViewBag.ParticipantName' who has now been withdrawn from training.
+                    For your convenience, you may use the email template below to provide '@Model.ParticipantName' with the link.<br/>
+                    Please copy and paste it into your own email and send it to your participant.<br/>
+                    You may revise the email to make it better suited to your business needs.
                 </p>
-                <p><a href="@ViewBag.WithdrawalInvitationUrlLink">@ViewBag.WithdrawalInvitationUrlLink</a></p>
 
-                <div class="wrapper--btn">
-                    <button type="button" class="btn btn--primary copy-to-clipboard" data-clipboard-text="@ViewBag.WithdrawalInvitationUrlLink">Copy Link</button>
+                <p><strong>Participant email:</strong> <a href="mailto: @Model.ParticipantEmail">@Model.ParticipantEmail</a></p>
+
+                <div class="copy-boxes">
+                    <div class="wrapper--copy-section wrapper--email-template">
+                        <div class="wrapper--btn">
+                            <button type="button" class="btn btn--primary copy-to-clipboard" data-clipboard-target=".email-template">Copy Email</button>
+                        </div>
+                        <textarea class="copy-box email-template">@Model.WithdrawalInvitationEmailText</textarea>
+                    </div>
+
+                    <div class="wrapper--copy-section wrapper--copy-link">
+                        <div class="wrapper--btn">
+                            <button type="button" class="btn btn--primary copy-to-clipboard" data-clipboard-target=".link-only">Copy Link Only</button>
+                        </div>
+                        <textarea class="copy-box link-only">@Model.WithdrawalInvitationUrlLink</textarea>
+                    </div>
                 </div>
             </div>
         </div>
