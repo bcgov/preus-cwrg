@@ -446,12 +446,14 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				var allParticipantsHaveCompletedReport = _completionReportService.AllParticipantsHaveCompletedReport(participantIdsForStep, completionReport.Id, Core.Entities.Constants.CompletionReportCWRGPage1);
 
 				// Locate the last page ID, and if it is the last page, close the grant file.
-				var lastGroupIdx = grantApplication.CompletionReport.Groups.Count - 1;
-				if (lastGroupIdx >= 0)
+				var lastGroup = grantApplication.CompletionReport.Groups
+					.OrderByDescending(g => g.RowSequence)
+					.FirstOrDefault();
+
+				if (lastGroup != null && lastGroup.Id >= 0)
 				{
-					var lastGroupId = grantApplication.CompletionReport.Groups.ElementAt(lastGroupIdx).Id;
 					if (!model.SaveOnly
-						&& completionReportGroupId == lastGroupId
+						&& completionReportGroupId == lastGroup.Id
 						&& grantApplication.ApplicationStateExternal == ApplicationStateExternal.ReportCompletion
 						&& allParticipantsHaveCompletedReport)
 					{
