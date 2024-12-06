@@ -375,10 +375,13 @@ namespace CJG.Application.Services
 			var grantApplication = Get<GrantApplication>(grantApplicationId);
 			var programTypeId = grantApplication.GrantOpening.GrantStream.GrantProgram.ProgramTypeId;
 
-			return _dbContext.CompletionReportGroups.AsNoTracking().Where(o =>
-				o.CompletionReportId == grantApplication.CompletionReportId &&
-				(o.ProgramTypeId == null || o.ProgramTypeId == programTypeId))
-				.OrderBy(o => o.RowSequence).Select(select).ToArray();
+			return _dbContext.CompletionReportGroups
+				.AsNoTracking()
+				.Where(o => o.CompletionReportId == grantApplication.CompletionReportId
+				            && (o.ProgramTypeId == null || o.ProgramTypeId == programTypeId))
+				.OrderBy(o => o.RowSequence)
+				.Select(select)
+				.ToArray();
 		}
 
 		/// <summary>
@@ -389,7 +392,8 @@ namespace CJG.Application.Services
 		/// <returns>Completion Report Question Group</returns>
 		public CompletionReportGroup GetCompletionReportGroup(int completionReportId, int completionReportGroupId)
 		{
-			var completionReportGroup = _dbContext.CompletionReportGroups.FirstOrDefault(o => o.Id == completionReportGroupId && o.CompletionReportId == completionReportId);
+			var completionReportGroup = _dbContext.CompletionReportGroups
+				.FirstOrDefault(o => o.Id == completionReportGroupId && o.CompletionReportId == completionReportId);
 
 			// Remove inactive options from the select dropdown.
 			if (completionReportGroup != null)

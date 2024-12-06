@@ -976,6 +976,7 @@ Thank you.";
 
 					var notification = _notificationService.GenerateNotificationMessage(_grantApplication, _grantApplication.Assessor, subject, body);
 					_notificationService.SendNotification(notification);
+					_dbContext.SaveChanges();
 				}
 
 				_logger.Info($"Grant application {_grantApplication.Id} is closed.");
