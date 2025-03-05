@@ -46,7 +46,7 @@
 
                 <div class="form__group">
                     <div class="label-wrapper"><label class="form__label">Number of Participants <abbr title="Required">*</abbr></label></div>
-                    <p>Employment of participants at the end of training is a requirement of this project. Enter the number of participants to be employed at the end of the project.</p>
+                    <p>Enter the total number of participants to be trained.</p>
                     <div class="control-wrapper form-control">
                         <input type="text" class="input--small" ng-model="model.NumberOfParticipants" ng-init="model.NumberOfParticipants = ((model.NumberOfParticipants == 0 || !model.RowVersion) ? null: model.NumberOfParticipants)" ng-number maxlength="4" ng-validation>
                     </div>
@@ -62,7 +62,6 @@
                                     <label for="participant-employment-statuses-{{item.Key}}">{{item.Value}}</label>
                                 </div>
                             </li>
-                            <p style="font-size: 0.95em; font-style: italic;">Depending on the stream, participants employed full-time may be eligible. Check stream criteria carefully.</p>
                         </ul>
                     </div>
                 </div>

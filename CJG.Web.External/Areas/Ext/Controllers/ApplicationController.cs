@@ -283,10 +283,21 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 
 					grantApplication.RequireAllParticipantsBeforeSubmission = grantOpening.GrantStream.RequireAllParticipantsBeforeSubmission;
 					
-					// set start/end dates to user selected dates
-					var earliest = grantApplication.DateSubmitted ?? grantApplication.DateAdded;
-					grantApplication.StartDate = model.DeliveryStartDate.HasValue ? new DateTime(model.DeliveryStartYear, model.DeliveryStartMonth, model.DeliveryStartDay, 0, 0, 0, DateTimeKind.Local).ToUtcMorning() : earliest;
-					grantApplication.EndDate = model.DeliveryEndDate.HasValue ? new DateTime(model.DeliveryEndYear, model.DeliveryEndMonth, model.DeliveryEndDay, 0, 0, 0, DateTimeKind.Local).ToUtcMidnight() : earliest.AddMonths(1);
+					// Bypass need for applicant to supply Delivery Dates - and set the start/end to the GrantOpening Training Dates.
+					// This will be updated later when the applicant defines their Training Program Start/End Dates.
+					if (model.GrantApplicationId == 0)
+					{
+						// set start/end dates to user selected dates
+						var earliest = grantApplication.DateSubmitted ?? grantApplication.DateAdded;
+						var defaultStartDate = grantOpening.TrainingPeriod.StartDate;
+						var defaultEndDate = grantOpening.TrainingPeriod.EndDate;
+
+						if (earliest > defaultStartDate)
+							defaultStartDate = earliest;
+
+						grantApplication.StartDate = defaultStartDate;
+						grantApplication.EndDate = defaultEndDate;
+					}
 
 					foreach (var question in dbModel.StreamEligibilityQuestions)
 					{
@@ -420,9 +431,28 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				grantApplication.InsuranceConfirmed = null;     // InsuranceConfirmed is no longer usable, values stay in GrantApp and are copied to Eligibility Answers
 				grantApplication.HasRequestedAdditionalFunding = model.HasRequestedAdditionalFunding;
 
+
+				// Bypass need for applicant to supply Delivery Dates - and set the start/end to the GrantOpening Training Dates.
+				// This will be updated later when the applicant defines their Training Program Start/End Dates.
+				if (grantApplication.ApplicationStateInternal == ApplicationStateInternal.Draft)
+				{
+					var earliestValidStartDate = grantApplication.EarliestValidStartDate();
+					// set start/end dates to user selected dates
+					//var earliest = grantApplication.DateSubmitted ?? grantApplication.DateAdded;
+					var defaultStartDate = grantOpening.TrainingPeriod.StartDate;
+					var defaultEndDate = grantOpening.TrainingPeriod.EndDate;
+
+					if (earliestValidStartDate > defaultStartDate)
+						defaultStartDate = earliestValidStartDate;
+
+					grantApplication.StartDate = defaultStartDate;
+					grantApplication.EndDate = defaultEndDate;
+				}
+
+
 				// record UTC time only
-				grantApplication.StartDate = new DateTime(model.DeliveryStartYear, model.DeliveryStartMonth, model.DeliveryStartDay, 0, 0, 0, DateTimeKind.Local).ToUtcMorning();
-				grantApplication.EndDate = new DateTime(model.DeliveryEndYear, model.DeliveryEndMonth, model.DeliveryEndDay, 0, 0, 0, DateTimeKind.Local).ToUtcMidnight();
+				//grantApplication.StartDate = new DateTime(model.DeliveryStartYear, model.DeliveryStartMonth, model.DeliveryStartDay, 0, 0, 0, DateTimeKind.Local).ToUtcMorning();
+				//grantApplication.EndDate = new DateTime(model.DeliveryEndYear, model.DeliveryEndMonth, model.DeliveryEndDay, 0, 0, 0, DateTimeKind.Local).ToUtcMidnight();
 
 				// If the training program dates fall outside of the delivery dates, make the training program dates equal to the delivery dates.
 				if (grantApplication.ApplicationStateInternal == ApplicationStateInternal.Draft)
