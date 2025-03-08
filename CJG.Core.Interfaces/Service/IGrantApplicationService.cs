@@ -21,6 +21,8 @@ namespace CJG.Core.Interfaces.Service
 
 		void UpdateDeliveryDates(GrantApplication grantApplication);
 
+		void SynchroniseDeliveryDatesToTraining(GrantApplication trainingProgram);
+
 		void ChangeGrantOpening(GrantApplication grantApplication);
 
 		int GetApplicationsCountByFiscal(GrantApplication grantApplication);

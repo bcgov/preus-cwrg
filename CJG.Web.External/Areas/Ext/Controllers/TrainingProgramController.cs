@@ -1,35 +1,30 @@
-﻿using CJG.Application.Business.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using CJG.Application.Business.Models;
 using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
-using CJG.Web.External.Areas.Ext.Models;
 using CJG.Web.External.Areas.Ext.Models.TrainingPrograms;
 using CJG.Web.External.Controllers;
 using CJG.Web.External.Helpers;
 using CJG.Web.External.Helpers.Filters;
 using CJG.Web.External.Models.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
 
 namespace CJG.Web.External.Areas.Ext.Controllers
 {
-	/// <summary>
-	/// TrainingProgramController class, provides endpoints to manage training programs.
-	/// </summary>
-	[RouteArea("Ext")]
+    /// <summary>
+    /// TrainingProgramController class, provides endpoints to manage training programs.
+    /// </summary>
+    [RouteArea("Ext")]
 	[ExternalFilter]
 	public class TrainingProgramController : BaseController
 	{
-		#region Variables
 		private readonly IStaticDataService _staticDataService;
-		private readonly IUserService _userService;
 		private readonly IGrantApplicationService _grantApplicationService;
 		private readonly ITrainingProgramService _trainingProgramService;
 		private readonly ITrainingProviderService _trainingProviderService;
-		#endregion
 
-		#region Constructors
 		/// <summary>
 		/// Creates a new instance of a TrainingProgramController object.
 		/// </summary>
@@ -42,15 +37,12 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 										 ITrainingProgramService trainingProgramService,
 										 ITrainingProviderService trainingProviderService) : base(controllerService.Logger)
 		{
-			_userService = controllerService.UserService;
 			_staticDataService = controllerService.StaticDataService;
 			_grantApplicationService = grantApplicationService;
 			_trainingProgramService = trainingProgramService;
 			_trainingProviderService = trainingProviderService;
 		}
-		#endregion
 
-		#region Endpoints
 		/// <summary>
 		/// Returns a view for adding/updating a training program for ETG grant programs.
 		/// </summary>
@@ -62,8 +54,10 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		public ActionResult TrainingProgramView(int grantApplicationId, int trainingProgramId)
 		{
 			_grantApplicationService.Get(grantApplicationId);
+
 			ViewBag.GrantApplicationId = grantApplicationId;
 			ViewBag.TrainingProgramId = trainingProgramId;
+
 			return View();
 		}
 
@@ -87,6 +81,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			{
 				HandleAngularException(ex, model);
 			}
+
 			return Json(model, JsonRequestBehavior.AllowGet);
 		}
 
@@ -111,13 +106,14 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			{
 				HandleAngularException(ex, viewModel);
 			}
+
 			return Json(viewModel, JsonRequestBehavior.AllowGet);
 		}
 
 		/// <summary>
 		/// Add the specified training program to the datasource.
 		/// </summary>
-		/// <param name="viewModel"></param>
+		/// <param name="model"></param>
 		/// <returns></returns>
 		[HttpPost]
 		[PreventSpam]
@@ -174,7 +170,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		/// <summary>
 		/// Update the specified training program in the datasource.
 		/// </summary>
-		/// <param name="viewModel"></param>
+		/// <param name="model"></param>
 		/// <returns></returns>
 		[HttpPut]
 		[PreventSpam]
@@ -230,7 +226,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		/// <summary>
 		/// Delete the training program from the datasource.
 		/// </summary>
-		/// <param name="trainingProgramId"></param>
+		/// <param name="id"></param>
 		/// <param name="rowVersion"></param>
 		/// <returns></returns>
 		[HttpPut]
@@ -253,7 +249,6 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			return Json(model);
 		}
 
-		#region Dropdowns
 		/// <summary>
 		/// Get an array of skill levels.
 		/// </summary>
@@ -267,7 +262,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			var results = new List<CollectionItemModel>();
 			try
 			{
-				results = _staticDataService.GetSkillLevels().Select(x => new CollectionItemModel()
+				results = _staticDataService.GetSkillLevels().Select(x => new CollectionItemModel
 				{
 					Id = x.Id,
 					Caption = x.Caption,
@@ -348,7 +343,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			var results = new List<CollectionItemModel>();
 			try
 			{
-				results = _staticDataService.GetInDemandOccupations().Select(x => new CollectionItemModel()
+				results = _staticDataService.GetInDemandOccupations().Select(x => new CollectionItemModel
 				{
 					Id = x.Id,
 					Caption = x.Caption,
@@ -390,7 +385,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		}
 
 		/// <summary>
-		/// Get an array of under-represted groups.
+		/// Get an array of under-represented groups.
 		/// </summary>
 		/// <returns></returns>
 		[HttpGet]
@@ -402,7 +397,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			var results = new List<CollectionItemModel>();
 			try
 			{
-				results = _staticDataService.GetUnderRepresentedGroups().Select(x => new CollectionItemModel()
+				results = _staticDataService.GetUnderRepresentedGroups().Select(x => new CollectionItemModel
 				{
 					Id = x.Id,
 					Caption = x.Caption,
@@ -442,7 +437,5 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			}
 			return Json(results, JsonRequestBehavior.AllowGet);
 		}
-		#endregion
-		#endregion
 	}
 }
