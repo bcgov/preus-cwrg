@@ -17,18 +17,18 @@
                             {{PopulateSubSectionText(program, 'Program')}}
                         </span>
                     </text>
+                    @if (Model != ApplicationStateExternal.ApplicationWithdrawn)
+                    {
+                        <span class="pull-right">
+                            <a class="btn btn--secondary pull-right"
+                               ng-click="edit($event)"
+                               href="/Ext/Application/{{model.Id}}/Skills/Training/View/{{process.ServiceCategoryId}}/{{program.Id}}">Edit</a>
+                            <a class="btn btn--secondary pull-right"
+                               style="width:85px;margin-right:5px;"
+                               ng-click="delete($event, program, 'Program')">Delete</a>
+                        </span>
+                    }
                 </span>
-                @if (Model != ApplicationStateExternal.ApplicationWithdrawn)
-                {
-                <span class="pull-right">
-                    <a class="btn btn--secondary pull-right"
-                        ng-click="edit($event)"
-                        href="/Ext/Application/{{model.Id}}/Skills/Training/View/{{process.ServiceCategoryId}}/{{program.Id}}">Edit</a>
-                    <a class="btn btn--secondary pull-right"
-                        style="width:85px;margin-right:5px;"
-                        ng-click="delete($event, program, 'Program')">Delete</a>
-                </span>
-                }
             </span>
             <div class="form-section-details" style="display: none;">
                 @Html.Partial("_SkillTrainingProgramProviderView")

@@ -25,6 +25,5 @@ namespace CJG.Core.Interfaces.Service
 		bool AgreementUpdateRequired(GrantApplication grantApplication);
 
 		void UpdateAgreement(GrantApplication grantApplication);
-
 	}
 }

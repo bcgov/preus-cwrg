@@ -150,6 +150,8 @@ namespace CJG.Application.Services
 
 			_dbContext.TrainingPrograms.Add(trainingProgram);
 
+			_grantApplicationService.SynchroniseDeliveryDatesToTraining(trainingProgram.GrantApplication);
+
 			var accountType = _httpContext.User.GetAccountType();
 			if (accountType == AccountTypes.Internal && _grantAgreementService.AgreementUpdateRequired(trainingProgram.GrantApplication))
 			{
@@ -175,16 +177,6 @@ namespace CJG.Application.Services
 
 			if (!_httpContext.User.CanPerformAction(trainingProgram.GrantApplication, ApplicationWorkflowTrigger.EditTrainingProgram))
 				throw new NotAuthorizedException($"User does not have permission to edit application {trainingProgram.GrantApplicationId}.");
-
-			// If it's an EmployerTraining grant then link the training provider to the program.
-			if (trainingProgram.GrantApplication.GrantOpening.GrantStream.GrantProgram.ProgramTypeId == ProgramTypes.EmployerGrant && trainingProgram.TrainingProvider == null)
-			{
-				var trainingProvider = trainingProgram.GrantApplication.TrainingProviders.FirstOrDefault();
-				if (trainingProvider != null)
-				{
-					trainingProgram.TrainingProviders.Add(trainingProvider);
-				}
-			}
 
 			if (trainingProgram.TrainingProvider?.GrantApplication != null)
 			{
@@ -228,6 +220,8 @@ namespace CJG.Application.Services
 			}
 
 			_dbContext.Update(trainingProgram);
+
+			_grantApplicationService.SynchroniseDeliveryDatesToTraining(trainingProgram.GrantApplication);
 
 			var accountType = _httpContext.User.GetAccountType();
 			if (accountType == AccountTypes.Internal && _grantAgreementService.AgreementUpdateRequired(trainingProgram.GrantApplication))
@@ -283,8 +277,11 @@ namespace CJG.Application.Services
 		/// <param name="trainingProgram"></param>
 		public void ChangeEligibility(TrainingProgram trainingProgram)
 		{
-			if (!trainingProgram.EligibleCostBreakdownId.HasValue) throw new InvalidOperationException("Cannot change the eligibility of this project.");
-			if (trainingProgram.TrainingProvider.RequestedTrainingProvider != null) throw new InvalidOperationException("Cannot change the eligibility of this project because the applicant is currently creating a change request.");
+			if (!trainingProgram.EligibleCostBreakdownId.HasValue)
+				throw new InvalidOperationException("Cannot change the eligibility of this project.");
+
+			if (trainingProgram.TrainingProvider.RequestedTrainingProvider != null)
+				throw new InvalidOperationException("Cannot change the eligibility of this project because the applicant is currently creating a change request.");
 
 			var breakdown = trainingProgram.EligibleCostBreakdown;
 			var grantApplication = breakdown.EligibleCost.TrainingCost.GrantApplication;
@@ -378,10 +375,14 @@ namespace CJG.Application.Services
 			if (!_httpContext.User.CanPerformAction(trainingProgram.GrantApplication, ApplicationWorkflowTrigger.EditTrainingProgram))
 				throw new NotAuthorizedException($"User does not have permission to delete application '{trainingProgram.GrantApplicationId}'.");
 
+			var grantApplication = trainingProgram.GrantApplication;
+
 			trainingProgram.DeliveryMethods.Clear();
 			trainingProgram.UnderRepresentedGroups.Clear();
+
 			var ids = trainingProgram.TrainingProviders.Select(x => x.Id).ToArray();
 			trainingProgram.TrainingProviders.Clear();
+
 			foreach (var id in ids)
 			{
 				var provider = Get<TrainingProvider>(id);
@@ -443,6 +444,8 @@ namespace CJG.Application.Services
 
 			_dbContext.TrainingPrograms.Remove(trainingProgram);
 			_dbContext.CommitTransaction();
+
+			_grantApplicationService.SynchroniseDeliveryDatesToTraining(grantApplication);
 		}
 		#endregion
 	}

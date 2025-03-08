@@ -64,33 +64,6 @@
                 </tr>
             </tbody>
         </table>
-
-        <table ng-if="model.ProgramType == @((int)ProgramTypes.EmployerGrant)">
-            <tr>
-                <td style="padding:15px 15px 0px 0px;"><b>Totals</b></td>
-                <td style="padding:15px 15px 0px 0px;"><b>{{model.TrainingCost.TotalCost | currency : '$' : 2}}</b></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-            </tr>
-            <tr ng-if="model.ProgramType == @((int)CJG.Core.Entities.ProgramTypes.EmployerGrant)">
-                <td style="padding:15px 15px 0px 0px;">Employer Contribution</td>
-                <td style="padding:15px 15px 0px 0px;"><b>{{model.TrainingCost.TotalEmployer | currency : '$' : 2}}</b></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-            </tr>
-            <tr ng-if="model.ProgramType == @((int)CJG.Core.Entities.ProgramTypes.EmployerGrant)">
-                <td style="padding:15px 15px 0px 0px;">Requested Government Contribution</td>
-                <td style="padding:15px 15px 0px 0px;"><b>{{model.TrainingCost.TotalRequest | currency : '$' : 2}}</b></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-                <td style="padding:15px 15px 0px 0px;"></td>
-            </tr>
-        </table>
     </div>
     <br />
     <div style="text-align:center" ng-if="model.ProgramType == @((int)CJG.Core.Entities.ProgramTypes.WDAService)">

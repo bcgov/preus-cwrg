@@ -3,11 +3,11 @@
 
 	<input class="js-training-program-start-date" type="hidden" ng-model="model.TrainingStartDate">
 
-    <div>
+    @*<div>
         <p>To begin an application, you must select a stream from the list below. Select the range of dates that coincide with your delivery and training dates.</p>
         <p>Click "Show description" to read the stream description.</p>
         <p>The earliest date you may submit your application is shown for each grant selection.</p>
-    </div>
+    </div>*@
 
 	<div class="js-training-date-warning alert alert--warning is-hidden" role="alert">
 		<p>The training period for your grant selection does not include your current training start date. If you keep this selection, you will need to edit your training project and select new training dates.</p>
@@ -19,18 +19,18 @@
 
 	<div class="list-radio-toggle--container" ng-validation="errors.GrantOpeningId">
 		<ul class="list-radio-toggle" ng-repeat="period in model.TrainingPeriods">
-			<li>
+			@*<li>
 				<h4 class="list-radio-toggle--title">{{period.Title}}</h4>
-			</li>
+			</li>*@
 			<li class="list-radio-toggle--item" ng-repeat="item in period.GrantOpenings">
 				<div class="form-item">
 					<div class="half-width">
 						<input type="radio" id="grant-stream-{{item.Id}}" name="model.GrantOpeningId" ng-value="{{item.Id}}" ng-model="model.GrantOpeningId" data-start-date="{{item.StartDate}}" data-end-date="{{item.EndDate}}" data-reimbursement-rate="{{item.ReimbursementRate}}" ng-click="getRequirements(item.Id)">
 						<label for="grant-stream-{{item.Id}}">{{item.GrantStream.Name}}</label>
 					</div>
-					<div class="half-width is-hidden-on-mobile">
+					@*<div class="half-width is-hidden-on-mobile">
 						<label class="list-radio-toggle--label">Earliest submission:</label>
-					</div>
+					</div>*@
 				</div>
 
 				<div class="read-more">
@@ -56,7 +56,7 @@
 		</ul>
 	</div>
     <div ng-show="model.GrantOpeningId && currentTrainingPeriod">
-        <h2>Delivery Dates</h2>
+        @*<h2>Delivery Dates</h2>
         <div class="form__group form__group--date">
             <label class="form__label">Delivery Start Date: <abbr title="Required">*</abbr></label>
             <p>{{getDescription()}}</p>
@@ -74,7 +74,7 @@
                 </div>
             </div>
             <p style="padding-top: 0.5em;">* Projects cannot exceed 52 weeks in length.</p>
-        </div>
+        </div>*@
 
         <div class="form__group form__group--radio-inline" ng-if="model.GrantStream.StreamEligibilityQuestions.length != 0">
             <div ng-repeat="question in model.GrantStream.StreamEligibilityQuestions">
@@ -103,6 +103,8 @@
                     </div>
                     <div class="form__group" style="margin-left: 1.5em; margin-top: 0.5em;" ng-show="question.CollectContactInformation === true && question.EligibilityAnswer === true">
                         <div ng-if="questionRequiresGrantWriter(question.EligibilityQuestion)">
+                            <p>If you are a grant writer, please send an email to <a href="mailto:CWRG@gov.bc.ca">CWRG@gov.bc.ca</a> with your contact information and the name of the organization on whose behalf you are completing this application.</p>
+
                             <h3>Proxy Contact</h3>
                             <label class="form__label">Designation:</label>
                             <div ng-validation="errors.Designation{{question.Id}}">

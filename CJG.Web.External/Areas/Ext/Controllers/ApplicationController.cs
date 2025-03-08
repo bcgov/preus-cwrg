@@ -283,10 +283,21 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 
 					grantApplication.RequireAllParticipantsBeforeSubmission = grantOpening.GrantStream.RequireAllParticipantsBeforeSubmission;
 					
-					// set start/end dates to user selected dates
-					var earliest = grantApplication.DateSubmitted ?? grantApplication.DateAdded;
-					grantApplication.StartDate = model.DeliveryStartDate.HasValue ? new DateTime(model.DeliveryStartYear, model.DeliveryStartMonth, model.DeliveryStartDay, 0, 0, 0, DateTimeKind.Local).ToUtcMorning() : earliest;
-					grantApplication.EndDate = model.DeliveryEndDate.HasValue ? new DateTime(model.DeliveryEndYear, model.DeliveryEndMonth, model.DeliveryEndDay, 0, 0, 0, DateTimeKind.Local).ToUtcMidnight() : earliest.AddMonths(1);
+					// Bypass need for applicant to supply Delivery Dates - and set the start/end to the GrantOpening Training Dates.
+					// This will be updated later when the applicant defines their Training Program Start/End Dates.
+					if (model.GrantApplicationId == 0)
+					{
+						// set start/end dates to user selected dates
+						var earliest = grantApplication.DateSubmitted ?? grantApplication.DateAdded;
+						var defaultStartDate = grantOpening.TrainingPeriod.StartDate;
+						var defaultEndDate = grantOpening.TrainingPeriod.EndDate.AddDays(45);
+
+						if (earliest > defaultStartDate)
+							defaultStartDate = earliest;
+
+						grantApplication.StartDate = defaultStartDate.ToUtcMorning();
+						grantApplication.EndDate = defaultEndDate.ToUtcMidnight();
+					}
 
 					foreach (var question in dbModel.StreamEligibilityQuestions)
 					{
@@ -420,16 +431,37 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				grantApplication.InsuranceConfirmed = null;     // InsuranceConfirmed is no longer usable, values stay in GrantApp and are copied to Eligibility Answers
 				grantApplication.HasRequestedAdditionalFunding = model.HasRequestedAdditionalFunding;
 
+				// Bypass need for applicant to supply Delivery Dates - and set the start/end to the GrantOpening Training Dates.
+				// This will be updated later when the applicant defines their Training Program Start/End Dates.
+				//if (grantApplication.ApplicationStateInternal == ApplicationStateInternal.Draft)
+				//{
+				//	var earliestValidStartDate = grantApplication.EarliestValidStartDate();
+				//	// set start/end dates to user selected dates
+				//	//var earliest = grantApplication.DateSubmitted ?? grantApplication.DateAdded;
+				//	var defaultStartDate = grantOpening.TrainingPeriod.StartDate;
+				//	var defaultEndDate = grantOpening.TrainingPeriod.EndDate.AddDays(45);
+
+				//	if (earliestValidStartDate > defaultStartDate)
+				//		defaultStartDate = earliestValidStartDate;
+
+				//	grantApplication.StartDate = defaultStartDate;
+				//	grantApplication.EndDate = defaultEndDate;
+				//}
+
 				// record UTC time only
-				grantApplication.StartDate = new DateTime(model.DeliveryStartYear, model.DeliveryStartMonth, model.DeliveryStartDay, 0, 0, 0, DateTimeKind.Local).ToUtcMorning();
-				grantApplication.EndDate = new DateTime(model.DeliveryEndYear, model.DeliveryEndMonth, model.DeliveryEndDay, 0, 0, 0, DateTimeKind.Local).ToUtcMidnight();
+				//grantApplication.StartDate = new DateTime(model.DeliveryStartYear, model.DeliveryStartMonth, model.DeliveryStartDay, 0, 0, 0, DateTimeKind.Local).ToUtcMorning();
+				//grantApplication.EndDate = new DateTime(model.DeliveryEndYear, model.DeliveryEndMonth, model.DeliveryEndDay, 0, 0, 0, DateTimeKind.Local).ToUtcMidnight();
 
 				// If the training program dates fall outside of the delivery dates, make the training program dates equal to the delivery dates.
-				if (grantApplication.ApplicationStateInternal == ApplicationStateInternal.Draft)
-				{
-					grantApplication.TrainingPrograms.Where(tp => tp.StartDate < grantApplication.StartDate || tp.StartDate > grantApplication.EndDate).ForEach(x => x.StartDate = grantApplication.StartDate);
-					grantApplication.TrainingPrograms.Where(tp => tp.EndDate > grantApplication.EndDate || tp.EndDate < grantApplication.StartDate).ForEach(x => x.EndDate = grantApplication.EndDate);
-				}
+				//if (grantApplication.ApplicationStateInternal == ApplicationStateInternal.Draft)
+				//{
+				//	grantApplication.TrainingPrograms.Where(tp => tp.StartDate < grantApplication.StartDate || tp.StartDate > grantApplication.EndDate).ForEach(x => x.StartDate = grantApplication.StartDate);
+				//	grantApplication.TrainingPrograms.Where(tp => tp.EndDate > grantApplication.EndDate || tp.EndDate < grantApplication.StartDate).ForEach(x => x.EndDate = grantApplication.EndDate);
+				//}
+
+				// If Saving the application violates the StartDate, we need to move it forward
+				if (grantApplication.ApplicationStateInternal == ApplicationStateInternal.Draft && !grantApplication.HasValidStartDate())
+					grantApplication.StartDate = grantApplication.EarliestValidStartDate().ToUtcMorning();
 
 				// update the original entry
 				_grantApplicationService.ConvertAndValidate(model, grantApplication, ModelState);
@@ -445,11 +477,11 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 
 				if (ModelState.IsValid)
 				{
-					var originalStartDate = (DateTime)_grantApplicationService.OriginalValue(grantApplication, ga => ga.StartDate);
-					var originalEndDate = (DateTime)_grantApplicationService.OriginalValue(grantApplication, ga => ga.EndDate);
-					var originalGrantOpeningId = (int)_grantApplicationService.OriginalValue(grantApplication, ga => ga.GrantOpeningId);
-					var originalEligibilityConfirmed = (bool)_grantApplicationService.OriginalValue(grantApplication, ga => ga.EligibilityConfirmed);
-					var originalIsAlternateContact = (bool?)_grantApplicationService.OriginalValue(grantApplication, ga => ga.IsAlternateContact);
+					var originalStartDate = _grantApplicationService.OriginalValue(grantApplication, ga => ga.StartDate);
+					var originalEndDate = _grantApplicationService.OriginalValue(grantApplication, ga => ga.EndDate);
+					var originalGrantOpeningId = _grantApplicationService.OriginalValue(grantApplication, ga => ga.GrantOpeningId);
+					var originalEligibilityConfirmed = _grantApplicationService.OriginalValue(grantApplication, ga => ga.EligibilityConfirmed);
+					var originalIsAlternateContact = _grantApplicationService.OriginalValue(grantApplication, ga => ga.IsAlternateContact);
 					grantApplication.EligibilityConfirmed = passedEligibilityQuestions;
 
 					// updates to alternate contact
@@ -511,10 +543,13 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					{
 						_grantApplicationService.ChangeGrantOpening(grantApplication);
 
-						grantApplication.ParticipantForms.ForEach(x => x.ProgramStartDate = grantApplication.StartDate);
+						grantApplication.ParticipantForms
+							.ForEach(x => x.ProgramStartDate = grantApplication.StartDate);
 
 						// mark TrainingProgram state as Incomplete if dates are out of range
-						grantApplication.TrainingPrograms.Where(tp => !tp.HasValidDates()).ForEach(x => x.TrainingProgramState = TrainingProgramStates.Incomplete);
+						grantApplication.TrainingPrograms
+							.Where(tp => !tp.HasValidDates())
+							.ForEach(x => x.TrainingProgramState = TrainingProgramStates.Incomplete);
 
 						var originalReimbursement = grantApplication.ReimbursementRate;
 						grantApplication.ReimbursementRate = grantApplication.GrantOpening.GrantStream.ReimbursementRate;
@@ -524,9 +559,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 						if (Math.Abs(originalReimbursement - grantApplication.GrantOpening.GrantStream.ReimbursementRate) > TypeExtensions.FloatTolerance)
 						{
 							if (grantApplication.TrainingCost.TrainingCostState == TrainingCostStates.Complete || grantApplication.TrainingCost.EligibleCosts.Any() || grantApplication.TrainingCost.TotalEstimatedCost > 0)
-							{
 								grantApplication.TrainingCost.TrainingCostState = TrainingCostStates.Incomplete;
-							}
 
 							// also need to re-calculate the eligible costs
 							grantApplication.RecalculateEstimatedCosts();

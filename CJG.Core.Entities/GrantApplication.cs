@@ -717,7 +717,7 @@ namespace CJG.Core.Entities
 				yield return new ValidationResult($"The end date must occur on or after the start date '{StartDate.ToLocalMorning():yyyy-MM-dd}'.", new[] { nameof(EndDate) });
 
 			// EndDate cannot be greater than one year after the StartDate.
-			if (hasValidStartDate && EndDate > StartDate.AddYears(1).ToUtcMidnight())
+			if (isExternalUser && hasValidStartDate && EndDate > StartDate.AddYears(1).ToUtcMidnight())
 				yield return new ValidationResult($"The end date must occur within one year of the start date '{StartDate.ToLocalMorning():yyyy-MM-dd}'.", new[] { nameof(EndDate) });
 
 			if (entry.State == EntityState.Added)
@@ -771,22 +771,22 @@ namespace CJG.Core.Entities
 				};
 
 				// Only validate the Training Program dates as the external user before the Agreement Accepted dates
-				if (isExternalUser && validStatesForExternalValidation.Contains(ApplicationStateInternal))
-				{
-					// The Program dates must fall within the Delivery dates.
-					if (trainingPrograms.Any(tp => tp.StartDate < StartDate) && originalStartDate != StartDate)
-						yield return new ValidationResult("Skills training dates do not fall within your delivery period and will need to be rescheduled.  Make sure all your skills training dates are accurate to your plan.", new[] { nameof(StartDate) });
+				//if (isExternalUser && validStatesForExternalValidation.Contains(ApplicationStateInternal))
+				//{
+				//	// The Program dates must fall within the Delivery dates.
+				//	if (trainingPrograms.Any(tp => tp.StartDate < StartDate) && originalStartDate != StartDate)
+				//		yield return new ValidationResult("Skills training dates do not fall within your delivery period and will need to be rescheduled. Make sure all your skills training dates are accurate to your plan.", new[] { nameof(StartDate) });
 
-					if (trainingPrograms.Any(tp => tp.EndDate > EndDate) && originalEndDate != EndDate)
-						yield return new ValidationResult("Skills training dates do not fall within your delivery period and will need to be rescheduled.  Make sure all your skills training dates are accurate to your plan.", new[] { nameof(EndDate) });
-				}
+				//	if (trainingPrograms.Any(tp => tp.EndDate > EndDate) && originalEndDate != EndDate)
+				//		yield return new ValidationResult("Skills training dates do not fall within your delivery period and will need to be rescheduled. Make sure all your skills training dates are accurate to your plan.", new[] { nameof(EndDate) });
+				//}
 
 				// Before state can be OfferIssued it must have a GrantAgreement.
 				if (ApplicationStateInternal == ApplicationStateInternal.OfferIssued && grantAgreement == null)
 					yield return new ValidationResult("Grant application requires a grant agreement before an offer can be issued.", new[] { nameof(GrantAgreement) });
 
 				// Before state can be New is must have a FileNumber.
-				else if (ApplicationStateInternal == ApplicationStateInternal.New && String.IsNullOrEmpty(FileNumber))
+				else if (ApplicationStateInternal == ApplicationStateInternal.New && string.IsNullOrEmpty(FileNumber))
 					yield return new ValidationResult("Grant application must have a file number to identify it.", new[] { nameof(FileNumber) });
 
 				// Validate the external state transitions.

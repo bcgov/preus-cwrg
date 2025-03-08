@@ -584,6 +584,10 @@
     <Compile Include="Migrations\202409092150483_v02.16.05.Designer.cs">
       <DependentUpon>202409092150483_v02.16.05.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202503041906389_v02.17.00.cs" />
+    <Compile Include="Migrations\202503041906389_v02.17.00.Designer.cs">
+      <DependentUpon>202503041906389_v02.17.00.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Content Include="Migrations\v02.02.03\PostDeploy\Seed\03 GrantOpenings.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1169,6 +1173,9 @@
     <Content Include="Migrations\v02.05.00\PostDeploy\Seed\CanadianStatus_CUAET.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Migrations\v02.17.00\PostDeploy\Seed\01_UpdateStreamAttachments.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Migrations\v02.16.05\PostDeploy\Seed\01_ImportARData.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1629,6 +1636,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202409092150483_v02.16.05.resx">
       <DependentUpon>202409092150483_v02.16.05.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503041906389_v02.17.00.resx">
+      <DependentUpon>202503041906389_v02.17.00.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
