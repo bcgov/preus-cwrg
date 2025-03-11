@@ -1242,8 +1242,8 @@ namespace CJG.Core.Entities
 		/// <returns></returns>
 		public static bool HasValidEndDate(this GrantApplication grantApplication)
 		{
-			if (grantApplication.StartDate.ToLocalMorning().Date > grantApplication.EndDate.ToLocalMidnight().Date
-				|| grantApplication.StartDate.ToLocalMorning().AddYears(1).Date < grantApplication.EndDate.ToLocalMidnight().Date)
+			if (grantApplication.StartDate.ToLocalMorning().Date > grantApplication.EndDate.AddDays(-45).ToLocalMidnight().Date
+				|| grantApplication.StartDate.ToLocalMorning().AddYears(1).Date < grantApplication.EndDate.AddDays(-45).ToLocalMidnight().Date)
 				return false;
 
 			return true;
