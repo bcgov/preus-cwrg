@@ -717,7 +717,7 @@ namespace CJG.Core.Entities
 				yield return new ValidationResult($"The end date must occur on or after the start date '{StartDate.ToLocalMorning():yyyy-MM-dd}'.", new[] { nameof(EndDate) });
 
 			// EndDate cannot be greater than one year after the StartDate.
-			if (isExternalUser && hasValidStartDate && EndDate > StartDate.AddYears(1).ToUtcMidnight())
+			if (isExternalUser && hasValidStartDate && EndDate.AddDays(-45) > StartDate.AddYears(1).ToUtcMidnight())
 				yield return new ValidationResult($"The end date must occur within one year of the start date '{StartDate.ToLocalMorning():yyyy-MM-dd}'.", new[] { nameof(EndDate) });
 
 			if (entry.State == EntityState.Added)

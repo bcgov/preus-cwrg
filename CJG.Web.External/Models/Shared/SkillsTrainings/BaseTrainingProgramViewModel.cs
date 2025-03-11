@@ -13,8 +13,12 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 		public string RowVersion { get; set; }
 
 		public DateTime DeliveryStartDate { get; set; }
-
 		public DateTime DeliveryEndDate { get; set; }
+
+		public DateTime DeliveryStartDateMinDate { get; set; }
+		public DateTime DeliveryStartDateMaxDate { get; set; }
+		public DateTime DeliveryEndDateMinDate { get; set; }
+		public DateTime DeliveryEndDateMaxDate { get; set; }
 
 		[Required(ErrorMessage = "The Start Date field is required.")]
 		public DateTime? StartDate { get; set; }

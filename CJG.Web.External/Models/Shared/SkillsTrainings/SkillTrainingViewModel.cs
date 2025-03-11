@@ -15,6 +15,7 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 		public string RowVersion { get; set; }
 		public int MaxUploadSize { get; set; }
 		public bool ShowSkillsTrainingFocusDropDown { get; set; }
+
 		public SkillTrainingViewModel()
 		{
 			var maxUploadSize = int.Parse(ConfigurationManager.AppSettings["MaxUploadSizeInBytes"]);
@@ -38,8 +39,11 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 
 		public SkillTrainingViewModel(TrainingProgram trainingProgram) : this(trainingProgram?.GrantApplication)
 		{
-			if (trainingProgram == null) throw new ArgumentNullException(nameof(trainingProgram));
+			if (trainingProgram == null)
+				throw new ArgumentNullException(nameof(trainingProgram));
+
 			trainingProgram.IsSkillsTraining = true;
+
 			SkillTrainingDetails = new SkillTrainingDetailsViewModel(trainingProgram);
 			EligibleCostBreakdownId = trainingProgram.EligibleCostBreakdownId;
 		}

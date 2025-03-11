@@ -167,6 +167,20 @@ table {
 }
 
 
+.dataTable {
+  &.table--pfs {
+    tbody {
+      td {
+        padding: 15px 10px 10px;
+
+        &.numbers {
+            text-align: center;
+        }
+      }
+    }
+  }
+}
+
 .table--expenses {
   margin-bottom: 0;
 

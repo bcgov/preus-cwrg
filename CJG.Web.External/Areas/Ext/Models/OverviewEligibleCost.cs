@@ -14,23 +14,23 @@ namespace CJG.Web.External.Areas.Ext.Models
 
         public OverviewEligibleCost()
         {
-
         }
 
         public OverviewEligibleCost(EligibleCost eligibleCost)
         {
             Utilities.MapProperties(eligibleCost, this);
-            if (eligibleCost.Breakdowns.Any())
+
+            if (!eligibleCost.Breakdowns.Any())
+	            return;
+
+            ServiceLines = eligibleCost.Breakdowns.Select(x => new CollectionItemModel
             {
-                ServiceLines = eligibleCost.Breakdowns.Select(x => new CollectionItemModel
-                {
-                    Id = x.EligibleExpenseBreakdown.ServiceLine.Id,
-                    Caption = x.EligibleExpenseBreakdown.ServiceLine.Caption,
-                    Description = x.EligibleExpenseBreakdown.ServiceLine.Description,
-                    EstimatedCost = x.EstimatedCost,
-                    CustomCostTitle = x.CustomCostTitle
-                }).ToArray();
-            }
+	            Id = x.EligibleExpenseBreakdown.ServiceLine.Id,
+	            Caption = x.EligibleExpenseBreakdown.ServiceLine.Caption,
+	            Description = x.EligibleExpenseBreakdown.ServiceLine.Description,
+	            EstimatedCost = x.EstimatedCost,
+	            CustomCostTitle = x.CustomCostTitle
+            }).ToArray();
         }
     }
 }

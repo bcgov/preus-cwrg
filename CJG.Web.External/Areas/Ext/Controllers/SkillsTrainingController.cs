@@ -103,40 +103,34 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		[Route("Application/{grantApplicationId:int}/Skills/Training/{eligibleExpenseTypeId:int}/{trainingProgramId:int}")]
 		public JsonResult GetSkillsTraining(int grantApplicationId, int eligibleExpenseTypeId, int trainingProgramId)
 		{
-			var viewModel = new SkillTrainingViewModel();
+			var model = new SkillTrainingViewModel();
 			try
 			{
 				var grantApplication = _grantApplicationService.Get(grantApplicationId);
 
 				if (trainingProgramId == 0)
 				{
-					viewModel = new SkillTrainingViewModel(grantApplication);
+					model = new SkillTrainingViewModel(grantApplication);
 				}
 				else
 				{
 					var trainingProgram = _trainingProgramService.Get(trainingProgramId);
-					viewModel = new SkillTrainingViewModel(trainingProgram);
+					model = new SkillTrainingViewModel(trainingProgram);
 				}
 
-				viewModel.GrantApplicationId = grantApplicationId;
-				viewModel.EligibleExpenseTypeId = eligibleExpenseTypeId;
+				model.GrantApplicationId = grantApplicationId;
+				model.EligibleExpenseTypeId = eligibleExpenseTypeId;
 
 				if (!grantApplication.GrantOpening.GrantStream.ProgramConfiguration.EligibleExpenseTypes.Any(eet => eet.ServiceCategory.ServiceTypeId == ServiceTypes.SkillsTraining && eet.Id == eligibleExpenseTypeId))
 					throw new InvalidOperationException($"The skills training eligible expense type is not valid for grant application '{grantApplicationId}'.");
 
-				viewModel.SkillTrainingDetails.EligibleExpenseTypeId = viewModel.EligibleExpenseTypeId;
-
-				if (grantApplication.GrantOpening.GrantStream.GrantProgram.ProgramType.Id == ProgramTypes.EmployerGrant)
-				{
-					viewModel.SkillTrainingDetails.StartDate = grantApplication.StartDate;
-					viewModel.SkillTrainingDetails.EndDate = grantApplication.EndDate;
-				}
+				model.SkillTrainingDetails.EligibleExpenseTypeId = model.EligibleExpenseTypeId;
 			}
 			catch (Exception ex)
 			{
-				HandleAngularException(ex, viewModel);
+				HandleAngularException(ex, model);
 			}
-			return Json(viewModel, JsonRequestBehavior.AllowGet);
+			return Json(model, JsonRequestBehavior.AllowGet);
 		}
 
 		/// <summary>

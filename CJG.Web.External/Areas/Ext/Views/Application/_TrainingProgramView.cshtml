@@ -21,7 +21,6 @@
         <div class="form__label">Primary Delivery Method:</div>
         <div class="form__control">
             <ul ng-if="model.TrainingProgram.DeliveryMethods != null && model.TrainingProgram.DeliveryMethods.length > 0">
-
                 <li ng-repeat="method in model.TrainingProgram.DeliveryMethods">
                     {{method.Caption}}
                 </li>

@@ -3,7 +3,13 @@
         <h4>Services to be delivered</h4>
     </div>
     <div class="form__group" ng-repeat="line in process.AssociatedEligibleCost.ServiceLines">
-        <div class="form__label">{{line.Caption}}:</div>
+        <div class="form__label" ng-if="line.CustomCostTitle != null">
+            {{line.CustomCostTitle}}:<br/>
+            <span style="font-weight: normal">({{line.Caption}})</span>
+        </div>
+        <div class="form__label" ng-if="line.CustomCostTitle == null">
+            {{line.Caption}}:
+        </div>
         <div class="form__control" ng-bind-html="line.Description">
         </div>
     </div>
