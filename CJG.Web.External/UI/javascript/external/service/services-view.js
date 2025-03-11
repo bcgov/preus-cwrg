@@ -12,7 +12,8 @@ app.controller('EmploymentServicesView', function ($scope, $attrs, $controller, 
       }
     },
     onSave: function (event, data) {
-      if (data.response.data.RedirectURL) window.location = data.response.data.RedirectURL;
+      if (data.response.data.RedirectURL)
+        window.location = data.response.data.RedirectURL;
     }
   };
 

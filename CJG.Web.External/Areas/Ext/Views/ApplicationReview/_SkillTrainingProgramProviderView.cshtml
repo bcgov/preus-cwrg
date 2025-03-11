@@ -20,7 +20,6 @@
     <div class="form__label">Primary Delivery method:</div>
     <div class="form__control">
         <ul ng-if="program.DeliveryMethods != null && program.DeliveryMethods.length > 0">
-
             <li ng-repeat="method in program.DeliveryMethods">
                 {{method.Caption}}
             </li>

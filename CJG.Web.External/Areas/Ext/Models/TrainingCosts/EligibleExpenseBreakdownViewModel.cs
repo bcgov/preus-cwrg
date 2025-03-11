@@ -21,7 +21,7 @@ namespace CJG.Web.External.Areas.Ext.Models.TrainingCosts
 		public bool EnableCustomTitle { get; set; }
 
 		// The applicant-supplied estimated costs. Used only on ESS expenses.
-		[CustomValidation(typeof(EligibleExpenseBreakdownViewModelValidation), "ValidateEstimatedCost")]
+		//[CustomValidation(typeof(EligibleExpenseBreakdownViewModelValidation), "ValidateEstimatedCost")]
 		public decimal EstimatedCost { get; set; }
 
 		[CustomValidation(typeof(EligibleExpenseBreakdownViewModelValidation), "ValidateCustomTitle")]

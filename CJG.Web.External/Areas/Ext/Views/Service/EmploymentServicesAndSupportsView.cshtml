@@ -22,48 +22,77 @@
                 <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
             </div>
 
+            @*{{ model.EligibleExpenseType }}*@
             <div>
                 <p ng-bind-html="model.EligibleExpenseType.Description"></p>
-                <p>Identify the {{model.EligibleExpenseType.Caption}} you will be delivering in your project by checking the boxes that apply below.</p>
+                <p ng-if="!model.IsPFS">Identify the {{model.EligibleExpenseType.Caption}} you will be delivering in your project by checking the boxes that apply below.</p>
+                <p ng-if="model.IsPFS">The maximum average request per Participant is based on the skills training duration (see table below).</p>
             </div>
 
             <div>
-                <b>Services to be delivered*</b>
+                <b>Services to be delivered *</b>
             </div>
 
             <div>
                 <table>
                     <thead>
-                        <tr class="border-bottom">
-                            <th style="width: 30%">Service</th>
-                            <th style="width: 30%" ng-if="model.EligibleExpenseType.AllowEstimatedCostEntry">Estimated Cost</th>
-                            <th>Description</th>
-                        </tr>
+                    <tr class="border-bottom">
+                        <th style="width: 30%">Service</th>
+                        @*<th style="width: 30%" ng-if="model.EligibleExpenseType.AllowEstimatedCostEntry">Estimated Cost</th>*@
+                        <th>Description</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="item in model.EligibleExpenseType.EligibleExpenseBreakdowns | orderBy: 'RowSequence'" class="border-bottom" style="vertical-align: top">
-                            <td>
-                                <input type="checkbox" ng-model="item.Selected" id="service-{{$index}}" name="service-{{$index}}" />
-                                <label for="service-{{$index}}">{{item.Caption}}</label>
-                                
-                                <span ng-if="item.EnableCustomTitle" style="margin-left: 27px;">@*"EligibleExpenseType.EligibleExpenseBreakdowns[2].CustomCostTitle"*@
-                                    <input type="text" class="input--medium" ng-editing="true" ng-model="item.CustomCostTitle" style="width: 220px;" placeholder="Please itemize items." ng-validation="errors.EligibleExpenseType['EligibleExpenseBreakdowns['+ $index + ']'].CustomCostTitle" />
-                                </span>
-                            </td>
-                            <td style="text-align: center;" ng-if="model.EligibleExpenseType.AllowEstimatedCostEntry">
+                    <tr ng-repeat="item in model.EligibleExpenseType.EligibleExpenseBreakdowns | orderBy: 'RowSequence'" class="border-bottom" style="vertical-align: top">
+                        <td>
+                            <input type="checkbox" ng-model="item.Selected" id="service-{{$index}}" name="service-{{$index}}" />
+                            <label for="service-{{$index}}">{{item.Caption}}</label>
+                            <span ng-if="item.EnableCustomTitle" style="margin-left: 27px;">@*"EligibleExpenseType.EligibleExpenseBreakdowns[2].CustomCostTitle"*@
+                                <input type="text" class="input--medium" ng-editing="true" ng-model="item.CustomCostTitle" style="width: 220px;" placeholder="Please itemize items." ng-validation="errors.EligibleExpenseType['EligibleExpenseBreakdowns['+ $index + ']'].CustomCostTitle" />
+                            </span>
+                        </td>
+                        @*<td style="text-align: center;" ng-if="model.EligibleExpenseType.AllowEstimatedCostEntry">
                                 <input type="text" class="input--small currency-width-wide" ng-model="item.EstimatedCost" id="service-e-{{$index}}" name="service-e-{{$index}}" ng-currency ng-validation="errors.EligibleExpenseType['EligibleExpenseBreakdowns['+ $index + ']'].EstimatedCost" />
-                            </td>
-                            <td>
-                                <p ng-bind-html="item.Description"></p>
-                            </td>
-                        </tr>
+                            </td>*@
+                        <td>
+                            <p ng-bind-html="item.Description"></p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                
+                <table ng-if="model.IsPFS" class="dataTable table--pfs">
+                    <thead>
+                    <tr>
+                        <th>Skills Training Duration</th>
+                        <th>PFS Maximum Average per Participant  </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1-12 weeks</td>
+                        <td class="numbers">$1,800</td>
+                    </tr>
+                    <tr>
+                        <td>13 up to 24 weeks</td>
+                        <td class="numbers">$3,600</td>
+                    </tr>
+                    <tr>
+                        <td>25 up to 36 weeks</td>
+                        <td class="numbers">$5,400</td>
+                    </tr>
+                    <tr>
+                        <td>37 up to 52 weeks</td>
+                        <td class="numbers">$7,800</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="form__group input-inline-align input-right-align">
                 <div class="label-wrapper"><label class="form__label">Total Cost <abbr title="Required">*</abbr></label></div>
-                <p class="ng-binding">Enter the total cost for {{model.EligibleExpenseType.Caption}} for the number of participants you have entered in the Project Description</p>
+                <p ng-if="!model.IsPFS">Enter the total cost for {{model.EligibleExpenseType.Caption}} for the number of participants you have entered in the Project Description</p>
+                <p ng-if="model.IsPFS">Enter the total cost for PFS based on the number of participants you have entered in the Project Description.</p>
                 <div class="control-wrapper form-control">
                     <input type="text" class="input--medium" ng-model="model.EstimatedCost" ng-currency ng-validation>
                 </div>
