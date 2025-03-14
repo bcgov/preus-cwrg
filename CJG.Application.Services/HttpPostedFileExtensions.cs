@@ -49,26 +49,25 @@ namespace CJG.Application.Services
 
 				var fileName = string.IsNullOrEmpty(newFileName) ? Path.GetFileNameWithoutExtension(file.FileName) : newFileName;
 				var fileExtension = Path.GetExtension(file.FileName);
+
 				if (IsValidFileType(memoryStream, fileExtension))
-				{
 					return new Attachment(fileName, description, fileExtension, memoryStream.ToArray());
-				}
-				else if (file.ContentLength < 17)
-				{
+
+				if (file.ContentLength < 17)
 					throw new InvalidOperationException("The file type is not valid.");
-				}
+
 				throw new InvalidOperationException($"The file does not match the extension type '{fileExtension}'.");
 			}
 		}
 
 		public static Tuple<string, bool, Attachment> UploadPostedFile(this HttpPostedFileBase applicationDocument, string description)
 		{
-				return Tuple.Create("", false, applicationDocument.UploadFile(description));
+			return Tuple.Create("", false, applicationDocument.UploadFile(description));
 		}
 
 		public static Tuple<string, bool, Attachment> UploadPostedNoteFile(this HttpPostedFileBase applicationDocument, string description)
 		{
-				return Tuple.Create("", false, applicationDocument.UploadFile(description, newFileName: applicationDocument.FileName, permittedFileTypesKey: "NotesPermittedAttachmentTypes"));
+			return Tuple.Create("", false, applicationDocument.UploadFile(description, newFileName: applicationDocument.FileName, permittedFileTypesKey: "NotesPermittedAttachmentTypes"));
 		}
 
 		public static Tuple<string, bool, Attachment> UploadPostedFile(this HttpPostedFileBase applicationDocument, string fileDescription, string fileName)

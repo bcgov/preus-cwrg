@@ -65,7 +65,7 @@ namespace CJG.Application.Services
 
 			var existingAttachment = Get<Attachment>(attachment.Id);
 			existingAttachment.RowVersion = attachment.RowVersion ?? existingAttachment.RowVersion;
-			existingAttachment.CreateNewVersion(attachment.FileName, attachment.Description, attachment.FileExtension, attachment.AttachmentData, attachment.AttachmentType);
+			existingAttachment.CreateNewVersion(attachment.FileName, attachment.Description, attachment.FileExtension, attachment.AttachmentData, attachment.AttachmentType, attachment.DocumentType);
 
 			_dbContext.Update(existingAttachment);
 

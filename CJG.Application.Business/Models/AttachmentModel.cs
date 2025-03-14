@@ -11,6 +11,7 @@ namespace CJG.Application.Business.Models
 		public string Description { get; set; }
 		public string RowVersion { get; set; }
 		public AttachmentType AttachmentType { get; set; }
+		public AttachmentDocumentType DocumentType { get; set; }
 
 		public AttachmentModel()
 		{
@@ -25,6 +26,7 @@ namespace CJG.Application.Business.Models
 			Name = attachment.FileName;
 			Description = attachment.Description;
 			AttachmentType = attachment.AttachmentType;
+			DocumentType = attachment.DocumentType;
 			RowVersion = attachment.RowVersion != null ? Convert.ToBase64String(attachment.RowVersion) : null;
 			Sequence = sequence;
 		}

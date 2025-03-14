@@ -283,6 +283,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 					{
 						var file = files[attachment.Index.Value].UploadFile(attachment.Description, attachment.FileName);
 						file.AttachmentType = attachment.AttachmentType;
+						//file.DocumentType = attachment.DocumentType;
 						grantApplication.Attachments.Add(file);
 						_noteService.AddSystemNote(grantApplication, $"Attachment \'{file.FileName}\' uploaded.");
 						_attachmentService.Add(file, true);
