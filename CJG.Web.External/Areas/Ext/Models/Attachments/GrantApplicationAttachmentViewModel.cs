@@ -26,6 +26,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Attachments
 			Attachment.Description = attachment.Description;
 			Attachment.RowVersion = attachment.RowVersion != null ? Convert.ToBase64String(attachment.RowVersion) : null;
 			Attachment.AttachmentType = attachment.AttachmentType;
+			Attachment.DocumentType = attachment.DocumentType;
 		}
 
 		public GrantApplicationAttachmentViewModel(GrantApplication grantApplication)

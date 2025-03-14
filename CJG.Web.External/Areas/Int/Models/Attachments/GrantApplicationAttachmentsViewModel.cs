@@ -31,7 +31,9 @@ namespace CJG.Web.External.Areas.Int.Models.Attachments
 			AttachmentsMaximum = grantApplication.GrantOpening.GrantStream.AttachmentsMaximum;
 			AttachmentsUserGuidance = grantApplication.GrantOpening.GrantStream.AttachmentsUserGuidance;
 
-			Attachments = grantApplication.Attachments.Select(a => new AttachmentViewModel(a));
+			Attachments = grantApplication.Attachments
+				.OrderBy(a => a.DocumentType)
+				.Select(a => new AttachmentViewModel(a));
 		}
 	}
 }

@@ -375,6 +375,11 @@ namespace CJG.Core.Entities
 		public bool HoldPaymentRequests { get; set; } = false;
 
 		/// <summary>
+		/// The Applicant has indicated they won't be requesting ESS supports and are not required to upload ESS Documentation
+		/// </summary>
+		public bool? NotRequestingESS { get; set; }
+
+		/// <summary>
 		/// get/set - The grant agreement associated with this grant application.  This is a one-to-one relationship.
 		/// </summary>
 		public virtual GrantAgreement GrantAgreement { get; set; }

@@ -37,6 +37,23 @@ table {
   }
 }
 
+.documents-listing {
+  td {
+    vertical-align: top;
+
+    &.complete {
+      text-align: center;
+    }
+
+    &.documents-attached {
+        div {
+            border-bottom: 1px dashed #ccc;
+            margin-bottom: 10px;
+        }
+    }
+  }
+}
+
 
 .table {
   border: 1px solid color('white');

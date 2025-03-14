@@ -120,6 +120,7 @@
     <Compile Include="AccountsReceivable.cs" />
     <Compile Include="AccountsReceivableEntry.cs" />
     <Compile Include="AppClaimTypes.cs" />
+    <Compile Include="AttachmentDocumentType.cs" />
     <Compile Include="AttachmentType.cs" />
     <Compile Include="GrantApplicationEvaluationNote.cs" />
     <Compile Include="Attestation.cs" />

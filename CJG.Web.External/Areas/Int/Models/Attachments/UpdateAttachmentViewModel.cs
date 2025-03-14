@@ -25,6 +25,7 @@ namespace CJG.Web.External.Areas.Int.Models.Attachments
 			attachment.Description = Description;
 			attachment.FileExtension = FileExtension;
 			attachment.AttachmentType = AttachmentType;
+			attachment.DocumentType = DocumentType;
 		}
 	}
 }

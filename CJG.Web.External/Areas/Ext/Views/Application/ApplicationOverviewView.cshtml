@@ -107,8 +107,8 @@
                             <text>
                                 <span class="label {{PopulateClass('Attachment')}}">{{PopulateText('Attachment')}}</span>
                             </text>
-                            <span ng-if="model.ApplicationStateExternal != @((int)ApplicationStateExternal.ApplicationWithdrawn)">
-                                @Html.ActionLink("Edit", nameof(ApplicationAttachmentController.AttachmentsView), typeof(ApplicationAttachmentController), new { grantApplicationId = (int?)ViewBag.GrantApplicationId }, new { @class = "btn btn--secondary" })
+                            <span ng-if="model.ApplicationStateExternal != @((int) ApplicationStateExternal.ApplicationWithdrawn)">
+                                @Html.ActionLink("Edit", nameof(ApplicationAttachmentController.AttachmentsView), typeof(ApplicationAttachmentController), new { grantApplicationId = (int?) ViewBag.GrantApplicationId }, new { @class = "btn btn--secondary" })
                             </span>
                         </span>
                         <span class="k-icon k-i-arrow-s k-panelbar-expand"></span>
