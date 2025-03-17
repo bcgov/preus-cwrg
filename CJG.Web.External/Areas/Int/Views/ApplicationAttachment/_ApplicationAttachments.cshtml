@@ -12,7 +12,7 @@
 			<div class="notice notice--icon" ng-if="model.AttachmentGuidance">
 				<div ng-bind-html="model.AttachmentGuidance" class="narrow-space-list"></div>
 			</div>
-			<p>Use Add Attachment below and enter a description to identify each attachment. You may attach up to {{model.AttachmentMaximum}} attachments.</p>
+			<p>Use Add Attachment below and enter a description to identify each attachment. You may attach up to {{model.AttachmentsMaximum}} attachments.</p>
 			<p>Accepted file types: PDF, JPG, JPEG, PNG, GIF.</p>
 		</div>
 
@@ -26,7 +26,9 @@
                             <a ng-if="attachment.Id > 0" href="/Int/Application/Attachment/Download/{{grantFile.Id}}/{{attachment.Id}}" style="padding-right: 1em;">Download</a>
                         </td>
                         <td style="width: 60%; vertical-align: top; word-wrap: break-word; word-break: break-all;">
-                            <strong>{{attachment.FileName}}</strong>  <span style="font-style: italic; font-size: 0.9em; padding-left: 1em;">{{ attachment.AttachmentType == 0 ? 'Applicant Upload' : 'CWRG Upload' }}</span>
+                            <strong>{{attachment.FileName}}</strong> 
+                            <span style="font-style: italic; font-size: 0.9em; padding-left: 1em;">{{ attachment.AttachmentType == 0 ? 'Applicant Upload' : 'CWRG Upload' }}</span>
+                            <span ng-if="attachment.DocumentType > 0" style="font-size: 0.9em; padding-left: 1em;">[{{ attachment.DocumentTypeName }}]</span>
                             <br/>
                             {{attachment.Description}}
                         </td>

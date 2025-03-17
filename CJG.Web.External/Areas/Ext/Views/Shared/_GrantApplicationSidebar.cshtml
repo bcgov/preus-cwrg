@@ -21,8 +21,6 @@
                     <text>
                         <div>Created on</div>
                         <div><strong>@Model.GrantApplication.DateAdded.ToLocalMorning().ToString("yyyy-MM-dd")</strong></div>
-                        <div ng-if="model.ProgramType === @((int)CJG.Core.Entities.ProgramTypes.WDAService)">Earliest Submission</div>
-                        <div ng-if="model.ProgramType === @((int)CJG.Core.Entities.ProgramTypes.WDAService)"><strong>@Model.GrantApplication.GrantOpening.OpeningDate.ToLocalMorning().ToString("yyyy-MM-dd")</strong></div>
                     </text>
                     break;
                 case ApplicationStateExternal.Submitted:

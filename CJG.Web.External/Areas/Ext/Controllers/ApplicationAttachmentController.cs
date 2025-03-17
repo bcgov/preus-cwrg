@@ -149,12 +149,18 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		[PreventSpam]
 		[ValidateRequestHeader]
 		[Route("Application/Attachments/{grantApplicationId}")]
-		public JsonResult UpdateAttachment(int grantApplicationId, HttpPostedFileBase[] files, string attachments)
+		public JsonResult UpdateAttachment(int grantApplicationId, HttpPostedFileBase[] files, string attachments, bool? notRequestingESS = null)
 		{
 			var model = new GrantApplicationAttachmentsViewModel();
 			try
 			{
 				var grantApplication = _grantApplicationService.Get(grantApplicationId);
+
+				if (notRequestingESS != null && grantApplication.NotRequestingESS != notRequestingESS)
+				{ 
+					grantApplication.NotRequestingESS = notRequestingESS;
+					_grantApplicationService.Update(grantApplication);
+				}
 
 				// Deserialize model.  This is required because it isn't easy to deserialize an array when including files in a multipart data form.
 				var data = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<UpdateAttachmentViewModel>>(attachments);
@@ -183,6 +189,9 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					else if (files.Length > attachment.Index.Value && files[attachment.Index.Value] != null && attachment.Id == 0) // Add
 					{
 						var file = files[attachment.Index.Value].UploadFile(attachment.Description, attachment.FileName);
+						file.AttachmentType = attachment.AttachmentType;
+						file.DocumentType = attachment.DocumentType;
+
 						grantApplication.Attachments.Add(file);
 
 						_attachmentService.Add(file, true);

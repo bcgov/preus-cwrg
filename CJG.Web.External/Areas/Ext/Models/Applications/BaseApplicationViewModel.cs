@@ -80,7 +80,15 @@ namespace CJG.Web.External.Areas.Ext.Models
 			AttachmentsRequired = grantApplication.GrantOpening.GrantStream.AttachmentsRequired;
 			AttachmentsHeader = grantApplication.GrantOpening.GrantStream.AttachmentsHeader;
 			AttachmentCount = grantApplication.Attachments.Count();
-			AttachmentsState = AttachmentsRequired && grantApplication.ApplicationStateExternal == ApplicationStateExternal.ApplicationWithdrawn ? 1 : grantApplication.Attachments.Any() ? 2 : 0;
+
+			AttachmentsState =
+				AttachmentsRequired
+				&& grantApplication.ApplicationStateExternal == ApplicationStateExternal.ApplicationWithdrawn
+					? 1
+					: grantApplication.HasMetAttachmentRequirements()
+						? 2
+						: 0;
+
 			CanReportParticipants = grantApplication.CanReportParticipants;
 			EnableBusinessCase = grantApplication.GrantOpening.GrantStream.BusinessCaseIsEnabled;
 			BusinessCaseRequired = grantApplication.GrantOpening.GrantStream.BusinessCaseRequired;

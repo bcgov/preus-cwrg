@@ -13,7 +13,8 @@ app.controller('GrantSelectionView', function ($scope, $attrs, $controller, $sce
       set: 'model'
     },
     onSave: function (event, data) {
-      if (data.response.data.RedirectURL) window.location = data.response.data.RedirectURL;
+      if (data.response.data.RedirectURL)
+        window.location = data.response.data.RedirectURL;
     }
   };
 

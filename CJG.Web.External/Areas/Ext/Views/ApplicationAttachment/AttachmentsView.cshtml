@@ -1,12 +1,12 @@
 ﻿@using CJG.Web.External.Areas.Ext.Controllers
 @{
-    ViewBag.Title = "Attachments";
+    ViewBag.Title = "Required Documents";
 }
 
 <div class="row" ng-controller="ApplicationAttachmentsView" ng-grant-application-id="@ViewBag.GrantApplicationId" ng-redirect-url="@Url.ActionUrl(nameof(ApplicationController.ApplicationOverviewView), typeof(ApplicationController), new { grantApplicationId = (int)ViewBag.GrantApplicationId })">
     @Html.ActionLink("Return", nameof(ApplicationController.ApplicationOverviewView), typeof(ApplicationController), new { grantApplicationId = ViewBag.GrantApplicationId }, new { @class = "link--back" })
     <div class="row">
-		<div class="main">
+		<div class="main main--full">
 			<div ng-if="alert.message" class="row row--alert">
 				<div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
 			</div>
@@ -14,14 +14,14 @@
 				Edit {{model.AttachmentsHeader}}
 			</h1>
 
-			<div class="notice notice--icon" ng-if="model.AttachmentsUserGuidance">
-			<div ng-bind-html="model.AttachmentsUserGuidance" class="narrow-space-list"></div>
-			</div>
-
-			<p>Use Add Attachment below and enter a description to identify each attachment. You may attach up to {{model.AttachmentsMaximum}} attachments.</p>
+			@*<div class="notice notice--icon" ng-if="model.AttachmentsUserGuidance">
+			    <div ng-bind-html="model.AttachmentsUserGuidance" class="narrow-space-list"></div>
+			</div>*@
+			
+            @*<p>Use Add Attachment below and enter a description to identify each attachment. You may attach up to {{model.AttachmentsMaximum}} attachments.</p>
 			<p>Accepted file types: PDF, JPG, JPEG, PNG, GIF.</p>
 
-			<div class="form__group" ng-if="model.Attachments">
+            <div class="form__group" ng-if="model.Attachments">
 				<table style="width:100%;">
 					<tr ng-repeat="attachment in model.Attachments">
 						<td style="width:10%;vertical-align:top">{{$index + 1}}</td>
@@ -29,6 +29,8 @@
 							<a ng-if="attachment.Id" target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a>
 							<span ng-if="!attachment.Id">{{attachment.FileName}}</span>
 							<br />{{attachment.Description}}
+                            <br />{{ attachment.DocumentType }}
+                            <br />{{ attachment.Delete }}
 						</td>
 						<td style="vertical-align:top">
 							<button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index)">Remove</button>
@@ -37,12 +39,161 @@
 					</tr>
 				</table>
 			</div>
-			<button ng-if="model.AttachmentsMaximum > model.Attachments.length" class="btn btn--secondary" ng-click="addAttachment()" data-disableonsubmit="false">Add attachment</button>
+			<button ng-if="model.AttachmentsMaximum > model.Attachments.length" class="btn btn--secondary" ng-click="addAttachment()" data-disableonsubmit="false">Add attachment</button>*@
+			
+            <p>To move to the next step of the application, all required documents must be uploaded.</p>
 
+            <h3>Required Documents:</h3>
+            <table class="documents-listing">
+                <thead>
+                <tr>
+                    <th style="width: 50%">Document</th>
+                    <th>Attach File</th>
+                    <th style="width: 10%">Complete</th>
+                </tr>
+                </thead>
+                @*
+                    Allowed Upload Maximums
+                        Project Description: 2 files
+                        Employer Support forms: 5 files
+                        Skills Training Quote: 3 files
+                        ESS Quote: 2 files
+                        Instructor Qualifications: Max 5
+                        Certificate of Insurance: Max 2
+                *@
 
-			<div class="button-group">
+                <tbody>
+                <tr>
+                    <td>
+                        <strong>Project Description</strong><br/>
+                        Please complete and upload the provided project description template. It is important to provide as much information on your intended project as possible to assist in the assessment of your proposed project’s needs and training components.
+                    </td>
+                    <td class="documents-attached">
+                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 1 }">
+                            <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 1)">Remove</button>
+                            <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
+                            <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
+                            <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
+                            <br/>
+                        </div>
+                        <button ng-click="addAttachment(1)" ng-if="(model.Attachments | filter: { DocumentType: 1 }).length < 2" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                    </td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 1 }).length > 0" class="icon--checkmark">Yes</span></td>
+                <tr>
+                <tr>
+                    <td>
+                        <strong>Employer Support Forms</strong><br/>
+                        Please provide each employer supporting your project with the Employer Support Form, along with the training project curriculum/outline provided by your skills training provider. Additional forms may be requested during evaluation.
+                    </td>
+                    <td class="documents-attached">
+                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 2 }">
+                            <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 2)">Remove</button>
+                            <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
+                            <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
+                            <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
+                            <br/>
+                        </div>
+                        <button ng-click="addAttachment(2)" ng-if="(model.Attachments | filter: { DocumentType: 2 }).length < 5" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                    </td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 2 }).length > 0" class="icon--checkmark">Yes</span></td>
+                <tr>
+                <tr>
+                    <td>
+                        <strong>ST Quote (final once reviewed)</strong><br/>
+                        All training for a CWRG funded project must engage a third-party skills training provider. At time of application, a quote from the skills training provider must be uploaded. For the information required on the quote, please review the provided sample.
+                    </td>
+                    <td class="documents-attached">
+                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 3 }">
+                            <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 3)">Remove</button>
+                            <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
+                            <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
+                            <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
+                            <br/>
+                        </div>
+                        <button ng-click="addAttachment(3)" ng-if="(model.Attachments | filter: { DocumentType: 3 }).length < 3" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                    </td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 3 }).length > 0" class="icon--checkmark">Yes</span></td>
+                <tr>
+                <tr>
+                    <td>
+                        <strong>ESS Quote (final once reviewed)</strong><br/>
+                        Employment Support Services are not a mandatory component for a CWRG funded project. If you are requesting funding for Employment Support Services, a quote from a third-party provider must be uploaded. For the information required on the quote, please review the provided sample.
+                        <br/><br/>
+                        <input type="checkbox" id="not-requesting-ess" ng-model="model.NotRequestingESS" ng-value="true" />
+                        <label for="not-requesting-ess">Not requesting ESS</label>
+                    </td>
+                    <td class="documents-attached">
+                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 4 }">
+                            <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 4)">Remove</button>
+                            <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
+                            <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
+                            <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
+                            <br/>
+                        </div>
+                        <button ng-click="addAttachment(4)" ng-if="(model.Attachments | filter: { DocumentType: 4 }).length < 2" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                    </td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 4 }).length > 0" class="icon--checkmark">Yes</span></td>
+                <tr>
+                </tbody>
+            </table>
+			
+            <h3>Optional Documents:</h3>
+            <table class="documents-listing">
+                <thead>
+                <tr>
+                    <th style="width: 50%">Document</th>
+                    <th>Attach File</th>
+                    <th style="width: 10%">Complete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <strong>Instructor qualifications (Public-post secondary calendar courses are exempt)</strong><br/>
+                        <p>Before a training project is approved, instructor qualifications are required for all training delivered by private training providers or institutions, or any training delivered through the Continuing Education department of a public post-secondary institution.</p>
+                        <p>Instructor CV or resume must demonstrate:</p>
+                        <ul>
+                            <li>Trainers hold, at minimum, a diploma or recognized certification relevant to the subject matter being taught.</li>
+                            <li>A record of instructor experience recently providing a minimum of one year of the same or similar training.</li>
+                            <li>For training in trades or technology, instructors hold a certificate, diploma or post-secondary degree relevant to the subject matter and have two years of Full-time work experience in a career occupation relevant to the subject matter of the training, or 10 years of Full-time work experience in the relevant subject matter.</li>
+                            <li>For projects providing training in professions where certification is required for employment, instructor qualifications must meet the standards of the regulatory body.</li>
+                        </ul>
+                    </td>
+                    <td class="documents-attached">
+                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 10 }">
+                            <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 10)">Remove</button>
+                            <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
+                            <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
+                            <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
+                            <br/>
+                        </div>
+                        <button ng-click="addAttachment(10)" ng-if="(model.Attachments | filter: { DocumentType: 10 }).length < 5" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                    </td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 10 }).length < 0" class="icon--checkmark">Yes</span></td>
+                <tr>
+                <tr>
+                    <td>
+                        <strong><a href="https://www.workbc.ca/sites/default/files/2024-01/BC Certificate of Insurance.pdf" target="_blank">Certificate of Insurance</a></strong><br/>
+                        The FIN 173 Certificate of Insurance is optional at the time of application. Before a training project is approved for funding, an applicant will be required to submit a <a href="https://www.workbc.ca/sites/default/files/2024-01/BC Certificate of Insurance.pdf" target="_blank">FIN 173</a> form completed by their broker. The certificate must demonstrate at least $2 million in general commercial liability insurance that covers the duration of training. Prior to completing the form, the broker may wish to review the CWRG agreement that pertains to insurance requirements (section 8 of Schedule B) by opening this <a href="https://www.workbc.ca/sites/default/files/2023-01/CWRG%20Sample%20Agreement%20Schedule%20B.pdf" target="_blank">link</a>. If necessary, this certificate can be forwarded to <a href="mailto: CWRG@gov.bc.ca">CWRG@gov.bc.ca</a> after the application submission. 
+                    </td>
+                    <td class="documents-attached">
+                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 11 }">
+                            <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 11)">Remove</button>
+                            <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
+                            <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
+                            <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
+                            <br/>
+                        </div>
+                        <button ng-click="addAttachment(11)" ng-if="(model.Attachments | filter: { DocumentType: 11 }).length < 2" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                    </td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 11 }).length > 0" class="icon--checkmark">Yes</span></td>
+                <tr>
+                </tbody>
+            </table>
+
+            <div class="button-group">
 				<button class="btn btn--secondary" ng-click="cancel()">Cancel</button>
-				<button class="btn btn--primary btn--forward" ng-click="save()">Done</button>
+				<button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="!canProceed()">Done</button>
 			</div>
 		</div>
     </div>

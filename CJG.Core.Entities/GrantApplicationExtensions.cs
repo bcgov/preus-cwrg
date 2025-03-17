@@ -1242,8 +1242,8 @@ namespace CJG.Core.Entities
 		/// <returns></returns>
 		public static bool HasValidEndDate(this GrantApplication grantApplication)
 		{
-			if (grantApplication.StartDate.ToLocalMorning().Date > grantApplication.EndDate.ToLocalMidnight().Date
-				|| grantApplication.StartDate.ToLocalMorning().AddYears(1).Date < grantApplication.EndDate.ToLocalMidnight().Date)
+			if (grantApplication.StartDate.ToLocalMorning().Date > grantApplication.EndDate.AddDays(-45).ToLocalMidnight().Date
+				|| grantApplication.StartDate.ToLocalMorning().AddYears(1).Date < grantApplication.EndDate.AddDays(-45).ToLocalMidnight().Date)
 				return false;
 
 			return true;
@@ -1877,5 +1877,18 @@ namespace CJG.Core.Entities
 		}
 
 		#endregion
+
+		public static bool HasMetAttachmentRequirements(this GrantApplication grantApplication)
+		{
+			var projectDescriptionMet = grantApplication.Attachments.Any(a => a.DocumentType == AttachmentDocumentType.ProjectDescription);
+			var employerSupportMet = grantApplication.Attachments.Any(a => a.DocumentType == AttachmentDocumentType.EmployerSupportForm);
+			var skillTrainingMet = grantApplication.Attachments.Any(a => a.DocumentType == AttachmentDocumentType.STQuote);
+
+			var essRequirementMet = true;
+			if (grantApplication.NotRequestingESS.HasValue && !grantApplication.NotRequestingESS.Value)
+				essRequirementMet = grantApplication.Attachments.Any(a => a.DocumentType == AttachmentDocumentType.ESSQuote);
+
+			return projectDescriptionMet && employerSupportMet && skillTrainingMet && essRequirementMet;
+		}
 	}
 }

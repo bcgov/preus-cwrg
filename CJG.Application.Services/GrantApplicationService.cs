@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Policy;
 using System.Web;
 using CJG.Application.Business.Models;
 using CJG.Application.Services.Exceptions;
@@ -351,7 +350,8 @@ namespace CJG.Application.Services
 		/// <returns></returns>
 		public void UpdateDeliveryDates(GrantApplication grantApplication)
 		{
-			if (grantApplication == null) throw new ArgumentNullException(nameof(grantApplication));
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
 
 			if (!_httpContext.User.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.SubmitChangeRequest))
 				throw new NotAuthorizedException("The delivery dates cannot be changed at this time.");
@@ -374,6 +374,35 @@ namespace CJG.Application.Services
 			_dbContext.CommitTransaction();
 		}
 
+		public void SynchroniseDeliveryDatesToTraining(GrantApplication grantApplication)
+		{
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
+
+			var changeRequired = false;
+
+			var earliestTrainingStartDate = grantApplication.TrainingPrograms.Min(tp => tp.StartDate);
+			var furthestTrainingEndDate = grantApplication.TrainingPrograms.Max(tp => tp.EndDate);
+
+			if (grantApplication.StartDate != earliestTrainingStartDate)
+			{
+				grantApplication.StartDate = earliestTrainingStartDate;
+				changeRequired = true;
+			}
+
+			if (grantApplication.EndDate != furthestTrainingEndDate.AddDays(45))
+			{
+				grantApplication.EndDate = furthestTrainingEndDate.AddDays(45);
+				changeRequired = true;
+			}
+
+			if (!changeRequired)
+				return;
+
+			_dbContext.Update(grantApplication);
+			_dbContext.CommitTransaction();
+		}
+
 		/// <summary>
 		/// When changing the selected grant opening for an existing grant application there are a number of associated records that need to be updated.
 		/// If the grant opening belongs to a grant program that is a WDA Service, all the expense types need to be reassigned or deleted.
@@ -381,7 +410,8 @@ namespace CJG.Application.Services
 		/// <param name="grantApplication"></param>
 		public void ChangeGrantOpening(GrantApplication grantApplication)
 		{
-			if (grantApplication == null) throw new ArgumentNullException(nameof(grantApplication));
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
 
 			// Only allow changing the opening during application development.
 			if (!grantApplication.ApplicationStateInternal.In(ApplicationStateInternal.Draft, ApplicationStateInternal.ApplicationWithdrawn, ApplicationStateInternal.Unfunded))

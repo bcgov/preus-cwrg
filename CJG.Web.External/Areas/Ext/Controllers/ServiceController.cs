@@ -25,7 +25,6 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		private readonly IEligibleCostBreakdownService _eligibleCostBreakdownService;
 		#endregion
 
-		#region Constructors
 		/// <summary>
 		/// Creates a new instance of a ServiceController object.
 		/// </summary>
@@ -43,9 +42,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			_eligibleExpenseTypeService = eligibleExpenseTypeService;
 			_eligibleCostBreakdownService = eligibleCostBreakdownService;
 		}
-		#endregion
 
-		#region Endpoints
 		[HttpGet]
 		[Route("Application/{grantApplicationId:int}/Employment/Services/Supports/View/{eligibleExpenseTypeId:int}/{eligibleCostId?}")]
 		public ActionResult EmploymentServicesAndSupportsView(int grantApplicationId, int eligibleExpenseTypeId, int? eligibleCostId)
@@ -60,6 +57,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			ViewBag.GrantApplicationId = grantApplicationId;
 			ViewBag.EligibleExpenseTypeId = eligibleExpenseTypeId;
 			ViewBag.EligibleCostId = eligibleCostId;
+
 			return View();
 		}
 
@@ -91,6 +89,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			{
 				HandleAngularException(ex, model);
 			}
+
 			return Json(model, JsonRequestBehavior.AllowGet);
 		}
 
@@ -205,6 +204,5 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 
 			return Json(model, JsonRequestBehavior.AllowGet);
 		}
-		#endregion
 	}
 }

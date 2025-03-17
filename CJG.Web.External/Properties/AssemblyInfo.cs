@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CJG.Web.External")]
-[assembly: AssemblyDescription("Canada BC Job Grant application")]
+[assembly: AssemblyDescription("Community Workforce Response (CWRG) Grant Applications")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Government of BC")]
 [assembly: AssemblyProduct("CJG.Web.External")]
-[assembly: AssemblyCopyright("Copyright ©2024")]
+[assembly: AssemblyCopyright("Copyright ©2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,6 +31,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("2.4.1.16")]
-[assembly: AssemblyFileVersion("2.4.1.16")]
+[assembly: AssemblyVersion("2.4.1.17")]
+[assembly: AssemblyFileVersion("2.4.1.17")]
 [assembly: InternalsVisibleTo("CJG.Testing.UnitTests")]

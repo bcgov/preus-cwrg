@@ -43,9 +43,17 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 		public SkillTrainingDetailsViewModel(GrantApplication grantApplication)
 		{
 			GrantApplicationId = grantApplication.Id;
-			DeliveryStartDate = grantApplication.StartDate.ToLocalTime();
-			DeliveryEndDate = grantApplication.EndDate.ToLocalTime();
 			TrainingProvider = new SkillTrainingProviderDetailsViewModel();
+
+			var grantOpeningTrainingPeriod = grantApplication.GrantOpening.TrainingPeriod;
+
+			DeliveryStartDate = grantOpeningTrainingPeriod.StartDate.ToLocalTime();
+			DeliveryEndDate = grantOpeningTrainingPeriod.EndDate.ToLocalTime();
+
+			DeliveryStartDateMinDate = grantOpeningTrainingPeriod.StartDate.ToLocalTime();
+			DeliveryStartDateMaxDate = grantOpeningTrainingPeriod.EndDate.ToLocalTime();
+			DeliveryEndDateMinDate = grantOpeningTrainingPeriod.StartDate.ToLocalTime();
+			DeliveryEndDateMaxDate = grantOpeningTrainingPeriod.EndDate.AddYears(1).ToLocalTime();
 		}
 
 		/// <summary>
@@ -75,8 +83,6 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 			EndMonth = EndDate.Value.Month;
 			EndDay = EndDate.Value.Day;
 			SelectedDeliveryMethodIds = trainingProgram.DeliveryMethods.Select(x => x.Id).ToArray();
-			DeliveryStartDate = trainingProgram.GrantApplication.StartDate.ToLocalTime();
-			DeliveryEndDate = trainingProgram.GrantApplication.EndDate.ToLocalTime();
 			TotalCost = trainingProgram.EligibleCostBreakdown?.EstimatedCost ?? 0;
 			TrainingProvider = new SkillTrainingProviderDetailsViewModel(trainingProgram.TrainingProvider)
 			{
@@ -87,11 +93,18 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 			OnTheJobTraining = trainingProgram.OnTheJobTraining;
 
             if (trainingProgram.SkillsTrainingFocusType.HasValue)
-            {
-				SkillsTrainingFocusTypeIsOccupational = trainingProgram.SkillsTrainingFocusType.Value == 0;
-            }
-		}
+	            SkillsTrainingFocusTypeIsOccupational = trainingProgram.SkillsTrainingFocusType.Value == 0;
 
+            var grantOpeningTrainingPeriod = trainingProgram.GrantApplication.GrantOpening.TrainingPeriod;
+
+            DeliveryStartDate = grantOpeningTrainingPeriod.StartDate.ToLocalTime();
+            DeliveryEndDate = grantOpeningTrainingPeriod.EndDate.ToLocalTime();
+
+			DeliveryStartDateMinDate = grantOpeningTrainingPeriod.StartDate.ToLocalTime();
+			DeliveryStartDateMaxDate = grantOpeningTrainingPeriod.EndDate.ToLocalTime();
+			DeliveryEndDateMinDate = grantOpeningTrainingPeriod.StartDate.ToLocalTime();
+			DeliveryEndDateMaxDate = grantOpeningTrainingPeriod.EndDate.AddYears(1).ToLocalTime();
+		}
 		#endregion
 
 		#region Methods

@@ -103,40 +103,34 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		[Route("Application/{grantApplicationId:int}/Skills/Training/{eligibleExpenseTypeId:int}/{trainingProgramId:int}")]
 		public JsonResult GetSkillsTraining(int grantApplicationId, int eligibleExpenseTypeId, int trainingProgramId)
 		{
-			var viewModel = new SkillTrainingViewModel();
+			var model = new SkillTrainingViewModel();
 			try
 			{
 				var grantApplication = _grantApplicationService.Get(grantApplicationId);
 
 				if (trainingProgramId == 0)
 				{
-					viewModel = new SkillTrainingViewModel(grantApplication);
+					model = new SkillTrainingViewModel(grantApplication);
 				}
 				else
 				{
 					var trainingProgram = _trainingProgramService.Get(trainingProgramId);
-					viewModel = new SkillTrainingViewModel(trainingProgram);
+					model = new SkillTrainingViewModel(trainingProgram);
 				}
 
-				viewModel.GrantApplicationId = grantApplicationId;
-				viewModel.EligibleExpenseTypeId = eligibleExpenseTypeId;
+				model.GrantApplicationId = grantApplicationId;
+				model.EligibleExpenseTypeId = eligibleExpenseTypeId;
 
 				if (!grantApplication.GrantOpening.GrantStream.ProgramConfiguration.EligibleExpenseTypes.Any(eet => eet.ServiceCategory.ServiceTypeId == ServiceTypes.SkillsTraining && eet.Id == eligibleExpenseTypeId))
 					throw new InvalidOperationException($"The skills training eligible expense type is not valid for grant application '{grantApplicationId}'.");
 
-				viewModel.SkillTrainingDetails.EligibleExpenseTypeId = viewModel.EligibleExpenseTypeId;
-
-				if (grantApplication.GrantOpening.GrantStream.GrantProgram.ProgramType.Id == ProgramTypes.EmployerGrant)
-				{
-					viewModel.SkillTrainingDetails.StartDate = grantApplication.StartDate;
-					viewModel.SkillTrainingDetails.EndDate = grantApplication.EndDate;
-				}
+				model.SkillTrainingDetails.EligibleExpenseTypeId = model.EligibleExpenseTypeId;
 			}
 			catch (Exception ex)
 			{
-				HandleAngularException(ex, viewModel);
+				HandleAngularException(ex, model);
 			}
-			return Json(viewModel, JsonRequestBehavior.AllowGet);
+			return Json(model, JsonRequestBehavior.AllowGet);
 		}
 
 		/// <summary>
@@ -201,9 +195,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				}
 
 				if (model.SkillTrainingDetails.TrainingProvider.TrainingOutsideBC == true && String.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.BusinessCaseDocument.FileName))
-				{
 					ModelState.AddModelError("BusinessCaseDocument", "Business case document required.");
-				}
 
 				if (model.SkillTrainingDetails.TrainingProvider.TrainingProviderTypeId.HasValue)
 				{
@@ -213,28 +205,24 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 						TrainingProviderTypeId = model.SkillTrainingDetails.TrainingProvider.TrainingProviderTypeId.Value,
 						TrainingProviderType = trainingProviderType
 					};
+
 					if (trainingProvider.TrainingProviderType.ProofOfInstructorQualifications == 1)
 					{
-						if (String.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.ProofOfQualificationsDocument.FileName))
-						{
+						if (string.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.ProofOfQualificationsDocument.FileName))
 							ModelState.AddModelError("ProofOfQualificationsDocument", "Proof of qualifications document required.");
-						}
 					}
+
 					if (trainingProvider.TrainingProviderType.CourseOutline == 1)
 					{
-						if (String.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.CourseOutlineDocument.FileName))
-						{
+						if (string.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.CourseOutlineDocument.FileName))
 							ModelState.AddModelError("CourseOutlineDocument", "Course outline document required.");
-						}
 					}
 				}
 
 				if (model.SkillTrainingDetails.TotalCost <= 0)
-				{
 					ModelState.AddModelError("TotalCost", "Total cost must be greater than $0.00.");
-				}
 
-                if (!model.ShowSkillsTrainingFocusDropDown)
+				if (!model.ShowSkillsTrainingFocusDropDown)
                 {
 					//set value to Occupational Skills Training
 					model.SkillTrainingDetails.EligibleExpenseBreakdownId = _eligibleExpenseBreakdownService.GetForOccupationalSkillsTraining(model.SkillTrainingDetails.EligibleExpenseTypeId ?? 0).Id;
@@ -244,20 +232,14 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					ModelState.Remove(nameof(model.SkillTrainingDetails.EligibleExpenseBreakdownId));
 
                     if (!model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational.HasValue)
-                    {
-						ModelState.AddModelError("SkillsTrainingFocusType", "Please select the Skills Training Focus type.");
-					}
+	                    ModelState.AddModelError("SkillsTrainingFocusType", "Please select the Skills Training Focus type.");
 
-					if (!model.SkillTrainingDetails.ShortTermOccupationalCert.HasValue)
-                    {
-						ModelState.AddModelError("ShortTermOccupationalCert", "Please indicate whether Short-term Occupational Certificates are included.");
-					}
+                    if (!model.SkillTrainingDetails.ShortTermOccupationalCert.HasValue)
+	                    ModelState.AddModelError("ShortTermOccupationalCert", "Please indicate whether Short-term Occupational Certificates are included.");
 
-					if (!model.SkillTrainingDetails.OnTheJobTraining.HasValue)
-					{
-						ModelState.AddModelError("OnTheJobTraining", "Please indicate whether on-the-job training is included.");
-					}
-				}
+                    if (!model.SkillTrainingDetails.OnTheJobTraining.HasValue)
+	                    ModelState.AddModelError("OnTheJobTraining", "Please indicate whether on-the-job training is included.");
+                }
                 else
                 {
 					if (model.SkillTrainingDetails.EligibleExpenseBreakdownId.HasValue)
@@ -288,8 +270,10 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 						_staticDataService,
 						User,
 						files);
+
 					trainingProgram.IsSkillsTraining = true;
 					_trainingProgramService.Add(trainingProgram);
+
 					model = new SkillTrainingViewModel(trainingProgram);
 				}
 				else
@@ -337,9 +321,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				}
 
 				if (model.SkillTrainingDetails.ExpectedQualificationId == 5)
-				{
 					ModelState.Remove("TitleOfQualification");
-				}
 
 				if (model.SkillTrainingDetails.TrainingProvider.IsCanadianAddress)
 				{
@@ -352,10 +334,9 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					ModelState.Remove(nameof(model.SkillTrainingDetails.TrainingProvider.RegionId));
 				}
 
-				if (model.SkillTrainingDetails.TrainingProvider.TrainingOutsideBC == true && String.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.BusinessCaseDocument.FileName))
-				{
+				if (model.SkillTrainingDetails.TrainingProvider.TrainingOutsideBC == true && string.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.BusinessCaseDocument.FileName))
 					ModelState.AddModelError("BusinessCaseDocument", "Business case document required.");
-				}
+
 				if (model.SkillTrainingDetails.TrainingProvider.IsCanadianAddressTrainingProvider)
 				{
 					ModelState.Remove(nameof(Models.TrainingProviders.TrainingProviderViewModel.OtherZipCodeTrainingProvider));
@@ -377,24 +358,19 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					};
 					if (trainingProvider.TrainingProviderType.ProofOfInstructorQualifications == 1)
 					{
-						if (String.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.ProofOfQualificationsDocument.FileName))
-						{
+						if (string.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.ProofOfQualificationsDocument.FileName))
 							ModelState.AddModelError("ProofOfQualificationsDocument", "Proof of qualifications document required.");
-						}
 					}
+
 					if (trainingProvider.TrainingProviderType.CourseOutline == 1)
 					{
-						if (String.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.CourseOutlineDocument.FileName))
-						{
+						if (string.IsNullOrWhiteSpace(model.SkillTrainingDetails.TrainingProvider.CourseOutlineDocument.FileName))
 							ModelState.AddModelError("CourseOutlineDocument", "Course outline document required.");
-						}
 					}
 				}
 
 				if (model.SkillTrainingDetails.TotalCost <= 0)
-				{
 					ModelState.AddModelError("TotalCost", "Total cost must be greater than $0.00.");
-				}
 
 				if (!model.ShowSkillsTrainingFocusDropDown)
 				{
@@ -406,13 +382,10 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					ModelState.Remove(nameof(model.SkillTrainingDetails.EligibleExpenseBreakdownId));
 
 					if (!model.SkillTrainingDetails.ShortTermOccupationalCert.HasValue)
-					{
 						ModelState.AddModelError("ShortTermOccupationalCert", "Please indicate whether Short-term Occupational Certificates are included");
-					}
+
 					if (!model.SkillTrainingDetails.OnTheJobTraining.HasValue)
-					{
 						ModelState.AddModelError("OnTheJobTraining", "Please indicate whether on-the-job training is included");
-					}
 				}
 				else
 				{
@@ -444,8 +417,10 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 						_staticDataService,
 						User,
 						files);
+
 					trainingProgram.IsSkillsTraining = true;
 					_trainingProgramService.Update(trainingProgram);
+
 					model = new SkillTrainingViewModel(trainingProgram);
 				}
 				else

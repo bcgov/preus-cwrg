@@ -37,6 +37,26 @@ table {
   }
 }
 
+.documents-listing {
+    th, td {
+      text-align: left;
+    }
+
+    td {
+      vertical-align: top;
+
+      &.complete {
+        text-align: center;
+      }
+
+      &.documents-attached {
+          div {
+              margin-bottom: 10px;
+          }
+      }
+  }
+}
+
 
 .table {
   border: 1px solid color('white');
@@ -166,6 +186,20 @@ table {
   }
 }
 
+
+.dataTable {
+  &.table--pfs {
+    tbody {
+      td {
+        padding: 15px 10px 10px;
+
+        &.numbers {
+            text-align: center;
+        }
+      }
+    }
+  }
+}
 
 .table--expenses {
   margin-bottom: 0;

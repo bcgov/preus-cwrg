@@ -1,5 +1,4 @@
-﻿@using CJG.Core.Entities
-@{
+﻿@{
     ViewBag.Title = "Applicant Declaration";
 }
 
@@ -26,17 +25,10 @@
 
             <h2 class="subheader">Applicant Declaration</h2>
 
-            <div class="notice notice--icon" ng-if="model.ProgramType === @((int)ProgramTypes.WDAService)">
+            <div class="notice notice--icon">
                 <p>Once your application has been submitted, the Ministry will assess it against {{model.GrantProgramName}} criteria to determine whether it qualifies for a grant. The Ministry will send an email notification to you once a decision has been reached.</p>
                 <p>
                     As part of the assessment process, a CWRG Program Manager will contact you by both email and telephone to verify contact information and request any additional information that may be required to assist in the evaluation process. <strong><i>Please respond to these requests as soon as possible.</i></strong> If a Program Manager is not able to reach you by email or telephone within five (5) days, your application will be considered withdrawn and will not be processed.
-                </p>
-            </div>
-
-            <div class="notice notice--icon" ng-if="model.ProgramType === @((int)ProgramTypes.EmployerGrant)">
-                <p>Once submitted, the Ministry will assess your application against the {{model.GrantProgramName}} criteria to determine eligibility. You will be notified via email once a decision has been made.</p>
-                <p>
-                    The ETG may contact you by email or telephone to verify information provided in your application or to request additional details that may be required to evaluate your application.<strong><i> Please respond to these requests as soon as possible.</i></strong> If we are unable to reach you, your application may be cancelled by the Ministry.
                 </p>
             </div>
 
@@ -52,20 +44,18 @@
                 <div ng-validation="errors.DeclarationConfirmed"></div>
             </div>
 
-            <div>
+            @*<div>
                 <a href="/Ext/Application/DownloadResource/{{model.GrantProgramCode}}-sample-agreement">Download Sample Agreement</a>
-            </div>
+            </div>*@
 
             <div class="button-group">
                 @Html.Button("Cancel",
-                           new
-                                {
-                                    @class = "btn btn--secondary",
-                               @onclick = "window.location='" +
-                               @Url.Action(nameof(CJG.Web.External.Areas.Ext.Controllers.ApplicationController.ApplicationOverviewView),
-                                            nameof(CJG.Web.External.Areas.Ext.Controllers.ApplicationController).Replace("Controller", ""),
-                                           new { grantApplicationId = (int)ViewBag.GrantApplicationId }) + "'"
-                                })
+                    new {
+                        @class = "btn btn--secondary",
+                        @onclick = "window.location='" + @Url.Action(nameof(CJG.Web.External.Areas.Ext.Controllers.ApplicationController.ApplicationOverviewView),
+                        nameof(CJG.Web.External.Areas.Ext.Controllers.ApplicationController).Replace("Controller", ""),
+                        new { grantApplicationId = (int)ViewBag.GrantApplicationId }) + "'"
+                    })
                 <button class="btn btn--primary btn--forward" ng-click="submit()" ng-disabled="!model.DeclarationConfirmed">Submit application</button>
             </div>
 

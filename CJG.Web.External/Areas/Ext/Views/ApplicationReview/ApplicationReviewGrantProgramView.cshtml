@@ -25,7 +25,6 @@
 				</div>
 				@Html.Partial("_GrantSelectionView")
 
-
 				<div class="heading-group">
 					<h4 class="light">Project Description</h4>
 					<a class="btn btn--secondary" href="/ext/Application/Program/Description/View/{{model.Id}}">Edit project description</a>
@@ -42,14 +41,13 @@
 			</div>
 			<div class="button-group">
 				@Html.Button("Cancel",
-						   new
-								{
-									@class = "btn btn--secondary",
-							   @onclick = "window.location='" +
-							   @Url.Action(nameof(CJG.Web.External.Areas.Ext.Controllers.ApplicationController.ApplicationOverviewView),
-										   nameof(CJG.Web.External.Areas.Ext.Controllers.ApplicationController).Replace("Controller", ""),
-										   new { grantApplicationId = (int)ViewBag.GrantApplicationId }) + "'"
-								})
+						   new {
+                            @class = "btn btn--secondary",
+                            @onclick = "window.location='" +
+                            @Url.Action(nameof(CJG.Web.External.Areas.Ext.Controllers.ApplicationController.ApplicationOverviewView),
+                            nameof(CJG.Web.External.Areas.Ext.Controllers.ApplicationController).Replace("Controller", ""),
+                            new { grantApplicationId = (int)ViewBag.GrantApplicationId }) + "'"
+                        })
 				<a class="btn btn--primary btn--forward" value="Continue" href="{{model.NextStepUrl}}">Continue</a>
 			</div>
 		</div>

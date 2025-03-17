@@ -39,8 +39,8 @@
                                   ng-month="model.SkillTrainingDetails.StartMonth"
                                   ng-day="model.SkillTrainingDetails.StartDay"
                                   ng-text="model.SkillTrainingDetails.StartDate"
-                                  ng-min-date="model.SkillTrainingDetails.DeliveryStartDate"
-                                  ng-max-date="model.SkillTrainingDetails.DeliveryEndDate"
+                                  ng-min-date="model.SkillTrainingDetails.DeliveryStartDateMinDate"
+                                  ng-max-date="model.SkillTrainingDetails.DeliveryStartDateMaxDate"
                                   ng-default-month="'Month'"
                                   ng-default-day="'Day'"
                                   ng-default-year="'Year'"></datedropdown>
@@ -57,8 +57,8 @@
                                   ng-month="model.SkillTrainingDetails.EndMonth"
                                   ng-day="model.SkillTrainingDetails.EndDay"
                                   ng-text="model.SkillTrainingDetails.EndDate"
-                                  ng-min-date="model.SkillTrainingDetails.DeliveryStartDate"
-                                  ng-max-date="model.SkillTrainingDetails.DeliveryEndDate"
+                                  ng-min-date="model.SkillTrainingDetails.DeliveryEndDateMinDate"
+                                  ng-max-date="model.SkillTrainingDetails.DeliveryEndDateMaxDate"
                                   ng-default-month="'Month'"
                                   ng-default-day="'Day'"
                                   ng-default-year="'Year'"></datedropdown>
@@ -125,16 +125,18 @@
             <div ng-show="!model.ShowSkillsTrainingFocusDropDown">
                 <div class="form__group">
                     <div class="label-wrapper"><label class="form__label">Skills Training Focus <abbr title="Required">*</abbr></label></div>                    
-                        <div class="form__control" ng-validation="errors.SkillsTrainingFocusType">
-                            <div>
-                                <input type="radio" id="stfOccupational" ng-value="true" ng-model="model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational" name="model.SkillsTrainingFocusTypeIsOccupational">
-                                <label for="stfOccupational">Occupational skills training</label>
-                            </div>
-                            <div>
-                                <input type="radio" id="stfApprentiship" ng-value="false" ng-model="model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational" name="model.SkillsTrainingFocusTypeIsOccupational">
-                                <label for="stfApprentiship">Apprenticeship Foundation Program</label>
-                            </div>
-                        </div>                    
+                    <div class="form__control" ng-validation="errors.SkillsTrainingFocusType">
+                        <div>
+                            <input type="radio" id="stfOccupational" ng-value="true" ng-model="model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational" name="model.SkillsTrainingFocusTypeIsOccupational">
+                            <label for="stfOccupational">Occupational skills training</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="stfApprentiship" ng-value="false" ng-model="model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational" name="model.SkillsTrainingFocusTypeIsOccupational">
+                            <label for="stfApprentiship">Apprenticeship Foundation Program</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group">
                     <div class="form__control" ng-validation="errors.SkillsTraining">
                         <label class="form__label">Will your training project include Short-term Occupational Certificates (STOC)? <abbr title="Required">*</abbr></label>
                         <div class="form__control" ng-validation="errors.ShortTermOccupationalCert">
@@ -147,16 +149,18 @@
                                 <label for="StocNo">No</label>
                             </div>
                         </div>
-                        <label class="form__label">Will your training project include on-the-job training? <abbr title="Required">*</abbr></label>
-                        <div class="form__control" ng-validation="errors.OnTheJobTraining">
-                            <div class="form-item">
-                                <input type="radio" id="OntheJobYes" ng-value="true" ng-model="model.SkillTrainingDetails.OnTheJobTraining" name="model.OnTheJobTraining">
-                                <label for="OntheJobYes">Yes</label>
-                            </div>
-                            <div class="form-item">
-                                <input type="radio" id="OntheJobNo" ng-value="false" ng-model="model.SkillTrainingDetails.OnTheJobTraining" name="model.OnTheJobTraining">
-                                <label for="OntheJobNo">No</label>
-                            </div>
+                    </div>
+                </div>
+                <div class="form__group">
+                    <label class="form__label">Will your training project include on-the-job training? <abbr title="Required">*</abbr></label>
+                    <div class="form__control" ng-validation="errors.OnTheJobTraining">
+                        <div class="form-item">
+                            <input type="radio" id="OntheJobYes" ng-value="true" ng-model="model.SkillTrainingDetails.OnTheJobTraining" name="model.OnTheJobTraining">
+                            <label for="OntheJobYes">Yes</label>
+                        </div>
+                        <div class="form-item">
+                            <input type="radio" id="OntheJobNo" ng-value="false" ng-model="model.SkillTrainingDetails.OnTheJobTraining" name="model.OnTheJobTraining">
+                            <label for="OntheJobNo">No</label>
                         </div>
                     </div>
                 </div>
@@ -307,8 +311,8 @@
             </div>
             @* Using ng-show rather than ng-if so it doesn't remove these elements from the DOM and unbind the CanadaPost control when training location is changed *@
             <div class="form__group" ng-show="model.SkillTrainingDetails.SelectedDeliveryMethodIds != null
-                                          && model.SkillTrainingDetails.SelectedDeliveryMethodIds != 3
-                                          && model.SkillTrainingDetails.SelectedDeliveryMethodIds != 0">
+                                              && model.SkillTrainingDetails.SelectedDeliveryMethodIds != 3
+                                              && model.SkillTrainingDetails.SelectedDeliveryMethodIds != 0">
                 <h3 class="subheader--body">Address of Training Location</h3>
                 <div class="form__group form__group--radio-inline">
                     <div>
@@ -317,7 +321,8 @@
                                      ng-model="model.SkillTrainingDetails.TrainingProvider.IsCanadianAddress"
                                      @*ng-items="[{ key: true, value: 'Canada' }, { key: false, value: 'Other Countries' }]"*@
                                      ng-items="[{ key: true, value: 'Canada' }, { key: false, value: 'Other Country' }]"
-                                     ng-editing="true"></options>
+                                     ng-editing="true"
+                                     ng-checked="CheckSaveAsAbove()" ></options>
                         </div>
                     </div>
                 </div>
@@ -344,6 +349,7 @@
                         <div class="control-wrapper">
                             <input id="AddressLine1" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.AddressLine1" maxlength="250" class="input--full"
                                    ng-mouseleave="AddressLine1Change()"
+                                   ng-change="CheckSaveAsAbove()"
                                    ng-validation="errors.AddressLine1" />
                         </div>
                     </div>
@@ -353,7 +359,7 @@
                     <div class="form__label">Address line 2</div>
                     <div class="form__control">
                         <div class="control-wrapper">
-                            <input id="AddressLine2" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.AddressLine2" maxlength="250" class="input--full" />
+                            <input id="AddressLine2" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.AddressLine2" maxlength="250" class="input--full" ng-change="CheckSaveAsAbove()" />
                         </div>
                     </div>
                 </div>
@@ -362,7 +368,7 @@
                     <div class="form__label">City <abbr title='Required'>*</abbr></div>
                     <div class="form__control">
                         <div class="control-wrapper">
-                            <input id="City" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.City" maxlength="250" class="input--medium" ng-validation="errors.City" />
+                            <input id="City" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.City" maxlength="250" class="input--medium" ng-validation="errors.City" ng-change="CheckSaveAsAbove()"/>
                         </div>
                     </div>
                 </div>
@@ -373,7 +379,8 @@
                         <div class="control-wrapper selectmenu input--medium" ng-validation="errors.RegionId">
                             <select Id="RegionId" class="input--medium"
                                     ng-model="model.SkillTrainingDetails.TrainingProvider.RegionId"
-                                    ng-options="item.Key as item.Caption for item in Provinces"></select>
+                                    ng-options="item.Key as item.Caption for item in Provinces"
+                                    ng-change="CheckSaveAsAbove()"></select>
                         </div>
                     </div>
                 </div>
@@ -381,7 +388,7 @@
                     <div class="form__label">Postal code <abbr title='Required'>*</abbr></div>
                     <div class="form__control">
                         <div class="control-wrapper">
-                            <input id="PostalCode" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.PostalCode" maxlength="6" class="input--medium" ng-postal ng-validation="errors.PostalCode" />
+                            <input id="PostalCode" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.PostalCode" maxlength="6" class="input--medium" ng-postal ng-validation="errors.PostalCode" ng-change="CheckSaveAsAbove()" />
                         </div>
                     </div>
                 </div>
@@ -391,7 +398,7 @@
                         <div class="form__label">Province / State / Region <abbr title='Required'>*</abbr></div>
                         <div class="form__control">
                             <div class="control-wrapper">
-                                <input Id="OtherRegion" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.OtherRegion" maxlength="250" class="input--medium" ng-validation="errors.OtherRegion" />
+                                <input Id="OtherRegion" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.OtherRegion" maxlength="250" class="input--medium" ng-validation="errors.OtherRegion" ng-change="CheckSaveAsAbove()" />
                             </div>
                         </div>
                     </div>
@@ -400,13 +407,24 @@
                         <div class="form__label">Postal / Zip Code <abbr title='Required'>*</abbr></div>
                         <div class="form__control">
                             <div class="control-wrapper">
-                                <input id="OtherZipCode" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.OtherZipCode" maxlength="250" class="input--medium" ng-validation="errors.OtherZipCode" />
+                                <input id="OtherZipCode" type="text" ng-model="model.SkillTrainingDetails.TrainingProvider.OtherZipCode" maxlength="250" class="input--medium" ng-validation="errors.OtherZipCode" ng-change="CheckSaveAsAbove()" />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <h3 class="subheader--body">Address of Training Provider</h3>
+            <div class="form__group form__group--radio-inline" ng-show="model.SkillTrainingDetails.SelectedDeliveryMethodIds != null
+                                                                          && model.SkillTrainingDetails.SelectedDeliveryMethodIds != 3
+                                                                          && model.SkillTrainingDetails.SelectedDeliveryMethodIds != 0;">
+                <div>
+                    <div class="form__control">
+                        <input type="checkbox" id="providerAddressIsSameAsLocation" ng-model="providerAddressIsSameAsLocation" ng-change="ProviderAddressIsSameAsLocationChange()" ng-editing="true" />
+                        <label class="" for="providerAddressIsSameAsLocation">Same as above for Training Provider</label>
+                    </div>
+                </div>
+            </div>
+
             <div class="form__group form__group--radio-inline">
                 <div>
                     <div class="form__control">

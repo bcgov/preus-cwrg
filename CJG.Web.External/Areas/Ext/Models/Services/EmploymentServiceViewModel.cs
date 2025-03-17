@@ -10,6 +10,8 @@ namespace CJG.Web.External.Areas.Ext.Models.Services
 		public int EligibleCostId { get; set; }
 		public decimal? EstimatedCost { get; set; }
 
+		public bool IsPFS { get; set; }
+
 		public TrainingCosts.EligibleExpenseTypeViewModel EligibleExpenseType { get; set; } = new TrainingCosts.EligibleExpenseTypeViewModel();
 
 		public EmploymentServiceViewModel()
@@ -19,6 +21,9 @@ namespace CJG.Web.External.Areas.Ext.Models.Services
 		public EmploymentServiceViewModel(EligibleExpenseType eligibleExpenseType, EligibleCost eligibleCost, GrantApplication grantApplication)
 		{
 			Utilities.MapProperties(eligibleExpenseType, this, t => new { t.RowVersion });
+
+			if (eligibleExpenseType.ServiceCategory != null)
+				IsPFS = eligibleExpenseType.ServiceCategory.Caption == "Participant Financial Supports";
 
 			if (eligibleExpenseType.ServiceCategoryId.HasValue)
 			{

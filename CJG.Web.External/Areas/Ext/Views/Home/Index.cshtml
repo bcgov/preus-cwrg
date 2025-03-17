@@ -25,7 +25,7 @@
                 </div>
                 <div class="program-information float-left program-information-overwrite">
                     <p ng-bind-html="program.Message"></p>
-                    <p ng-if="program.GrantOpenings.length != 0" class="program-information-openings" ng-class="!program.Message ? 'program-text-top': ''">
+                    @*<p ng-if="program.GrantOpenings.length != 0" class="program-information-openings" ng-class="!program.Message ? 'program-text-top': ''">
                         Current grant opportunities are for training starting
                         <text ng-repeat="openingTime in program.GrantOpenings">
                             <span ng-if="$index == 0 && program.GrantOpenings.length == 1">
@@ -41,7 +41,7 @@
 
                             <span ng-if="$index == program.GrantOpenings.length - 1 && program.GrantOpenings.length != 1">or between <span class="no-wrap">{{openingTime.StartDate}}</span> and <span class="no-wrap">{{openingTime.EndDate}}.</span></span>
                         </text>
-                    </p>
+                    </p>*@
                     <p ng-if="program.GrantOpenings.length == 0" ng-class="!program.Message ? 'program-text-top': ''">
                         There are no grant opportunities at this time.
                     </p>

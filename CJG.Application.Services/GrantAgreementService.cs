@@ -111,7 +111,8 @@ namespace CJG.Application.Services
 		/// <returns></returns>
 		public bool AgreementUpdateRequired(GrantApplication grantApplication)
 		{
-			if (grantApplication == null) throw new ArgumentNullException(nameof(grantApplication));
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
 
 			var tracker = new EntityChanges(_dbContext.Context);
 			return grantApplication.AgreementUpdateRequired(tracker);
@@ -124,7 +125,9 @@ namespace CJG.Application.Services
 		/// <param name="grantApplication"></param>
 		public void UpdateAgreement(GrantApplication grantApplication)
 		{
-			if (grantApplication == null) throw new ArgumentNullException(nameof(grantApplication));
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
+
 			if (grantApplication.GrantAgreement == null)
 				throw new ArgumentNullException(nameof(grantApplication), "The Grant Application must have a Grant Agreement before generating Schedule documents.");
 

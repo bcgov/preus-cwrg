@@ -46,7 +46,7 @@ app.controller('ApplicationSkillsTrainingView', function ($scope, $attrs, $contr
         if (isNaN($scope.model.SkillTrainingDetails.TotalTrainingHours))
           $scope.model.SkillTrainingDetails.TotalTrainingHours = 0;
 
-        //Code related to Canada-Post Integration
+        // Code related to Canada-Post Integration
         if (document.getElementById("AddressLine1") != null) {
           $scope.model.SkillTrainingDetails.TrainingProvider.AddressLine1 = document.getElementById("AddressLine1").value;
           $scope.model.SkillTrainingDetails.TrainingProvider.AddressLine2 = document.getElementById("AddressLine2").value;
@@ -83,7 +83,8 @@ app.controller('ApplicationSkillsTrainingView', function ($scope, $attrs, $contr
     grantApplicationId: $attrs.ngGrantApplicationId,
     eligibleExpenseTypeId: $attrs.ngEligibleExpenseTypeId,
     trainingProgramId: $attrs.ngTrainingProgramId,
-    isDateDisabled: $attrs.ngDateDisabled
+    isDateDisabled: $attrs.ngDateDisabled,
+    providerAddressIsSameAsLocation: null
   };
 
   angular.extend(this, $controller('Section', { $scope: $scope, $attrs: $attrs }));
@@ -162,11 +163,72 @@ app.controller('ApplicationSkillsTrainingView', function ($scope, $attrs, $contr
 
     trainingProviderControl = new pca.Address(fieldsTrainingAddress, options);
   }
-  
+
+  // This seems to fail under vague conditions. Don't use for now.
+  $scope.showTrainingLocationAddress = function () {
+    return $scope.model.SkillTrainingDetails.SelectedDeliveryMethodIds != null
+      && $scope.model.SkillTrainingDetails.SelectedDeliveryMethodIds != 3
+      && $scope.model.SkillTrainingDetails.SelectedDeliveryMethodIds != 0;
+  }
+
+  $scope.ProviderAddressIsSameAsLocationChange = function() {
+    if ($scope.providerAddressIsSameAsLocation) {
+      $scope.CopyTrainingLocationAddress();
+    }
+  }
+
+  $scope.CheckSaveAsAbove = function () {
+    if ($scope.model.SkillTrainingDetails == undefined || $scope.model.SkillTrainingDetails.SelectedDeliveryMethodIds == undefined)
+      return;
+
+    let trainingLocationAvailable = $scope.model.SkillTrainingDetails.SelectedDeliveryMethodIds != null
+      && $scope.model.SkillTrainingDetails.SelectedDeliveryMethodIds != 3
+      && $scope.model.SkillTrainingDetails.SelectedDeliveryMethodIds != 0;
+
+    if (!trainingLocationAvailable)
+      return;
+
+    if ($scope.providerAddressIsSameAsLocation) {
+      $scope.CopyTrainingLocationAddress();
+    }
+  }
+
+  $scope.CopyTrainingLocationAddress = function () {
+    $scope.model.SkillTrainingDetails.TrainingProvider.AddressLine1TrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.AddressLine1;
+    $scope.model.SkillTrainingDetails.TrainingProvider.AddressLine2TrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.AddressLine2;
+    $scope.model.SkillTrainingDetails.TrainingProvider.CityTrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.City;
+    $scope.model.SkillTrainingDetails.TrainingProvider.PostalCodeTrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.PostalCode;
+    $scope.model.SkillTrainingDetails.TrainingProvider.RegionIdTrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.RegionId;
+    $scope.model.SkillTrainingDetails.TrainingProvider.CountryIdTrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.CountryId;
+    $scope.model.SkillTrainingDetails.TrainingProvider.CountryTrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.Country;
+    $scope.model.SkillTrainingDetails.TrainingProvider.IsCanadianAddressTrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.IsCanadianAddress;
+    $scope.model.SkillTrainingDetails.TrainingProvider.OtherRegionTrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.OtherRegion;
+    $scope.model.SkillTrainingDetails.TrainingProvider.OtherZipCodeTrainingProvider = $scope.model.SkillTrainingDetails.TrainingProvider.OtherZipCode;
+  }
+
   $scope.AddressLine1Change = function () {
     if ($scope.model.SkillTrainingDetails.TrainingProvider.IsCanadianAddress) {
       trainingLocationControl.listen("populate", function (address) {
         document.getElementById("RegionId").value = "string:" + address.ProvinceCode;
+
+        // Have to populate the model with the looked up CP fields
+        if (document.getElementById("AddressLine1") != null) {
+          $scope.model.SkillTrainingDetails.TrainingProvider.AddressLine1 = document.getElementById("AddressLine1").value;
+          $scope.model.SkillTrainingDetails.TrainingProvider.AddressLine2 = document.getElementById("AddressLine2").value;
+          $scope.model.SkillTrainingDetails.TrainingProvider.City = document.getElementById("City").value;
+
+          if ($scope.model.SkillTrainingDetails.TrainingProvider.IsCanadianAddress) {
+            $scope.model.SkillTrainingDetails.TrainingProvider.PostalCode = document.getElementById("PostalCode").value;
+            $scope.model.SkillTrainingDetails.TrainingProvider.RegionId = document.getElementById("RegionId").value.split(":").filter(r => r != "?").pop();
+          }
+          else {
+            $scope.model.SkillTrainingDetails.TrainingProvider.OtherRegion = document.getElementById("OtherRegion").value;
+            $scope.model.SkillTrainingDetails.TrainingProvider.OtherZipCode = document.getElementById("OtherZipCode").value;
+          }
+        }
+
+        // Have to trigger the 'change' event of Line 1 to cascade update the Secondary address.
+        $("#AddressLine1").trigger("change");
       });
     }
   }
@@ -203,7 +265,9 @@ app.controller('ApplicationSkillsTrainingView', function ($scope, $attrs, $contr
 
   $scope.countryChange = function () {
     $scope.model.SkillTrainingDetails.TrainingProvider.RegionId = null;
+    $scope.CheckSaveAsAbove();
   };
+
   $scope.countryChangeTrainingProvider = function () {
     $scope.model.SkillTrainingDetails.TrainingProvider.RegionIdTrainingProvider = null;
   };

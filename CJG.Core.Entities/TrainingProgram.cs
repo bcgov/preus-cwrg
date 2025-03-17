@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -369,22 +369,22 @@ namespace CJG.Core.Entities
 					yield return new ValidationResult($"The training end date must fall within the project delivery dates {GrantApplication.StartDate.ToLocalMorning():yyyy-MM-dd} to {GrantApplication.EndDate.ToLocalMidnight():yyyy-MM-dd}", new[] { nameof(EndDate) });
 			}
 
-			if (!isExternalUser)
-			{
-				var fiscalYears = context.FiscalYears.OrderBy(fy => fy.StartDate).ThenBy(fy => fy.Caption).ToList();
-				// Force load training period and Fiscal year
-				context.Set<TrainingPeriod>()
-					.Include(t => t.FiscalYear)
-					.FirstOrDefault(t => t.Id == GrantApplication.GrantOpening.TrainingPeriodId);
+			//if (!isExternalUser)
+			//{
+			//	var fiscalYears = context.FiscalYears.OrderBy(fy => fy.StartDate).ThenBy(fy => fy.Caption).ToList();
+			//	// Force load training period and Fiscal year
+			//	context.Set<TrainingPeriod>()
+			//		.Include(t => t.FiscalYear)
+			//		.FirstOrDefault(t => t.Id == GrantApplication.GrantOpening.TrainingPeriodId);
 
-				var maxDates = this.GetMaxDates(fiscalYears);
+			//	var maxDates = this.GetMaxDates(fiscalYears);
 
-				if (!this.HasStartDateWithinExtendedDeliveryDates(maxDates.Item1))
-					yield return new ValidationResult($"The training start date must fall within the extended project delivery dates { GrantApplication.StartDate.ToLocalMorning():yyyy-MM-dd} to {maxDates.Item1.ToLocalMidnight():yyyy-MM-dd}", new[] { nameof(StartDate) });
+			//if (!this.HasStartDateWithinExtendedDeliveryDates(maxDates.Item1))
+			//	yield return new ValidationResult($"The training start date must fall within the extended project delivery dates { GrantApplication.StartDate.ToLocalMorning():yyyy-MM-dd} to {maxDates.Item1.ToLocalMidnight():yyyy-MM-dd}", new[] { nameof(StartDate) });
 
-				if (!this.HasEndDateWithinExtendedDeliveryDates(maxDates.Item2))
-					yield return new ValidationResult($"The training end date must fall within the extended project delivery dates { GrantApplication.StartDate.ToLocalMorning():yyyy-MM-dd} to {maxDates.Item2.ToLocalMidnight():yyyy-MM-dd}", new[] { nameof(EndDate) });
-			}
+			//if (!this.HasEndDateWithinExtendedDeliveryDates(maxDates.Item2))
+			//	yield return new ValidationResult($"The training end date must fall within the extended project delivery dates { GrantApplication.StartDate.ToLocalMorning():yyyy-MM-dd} to {maxDates.Item2.ToLocalMidnight():yyyy-MM-dd}", new[] { nameof(EndDate) });
+			//}
 
 			//// StartDate must be within the Delivery dates (compares original values, as well).
 			//if (false && GrantApplication.GrantOpening.GrantStream.GrantProgram.ProgramTypeId == ProgramTypes.WDAService && !this.HasStartDateWithin30Days())

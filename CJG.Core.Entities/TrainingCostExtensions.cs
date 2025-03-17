@@ -195,12 +195,6 @@ namespace CJG.Core.Entities
 			eligibleCost.EstimatedParticipantCost = eligibleCost.CalculateEstimatedParticipantCost();
 			eligibleCost.EstimatedReimbursement = eligibleCost.CalculateEstimatedReimbursement();
 			eligibleCost.EstimatedEmployerContribution = eligibleCost.CalculateEstimatedEmployerContribution();
-
-			if (eligibleCost.TrainingCost.GrantApplication.GetProgramType() == ProgramTypes.EmployerGrant)
-			{
-
-				eligibleCost.EstimatedEmployerContribution = eligibleCost.EstimatedCost - eligibleCost.EstimatedReimbursement;
-			}
 		}
 
 		/// <summary>
@@ -492,20 +486,7 @@ namespace CJG.Core.Entities
 			}
 
 			trainingCost.TotalEstimatedCost = trainingCost.EligibleCosts.Sum(ec => ec.EstimatedCost);
-
-			if (trainingCost.GrantApplication.GetProgramType() == ProgramTypes.EmployerGrant)
-			{
-				var maxReimbursementAmount = trainingCost.GrantApplication.MaxReimbursementAmt;
-				var rate = trainingCost.GrantApplication.ReimbursementRate;
-
-				var perParticipantCost = CalculatePerParticipantCost(Math.Round(trainingCost.TotalEstimatedCost * (decimal)rate, 2), trainingCost.EstimatedParticipants);
-				var estimatedReimbursement = perParticipantCost >= maxReimbursementAmount ? maxReimbursementAmount : perParticipantCost;
-				trainingCost.TotalEstimatedReimbursement = estimatedReimbursement * trainingCost.EstimatedParticipants;
-			}
-			else
-			{
-				trainingCost.TotalEstimatedReimbursement = trainingCost.EligibleCosts.Sum(ec => ec.EstimatedReimbursement);
-			}
+			trainingCost.TotalEstimatedReimbursement = trainingCost.EligibleCosts.Sum(ec => ec.EstimatedReimbursement);
 		}
 
 		/// <summary>

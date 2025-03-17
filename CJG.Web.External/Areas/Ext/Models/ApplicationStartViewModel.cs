@@ -12,8 +12,6 @@ namespace CJG.Web.External.Areas.Ext.Models
 {
 	public class ApplicationStartViewModel : BaseViewModel
 	{
-		#region Properties		
-
 		public int GrantApplicationId { get { return Id; } set { Id = value; } }
 
 		public byte[] RowVersion { get; set; }
@@ -22,14 +20,14 @@ namespace CJG.Web.External.Areas.Ext.Models
 
 		public string GrantProgramName { get; set; }
 
-		[Required(ErrorMessage = "Start Date is required")]
+		//[Required(ErrorMessage = "Start Date is required")]
 		public DateTime? DeliveryStartDate { get; set; }
 
 		public int DeliveryStartYear { get; set; }
 		public int DeliveryStartMonth { get; set; }
 		public int DeliveryStartDay { get; set; }
 
-		[Required(ErrorMessage = "End Date is required")]
+		//[Required(ErrorMessage = "End Date is required")]
 		public DateTime? DeliveryEndDate { get; set; }
 
 		public int DeliveryEndYear { get; set; }
@@ -90,9 +88,6 @@ namespace CJG.Web.External.Areas.Ext.Models
 		public string AlternatePhoneNumber { get; set; }
 		public string AlternatePhoneExtension { get; set; }
 
-		#endregion
-
-		#region Constructors
 		public ApplicationStartViewModel()
 		{
 		}
@@ -196,6 +191,5 @@ namespace CJG.Web.External.Areas.Ext.Models
 
 			PrioritySectors = staticDataService.GetPrioritySectors().Select(x => new KeyValuePair<int, string>(x.Id, x.Caption)).ToList();
 		}
-		#endregion
 	}
 }
