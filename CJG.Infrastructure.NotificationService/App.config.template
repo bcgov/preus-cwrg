@@ -41,8 +41,11 @@
   </runtime>
   <applicationSettings>
     <CJG.Infrastructure.NotificationService.Properties.Settings>
+        <setting name="EnableEmails" serializeAs="String">
+            <value>#{email-enabled}</value>
+        </setting>		
       <setting name="SmtpServer" serializeAs="String">
-        <value />
+        <value>#{smtp-server}</value>
       </setting>
       <setting name="MaxEmailSendAttempts" serializeAs="String">
         <value>5</value>
