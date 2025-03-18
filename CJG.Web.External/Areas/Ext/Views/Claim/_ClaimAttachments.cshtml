@@ -1,10 +1,8 @@
-﻿@using CJG.Web.External.Areas.Ext.Controllers
-    
-<div ng-controller="ClaimAttachmentsView" ng-claim-id="@ViewBag.ClaimId" ng-claim-version="@ViewBag.ClaimVersion">
+﻿<div ng-controller="ClaimAttachmentsView" ng-claim-id="@ViewBag.ClaimId" ng-claim-version="@ViewBag.ClaimVersion">
 <div>
-    <h2 class="text--uppercase">{{model.Title}}</h2>
+    <h2>{{model.Title}}</h2>
     <div>
-        <p>Please attach all necessary documentation to support your claim. For details on claim and invoice requirements for your funding stream, please review the <a href="https://www.workbc.ca/find-loans-and-grants/community/community-workforce-response-grant/claim-submission-guidelines" target="_blank">Claim Submission Guidelines</a>.</p>
+        <p>Please attach all necessary documentation to support your claim.</p>
         <p>For each attachment, enter a description to identify what part of your claim it supports.</p>
         <p>Accepted file types: PDF, JPG, JPEG, PNG, GIF. Maximum file size is {{model.MaxUploadSize}} MB.</p>
     </div>

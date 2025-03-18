@@ -114,7 +114,7 @@
 
         <div class="button-group">
             @Html.ActionLink("Cancel", nameof(CJG.Web.External.Areas.Ext.Controllers.ReportingController.GrantFileView), nameof(CJG.Web.External.Areas.Ext.Controllers.ReportingController).Replace("Controller", ""), new { grantApplicationId = ViewBag.GrantApplicationId }, new { @class = "btn btn--secondary btn--back" })
-            <a class="pull-right btn btn--primary btn--forward" ng-click="SubmitClaim()" ng-disabled="!model.ClaimConfirmed">Submit Claim</a>
+            <a class="pull-right btn btn--primary btn--forward" ng-click="SubmitClaim()" ng-disabled="submitClaimIsDisabled()">Submit Claim</a>
         </div>
     </div>
     </div>

@@ -1,12 +1,4 @@
 ﻿@using CJG.Core.Entities
-@using CJG.Web.External.Areas.Ext.Controllers
-
-@if (ViewBag.Reporting)
-{
-    <div class="pull-right" ng-if="model.Claim.ProgramType == @((int)ProgramTypes.EmployerGrant)">
-        @Html.ActionLink("Reimbursement Guidelines", nameof(ApplicationAttachmentController.DownloadResource), typeof(ApplicationAttachmentController), new { filename = $"{ViewBag.GrantProgramCode}-reimbursement-guidelines", message = "guidelines" }, null)
-    </div>
-}
 
 <div ng-if="model.Claim.ClaimAssessmentNotes != null">
     <div>
@@ -31,9 +23,7 @@
 }
 
     <div class="clearfix clearfix">
-        <div ng-if="model.Claim.ProgramType == @((int)ProgramTypes.WDAService)">
-            <br />
-        </div>
+        <br />
         <div class="row--alert" ng-if="EligibleCostSummaryMessage">
             <div class="alert alert--deafult alert--error" role="alert" ng-bind-html="EligibleCostSummaryMessage"></div>
         </div>
@@ -41,8 +31,6 @@
             <div class="alert alert--deafult alert--success" role="alert" ng-bind-html="EligibleCostSuccessMessage"></div>
         </div>
 
-        <!-- ******** CJG-728 ******** -->
-        <!--NOTE: Same section is shown BELOW the <ul> below for ETG -->
         <div ng-if="model.Claim.ProgramType == @((int)ProgramTypes.WDAService)">
             <div class="pull-left">
                 <strong>Total Reimbursement Claim:</strong>
@@ -54,7 +42,6 @@
                 <text>Selected Claim does not have Eligible Costs</text>
             </ul>
         </div>
-        <!-- **************** -->
 
         <ul class="panel-bar k-widget k-reset k-header k-panelbar" style="margin-bottom: 0px;" ng-if="model.Claim.EligibleCosts.length > 0" id="panelBar">
             <li class="k-item k-state-default" ng-repeat="eligibleCost in model.Claim.EligibleCosts">
@@ -276,22 +263,5 @@
                 </div>
             </li>
         </ul>
-        <div ng-if="model.Claim.ProgramType == @((int)ProgramTypes.WDAService)">
-            <br />
-        </div>
-        <!-- ******** CJG-728 ******** -->
-        <!--NOTE: Same section is shown ABOVE the <ul> above for CWRG -->
-        <div ng-if="model.Claim.ProgramType == @((int)ProgramTypes.EmployerGrant)">
-            <div class="pull-left">
-                <strong>Total Reimbursement Claim:</strong>
-            </div>
-            <div class="pull-right">
-                <strong><span class="grand-total">{{model.Claim.TotalClaimReimbursement | currency : '$' : 2}}</span></strong>
-            </div>
-            <ul class="panel-bar" ng-if="model.Claim.EligibleCosts.length == 0">
-                <text>Selected Claim does not have Eligible Costs</text>
-            </ul>
-            <p>&nbsp;</p>
-        </div>
-        <!-- **************** -->
+        <br />
     </div>
