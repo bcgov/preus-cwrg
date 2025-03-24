@@ -62,6 +62,31 @@ namespace CJG.Core.Entities
 			return grantApplication.TrainingPrograms.Any(p => p.CipsCode == null);
 		}
 
+		public static bool RequiresProgramInitiative(this GrantApplication grantApplication)
+		{
+			return grantApplication.ProgramInitiative == null;
+
+			//if (grantApplication.ProgramInitiative != null)
+			//	return false;
+
+			//var statesRequiringInitiative = new List<ApplicationStateInternal>
+			//{
+			//	ApplicationStateInternal.UnderAssessment,
+			//	ApplicationStateInternal.AgreementAccepted,
+			//	ApplicationStateInternal.ClaimApproved,
+			//	ApplicationStateInternal.ClaimAssessReimbursement,
+			//	ApplicationStateInternal.ClaimAssessEligibility,
+			//	ApplicationStateInternal.,
+			//	ApplicationStateInternal.NewClaim,
+			//	ApplicationStateInternal.NewClaim,
+			//	ApplicationStateInternal.NewClaim,
+			//	ApplicationStateInternal.NewClaim,
+
+
+			//}
+			
+		}
+
 		/// <summary>
 		/// Determine whether any training providers require validation.
 		/// </summary>

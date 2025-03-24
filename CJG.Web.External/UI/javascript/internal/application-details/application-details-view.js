@@ -91,7 +91,7 @@ app.controller('ApplicationDetails', function ($scope, $attrs, $controller, $tim
       loadCompletionReportStatus()
     ])
       .then(function () {
-        $scope.broadcast('show', { target: 'ApplicationSummary,ApplicationNotes' });
+        $scope.broadcast('show', { target: 'ApplicationSummary, ApplicationNotes' });
       })
       .catch(angular.noop);
   }

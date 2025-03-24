@@ -68,10 +68,21 @@
                 <div class="form__group">
                     <div class="form__label">Grant opening:</div>
                     <div class="form__control">
-                        {{model.GrantStreamFullName}} <br>
+                        {{model.GrantStreamPartialName}} <br>
                         ({{toPST(model.TrainingPeriodStartDate)}} to {{toPST(model.TrainingPeriodEndDate)}})
                     </div>
                 </div>
+                <div class="form__group">
+                    <div class="form__label">Program initiative:</div>
+                    <div class="form__control">
+                        <div class="control-wrapper">
+                            <div class="wrapper--dropdown selectmenu input--medium">
+                                <select ng-model="model.ProgramInitiativeId" ng-options="item.Key as item.Value for item in programInitiatives" class="input--medium" ng-validation ng-editing></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form__group">
                     <div class="form__label">Delivery dates:</div>
                     <div class="form__control">

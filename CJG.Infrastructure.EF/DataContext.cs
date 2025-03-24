@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
@@ -81,6 +81,7 @@ namespace CJG.Infrastructure.EF
 		public DbSet<GrantOpeningFinancial> GrantOpeningFinancials => _context.GrantOpeningFinancials;
 		public DbSet<GrantOpeningIntake> GrantOpeningIntakes => _context.GrantOpeningIntakes;
 		public DbSet<ReportRate> ReportRates => _context.ReportRates;
+		public DbSet<ProgramInitiative> ProgramInitiatives => _context.ProgramInitiatives;
 		public DbSet<ProgramType> ProgramTypes => _context.ProgramTypes;
 		public DbSet<RiskClassification> RiskClassifications => _context.RiskClassifications;
 		public DbSet<ServiceType> ServiceTypes => _context.ServiceTypes;

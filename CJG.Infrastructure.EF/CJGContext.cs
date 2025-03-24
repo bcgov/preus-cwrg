@@ -141,6 +141,7 @@ namespace CJG.Infrastructure.EF
 		#endregion
 
 		#region Grant Program
+		public virtual DbSet<ProgramInitiative> ProgramInitiatives { get; set; }
 		public virtual DbSet<ProgramType> ProgramTypes { get; set; }
 		public virtual DbSet<GrantProgram> GrantPrograms { get; set; }
 		public virtual DbSet<GrantProgramNotificationType> GrantProgramNotificationTypes { get; set; }

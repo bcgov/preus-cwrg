@@ -1,4 +1,4 @@
-﻿using CJG.Core.Entities;
+using CJG.Core.Entities;
 using CJG.Infrastructure.Identity;
 using System;
 using System.Collections.Generic;
@@ -73,6 +73,7 @@ namespace CJG.Infrastructure.Entities
 		DbSet<GrantOpeningFinancial> GrantOpeningFinancials { get; }
 		DbSet<GrantOpeningIntake> GrantOpeningIntakes { get; }
 		DbSet<ReportRate> ReportRates { get; }
+		DbSet<ProgramInitiative> ProgramInitiatives { get; }
 		DbSet<ProgramType> ProgramTypes { get; }
 		DbSet<RiskClassification> RiskClassifications { get; }
 		DbSet<ServiceType> ServiceTypes { get; }
