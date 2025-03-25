@@ -1258,9 +1258,25 @@ th.table--font-size-16 {
   }
 
   tbody {
+    tr.lead-row {
+      th, td {
+        border-bottom: 1px solid #444;
+      }
+    }
+
     th {
       font-size: 0.9em;
+      font-weight: normal;
       width: 25%;
+    }
+
+    tr.lead-cell {
+      th {
+        font-weight: 700;
+      }
+      td {
+        font-weight: 600;
+      }
     }
 
     td {
@@ -1268,7 +1284,7 @@ th.table--font-size-16 {
 
       input[type=text] {
         text-align: right !important;
-        width: 140px;
+        width: 180px;
       }
     }
   }

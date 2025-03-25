@@ -34,6 +34,17 @@ namespace CJG.Core.Entities
 		public virtual GrantOpening GrantOpening { get; set; }
 
 		/// <summary>
+		/// get/set - Foreign key to the program initiative.
+		/// </summary>
+		public int? ProgramInitiativeId { get; set; }
+
+		/// <summary>
+		/// get/set - The grant opening this grant application belongs to.
+		/// </summary>
+		[ForeignKey(nameof(ProgramInitiativeId))]
+		public virtual ProgramInitiative ProgramInitiative { get; set; }
+
+		/// <summary>
 		/// get/set - Foreign key to the application type.
 		/// </summary>
 		[Index("IX_GrantApplication", 6)]

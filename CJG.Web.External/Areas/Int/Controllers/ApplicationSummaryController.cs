@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Http.Validation;
 using System.Web.Mvc;
 using CJG.Application.Services;
 using CJG.Core.Entities;
@@ -36,6 +37,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		private readonly IGrantApplicationService _grantApplicationService;
 		private readonly IAuthorizationService _authorizationService;
 		private readonly IRiskClassificationService _riskClassificationService;
+		private readonly IProgramInitiativeService _programInitiativeService;
 		private readonly IGrantAgreementService _grantAgreementService;
 		private readonly IDeliveryPartnerService _deliveryPartnerService;
 		private readonly IAttachmentService _attachmentService;
@@ -47,6 +49,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			IAuthorizationService authorizationService,
 			IGrantApplicationService grantApplicationService,
 			IRiskClassificationService riskClassificationService,
+			IProgramInitiativeService programInitiativeService,
 			IGrantAgreementService grantAgreementService,
 			IDeliveryPartnerService deliveryPartnerService,
 			IAttachmentService attachmentService,
@@ -57,6 +60,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			_grantApplicationService = grantApplicationService;
 			_authorizationService = authorizationService;
 			_riskClassificationService = riskClassificationService;
+			_programInitiativeService = programInitiativeService;
 			_grantAgreementService = grantAgreementService;
 			_deliveryPartnerService = deliveryPartnerService;
 			_attachmentService = attachmentService;
@@ -168,6 +172,25 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			return Json(model, JsonRequestBehavior.AllowGet);
 		}
 
+		[HttpGet]
+		[Route("Application/Summary/ProgramInitiatives")]
+		public JsonResult GetProgramInitiatives()
+		{
+			var programInitiatives = new KeyValuePair<int, string>[] { };
+			try
+			{
+				programInitiatives = _programInitiativeService
+					.GetAll(true)
+					.Select(x => new KeyValuePair<int, string>(x.Id, x.Name))
+					.ToArray();
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex);
+			}
+			return Json(programInitiatives, JsonRequestBehavior.AllowGet);
+		}
+
 		/// <summary>
 		/// Get an array of delivery programs.
 		/// </summary>
@@ -261,6 +284,9 @@ namespace CJG.Web.External.Areas.Int.Controllers
 					ModelState.AddModelError(nameof(model.DeliveryStartDate) + " + " + nameof(model.DeliveryEndDate), "You cannot change the Delivery Dates when a Claim is currently submitted or a previous Claim has been approved.");
 				}
 
+				if (model.ProgramInitiativeId == null)
+					ModelState.AddModelError(nameof(model.ProgramInitiativeId), "Program Initiative is required.");
+
 				if (model.DeliveryPartnerId == null)
 				{
 					model.SelectedDeliveryPartnerServiceIds = new List<int>();
@@ -314,6 +340,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 						}
 					}
 
+					grantApplication.ProgramInitiativeId = model.ProgramInitiativeId;
 					grantApplication.Organization.DoingBusinessAsMinistry = model.DoingBusinessAsMinistry;
 					grantApplication.RowVersion = Convert.FromBase64String(model.RowVersion);
 					//grantApplication.RiskClassificationId = model.RiskClassificationId;

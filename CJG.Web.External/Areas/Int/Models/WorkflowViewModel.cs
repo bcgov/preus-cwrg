@@ -214,6 +214,7 @@ namespace CJG.Web.External.Areas.Int.Models
 						       
 				case ApplicationWorkflowTrigger.RecommendForApproval:
 					return grantApplication.RequiresCIPSValidation()
+					       || grantApplication.RequiresProgramInitiative()
 					       || grantApplication.RequiresTrainingProviderValidation()
 						   || grantApplication.RequiresEligibleServiceComponents()
 					       || grantApplication.TrainingCost.AgreedCommitment == 0
@@ -227,7 +228,7 @@ namespace CJG.Web.External.Areas.Int.Models
 						   || grantApplication.RequiresNumParticipantsMatchNumApprovedParticipants();
 
 				case ApplicationWorkflowTrigger.RecommendForDenial:
-					return false;
+					return grantApplication.RequiresProgramInitiative();
 
 				case ApplicationWorkflowTrigger.RecommendChangeForApproval:
 				case ApplicationWorkflowTrigger.ApproveChangeRequest:

@@ -80,6 +80,9 @@
 	</div>
 
     <div class="application-body">
+        <div ng-if="grantFile.RequiresProgramInitiative" class="notice notice--icon">
+            <p>Program Initiative is a mandatory field, please fill in before recommending for approval or denial.</p>
+        </div>
         <div ng-if="grantFile.AllowEvaluationSubmission" class="notice notice--icon">
             <p>Please complete Evaluation before Recommending for Approval.</p>
         </div>

@@ -44,7 +44,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			return View();
 		}
 
-
 		[HttpGet]
 		[Route("Admin/AccountsReceivable/FiscalYears")]
 		public JsonResult GetFiscalYears()

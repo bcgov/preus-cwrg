@@ -122,6 +122,9 @@
     <Compile Include="AppClaimTypes.cs" />
     <Compile Include="AttachmentDocumentType.cs" />
     <Compile Include="AttachmentType.cs" />
+    <Compile Include="DirectorBudgetEntry.cs" />
+    <Compile Include="DirectorBudgetEntryType.cs" />
+    <Compile Include="DirectorBudgetRow.cs" />
     <Compile Include="GrantApplicationEvaluationNote.cs" />
     <Compile Include="Attestation.cs" />
     <Compile Include="AttestationState.cs" />
@@ -157,6 +160,7 @@
     <Compile Include="ParticipantWithdrawalSurveyQuestion.cs" />
     <Compile Include="ParticipantWithdrawalSurveyQuestionOption.cs" />
     <Compile Include="PaymentRequestExtensions.cs" />
+    <Compile Include="ProgramInitiative.cs" />
     <Compile Include="ProofOfPayment.cs" />
     <Compile Include="ProofOfPaymentState.cs" />
     <Compile Include="EvaluationFormQuestionType.cs" />

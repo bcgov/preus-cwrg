@@ -10,6 +10,7 @@ namespace CJG.Core.Interfaces.Service
 		void UpdateAccountsReceivables(ApplicationAccountsReceivableUpdateModel model);
 
 		List<AccountsReceivableBreakdown> GetAccountsReceivableReportData(int? fiscalYearId = null);
+		AccountsReceivableInitiativeData GetAccountsReceivableReportDataAsInitiatives(int fiscalYearId, ProgramInitiative programInitiative);
 		List<AccountsReceivableApplicationBreakdownModel> GetAccountsReceivableBreakdownData(int fiscalYearId);
 	}
 }

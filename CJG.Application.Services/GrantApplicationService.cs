@@ -1260,6 +1260,8 @@ namespace CJG.Application.Services
 			newApplication.ProgramDescription = programDescription;
 			newApplication.ProgramDescription.DescriptionState = ProgramDescriptionStates.Incomplete;
 
+			newApplication.ProgramInitiativeId = withdrawnApp.ProgramInitiativeId;
+
 			// Training
 			newApplication.TrainingCost = new TrainingCost(newApplication, withdrawnApp.TrainingCost.EstimatedParticipants);
 			newApplication.TrainingCost.Clone(withdrawnApp.TrainingCost);

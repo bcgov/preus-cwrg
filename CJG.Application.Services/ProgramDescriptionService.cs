@@ -1,12 +1,11 @@
-using CJG.Core.Entities;
-using CJG.Core.Interfaces.Service;
-using CJG.Infrastructure.Entities;
-using CJG.Infrastructure.Identity;
-using NLog;
 using System;
 using System.Linq;
 using System.Web;
 using CJG.Application.Services.Exceptions;
+using CJG.Core.Entities;
+using CJG.Core.Interfaces.Service;
+using CJG.Infrastructure.Entities;
+using NLog;
 
 namespace CJG.Application.Services
 {
@@ -15,10 +14,6 @@ namespace CJG.Application.Services
 	/// </summary>
 	public class ProgramDescriptionService : Service, IProgramDescriptionService
 	{
-		#region Variables
-		#endregion
-
-		#region Constructors
 		/// <summary>
 		/// Creates a new instance of a <typeparamref name="ProgramDescriptionService"/> object.
 		/// </summary>
@@ -31,13 +26,12 @@ namespace CJG.Application.Services
 			ILogger logger) : base(context, httpContext, logger)
 		{
 		}
-		#endregion
 
-		#region Methods
 		public void Add(ProgramDescription programDescription)
 		{
 			if (!_httpContext.User.CanPerformAction(programDescription.GrantApplication, ApplicationWorkflowTrigger.EditApplication))
 				throw new NotAuthorizedException("User does not have permission to edit application '{id}'.");
+
 			_dbContext.ProgramDescriptions.Add(programDescription);
 			_dbContext.Commit();
 		}
@@ -79,6 +73,5 @@ namespace CJG.Application.Services
 			_dbContext.Update<ProgramDescription>(programDescription);
 			_dbContext.Commit();
 		}
-		#endregion
 	}
 }

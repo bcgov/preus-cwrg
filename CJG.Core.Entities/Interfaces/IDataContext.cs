@@ -73,6 +73,7 @@ namespace CJG.Infrastructure.Entities
 		DbSet<GrantOpeningFinancial> GrantOpeningFinancials { get; }
 		DbSet<GrantOpeningIntake> GrantOpeningIntakes { get; }
 		DbSet<ReportRate> ReportRates { get; }
+		DbSet<ProgramInitiative> ProgramInitiatives { get; }
 		DbSet<ProgramType> ProgramTypes { get; }
 		DbSet<RiskClassification> RiskClassifications { get; }
 		DbSet<ServiceType> ServiceTypes { get; }
@@ -176,6 +177,8 @@ namespace CJG.Infrastructure.Entities
 		DbSet<Setting> Settings { get; }
 		DbSet<RateFormat> RateFormats { get; }
 		DbSet<DirectorBudget> DirectorBudgets { get; }
+		DbSet<DirectorBudgetRow> DirectorBudgetRows { get; }
+		DbSet<DirectorBudgetEntry> DirectorBudgetEntries { get; }
 		DbSet<GlobalProgramBudget> GlobalProgramBudgets { get; }
 		#endregion
 

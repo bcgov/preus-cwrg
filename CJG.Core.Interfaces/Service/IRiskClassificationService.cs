@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CJG.Core.Interfaces.Service
 {
-    public interface IRiskClassificationService : IService
+	public interface IRiskClassificationService : IService
     {
         RiskClassification Get(int id);
         IEnumerable<RiskClassification> GetAll();

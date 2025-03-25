@@ -29,6 +29,17 @@ app.controller('ClaimReviewView', function ($scope, $attrs, $controller, $timeou
       .catch(angular.noop);
   }
 
+  $scope.submitClaimIsDisabled = function () {
+    if ($scope.model == undefined || $scope.model.ClaimType == undefined)
+      return true;
+
+    const claimCanHaveAmendments = $scope.model.ClaimType === 2;  // (int)ClaimTypes.MultipleClaimsWithoutAmendments
+    if (!claimCanHaveAmendments)
+      return !$scope.model.ClaimConfirmed;
+
+    return !$scope.model.ClaimConfirmed || !$scope.model.Claim.IsFinalClaim;
+  }
+
   $scope.toggle = function (claimEligibleCost) {
     var el = angular.element("#claim-eligible-cost-" + claimEligibleCost.Id);
 
