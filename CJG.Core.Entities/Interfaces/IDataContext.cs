@@ -1,4 +1,4 @@
-using CJG.Core.Entities;
+﻿using CJG.Core.Entities;
 using CJG.Infrastructure.Identity;
 using System;
 using System.Collections.Generic;
@@ -177,6 +177,8 @@ namespace CJG.Infrastructure.Entities
 		DbSet<Setting> Settings { get; }
 		DbSet<RateFormat> RateFormats { get; }
 		DbSet<DirectorBudget> DirectorBudgets { get; }
+		DbSet<DirectorBudgetRow> DirectorBudgetRows { get; }
+		DbSet<DirectorBudgetEntry> DirectorBudgetEntries { get; }
 		DbSet<GlobalProgramBudget> GlobalProgramBudgets { get; }
 		#endregion
 

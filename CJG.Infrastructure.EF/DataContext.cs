@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
@@ -183,6 +183,8 @@ namespace CJG.Infrastructure.EF
 		public DbSet<Setting> Settings => _context.Settings;
 		public DbSet<RateFormat> RateFormats => _context.RateFormats;
 		public DbSet<DirectorBudget> DirectorBudgets => _context.DirectorBudgets;
+		public DbSet<DirectorBudgetRow> DirectorBudgetRows => _context.DirectorBudgetRows;
+		public DbSet<DirectorBudgetEntry> DirectorBudgetEntries => _context.DirectorBudgetEntries;
 		public DbSet<GlobalProgramBudget> GlobalProgramBudgets => _context.GlobalProgramBudgets;
 		#endregion
 

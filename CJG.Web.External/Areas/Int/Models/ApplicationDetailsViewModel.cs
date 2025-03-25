@@ -33,6 +33,7 @@ namespace CJG.Web.External.Areas.Int.Models
 		public bool ShowTrainingPrograms { get; }
 		public bool ShowSkillsTraining { get; }
 		public bool RequiresTrainingProviderValidation { get; set; }
+		public bool RequiresProgramInitiative { get; set; }
 		public bool RequiresCIPSValidation { get; set; }
 		public bool CanManageParticipantEligibilty { get; set; }
 		public bool RequiresNumParticipantsMatchNumApprovedParticipants { get; set; }
@@ -130,6 +131,7 @@ namespace CJG.Web.External.Areas.Int.Models
 
 			WorkflowViewModel = new WorkflowViewModel(grantApplication, user, getWorkflowUrl);
 
+			RequiresProgramInitiative = grantApplication.RequiresProgramInitiative();
 			RequiresCIPSValidation = grantApplication.RequiresCIPSValidation();
 			RequiresTrainingProviderValidation = grantApplication.RequiresTrainingProviderValidation();
 

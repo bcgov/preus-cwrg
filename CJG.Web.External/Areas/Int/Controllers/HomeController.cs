@@ -127,7 +127,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			{
 				if (ModelState.IsValid)
 				{
-					_directorReportsService.UpdateBudget(model.DirectorsReport);
+					_directorReportsService.UpdateBudget(model.DirectorsReport, model.OpeningBudgetRows, model.ClosingBudgetRows);
 
 					var fiscalYear = _fiscalYearService.GetFiscalYear(model.FiscalYearId);
 					model = new DirectorBudgetSummaryModel(_directorReportsService, fiscalYear, User);

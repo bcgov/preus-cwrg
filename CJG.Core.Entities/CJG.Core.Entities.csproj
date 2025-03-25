@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -122,6 +122,9 @@
     <Compile Include="AppClaimTypes.cs" />
     <Compile Include="AttachmentDocumentType.cs" />
     <Compile Include="AttachmentType.cs" />
+    <Compile Include="DirectorBudgetEntry.cs" />
+    <Compile Include="DirectorBudgetEntryType.cs" />
+    <Compile Include="DirectorBudgetRow.cs" />
     <Compile Include="GrantApplicationEvaluationNote.cs" />
     <Compile Include="Attestation.cs" />
     <Compile Include="AttestationState.cs" />

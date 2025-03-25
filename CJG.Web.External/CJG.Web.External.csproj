@@ -984,6 +984,7 @@
     <Content Include="Areas\Int\Views\AccountsReceivable\_AccountsReceivables.cshtml" />
     <Content Include="Areas\Int\Views\ProgramInitiatives\_Initiatives.cshtml" />
     <Content Include="Areas\Int\Views\ProgramInitiatives\ProgramInitiativesView.cshtml" />
+    <Content Include="Areas\Int\Views\Home\_DirectorDashboardForecastAndFinanceReport.cshtml" />
     <None Include="NLog.Training.config">
       <DependentUpon>NLog.config</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

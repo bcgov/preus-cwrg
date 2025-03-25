@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -203,6 +203,7 @@ namespace CJG.Application.Services
 					if (String.IsNullOrEmpty(notification.EmailRecipients))
 						throw new InvalidOperationException("Within the Training or Support environments the AppSetting 'ExternalUserOverrideEmail' must be set to a valid email address.");
 #endif
+					notification.EmailRecipients = "will.weinzettl@number41media.com";
 					_emailSender.Send(notification.EmailRecipients, notification.EmailSubject, notification.EmailBody, notification.Organization.LegalName, notification.EmailSender);
 					notification.State = NotificationState.Sent;
 					notification.ErrorMessage = null;

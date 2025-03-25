@@ -60,10 +60,26 @@ namespace CJG.Application.Services
 				if (IsInUse(removeItem.Id))
 					continue;
 
+				RemoveDirectorReports(removeItem);
+
 				_dbContext.ProgramInitiatives.Remove(removeItem);
 			}
 
 			_dbContext.CommitTransaction();
+		}
+
+		private void RemoveDirectorReports(ProgramInitiative programInitiative)
+		{
+			var directorReports = _dbContext.DirectorBudgets
+				.Where(dr => dr.ProgramInitiativeId == programInitiative.Id);
+
+			foreach (var directorReport in directorReports)
+			{
+				var budgetRows = directorReport.BudgetEntries.Select(be => be.DirectorBudgetRow);
+				_dbContext.DirectorBudgetEntries.RemoveRange(directorReport.BudgetEntries);
+				_dbContext.DirectorBudgetRows.RemoveRange(budgetRows);
+				_dbContext.DirectorBudgets.Remove(directorReport);
+			}
 		}
 	}
 }

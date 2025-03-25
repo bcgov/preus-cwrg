@@ -113,7 +113,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
                     }
 
                     foreach (var toRemove in itemsToRemove)
-                        initiativeList.Remove(toRemove);
+	                    initiativeList.Remove(toRemove);
 
                     _programInitiativeService.UpdateInitiatives(initiativeList, itemsToRemove);
                 }

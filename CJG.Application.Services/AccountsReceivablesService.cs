@@ -122,6 +122,7 @@ namespace CJG.Application.Services
 				.Where(ar => ar.AccountsReceivableEntries.Any(c => c.Overpayment != 0))
 				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.GrantProgramId == defaultProgramId)
 				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.IsActive)
+				.Where(ar => ar.GrantApplication.ProgramInitiative != null)
 				.Select(ar => new
 				{
 					StreamName = ar.GrantApplication.GrantOpening.GrantStream.Name.ToLower(),
@@ -167,6 +168,36 @@ namespace CJG.Application.Services
 			}
 
 			return breakdowns;
+		}
+
+		public AccountsReceivableInitiativeData GetAccountsReceivableReportDataAsInitiatives(int fiscalYearId, ProgramInitiative programInitiative)
+		{
+			var fiscalYear = _fiscalYearService.Get(fiscalYearId);
+			var defaultProgramId = GetDefaultGrantProgramId();
+
+			var fiscalStart = fiscalYear.StartDate;
+			var fiscalEnd = fiscalYear.EndDate;
+
+			var claimAccountsReceivableApplications = _dbContext.AccountsReceivables
+				.Include(ar => ar.GrantApplication)
+				.Include(ar => ar.AccountsReceivableEntries)
+				.AsNoTracking()
+				.Where(ar => ar.AccountsReceivableEntries.Any(c => c.Overpayment != 0))
+				.Where(ar => ar.PaidDate >= fiscalStart)
+				.Where(ar => ar.PaidDate <= fiscalEnd)
+				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.GrantProgramId == defaultProgramId)
+				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.IsActive)
+				.Where(ar => ar.GrantApplication.ProgramInitiativeId == programInitiative.Id)
+				.SelectMany(ar => ar.AccountsReceivableEntries.Where(are => are.Overpayment != 0))
+				.ToList();
+
+			var arBreakDown = new AccountsReceivableInitiativeData
+			{
+				Number = claimAccountsReceivableApplications.Select(ar => ar.AccountsReceivable.GrantApplication).Distinct().Count(),
+				Total = claimAccountsReceivableApplications.Sum(ar => ar.Overpayment)
+			};
+
+			return arBreakDown;
 		}
 
 		public List<AccountsReceivableApplicationBreakdownModel> GetAccountsReceivableBreakdownData(int fiscalYearId)

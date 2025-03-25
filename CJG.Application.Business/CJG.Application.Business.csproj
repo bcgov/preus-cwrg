@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Helpers\ValidateNullableInt.cs" />
     <Compile Include="Models\AccountsReceivableApplicationBreakdownModel.cs" />
+    <Compile Include="Models\AccountsReceivableInitiativeData.cs" />
     <Compile Include="Models\AlternateContactModel.cs" />
     <Compile Include="Models\AmountOwingBatchPDFModel.cs" />
     <Compile Include="Models\AmountOwingPDFModel.cs" />
@@ -57,6 +58,9 @@
     <Compile Include="Models\ClaimEvaluationAnswerModel.cs" />
     <Compile Include="Models\ClaimModel.cs" />
     <Compile Include="Models\CollectionItemModel.cs" />
+    <Compile Include="Models\DirectorsReport\BudgetEntryModel.cs" />
+    <Compile Include="Models\DirectorsReport\BudgetRowModel.cs" />
+    <Compile Include="Models\DirectorsReport\BudgetSummaryModel.cs" />
     <Compile Include="Models\DocumentTemplate\TrainingCostTemplateModel.cs" />
     <Compile Include="Models\DocumentTemplate\EligibleCostTemplateModel.cs" />
     <Compile Include="Models\DocumentTemplate\TrainingProviderTemplateModel.cs" />
@@ -67,7 +71,6 @@
     <Compile Include="Models\EligibleCostTypeModel.cs" />
     <Compile Include="Models\EligibleExpenseBreakdownModel.cs" />
     <Compile Include="Models\EvaluationAnswerModel.cs" />
-    <Compile Include="Models\BudgetSummaryModel.cs" />
     <Compile Include="Models\AccountsReceivableBreakdown.cs" />
     <Compile Include="Models\GlobalBudget\GrantStreamBudgetModel.cs" />
     <Compile Include="Models\GlobalBudget\IntakePeriodSlotModel.cs" />
