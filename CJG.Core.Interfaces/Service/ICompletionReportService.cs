@@ -11,7 +11,7 @@ namespace CJG.Core.Interfaces.Service
 
 		IEnumerable<ParticipantForm> GetAffirmativeCompletionReportParticipants(int[] participantIds, int affirmativeAnswerId);
 
-		bool RecordCompletionReportAnswersForStep(int stepNo, IEnumerable<ParticipantCompletionReportAnswer> participantAnswers, IEnumerable<EmployerCompletionReportAnswer> employerAnswers, int completionReportId, int[] participantEnrollmentsForReport);
+		bool RecordCompletionReportAnswersForStep(int stepNo, IEnumerable<ParticipantCompletionReportAnswer> participantAnswers, IEnumerable<EmployerCompletionReportAnswer> employerAnswers, int completionReportId, int[] participantEnrollmentsForReport, bool saveForLater = false);
 
 		int[] GetCompletionReportParticipantQuestionIds(int[] participantIds);
 

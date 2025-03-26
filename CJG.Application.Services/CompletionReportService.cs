@@ -81,7 +81,7 @@ namespace CJG.Application.Services
 			return _dbContext.CommitTransaction();
 		}
 
-		public bool RecordCompletionReportAnswersForStep(int stepNo, IEnumerable<ParticipantCompletionReportAnswer> participantAnswers, IEnumerable<EmployerCompletionReportAnswer> employerAnswers, int completionReportId, int[] participantEnrollmentsForReport)
+		public bool RecordCompletionReportAnswersForStep(int stepNo, IEnumerable<ParticipantCompletionReportAnswer> participantAnswers, IEnumerable<EmployerCompletionReportAnswer> employerAnswers, int completionReportId, int[] participantEnrollmentsForReport, bool saveForLater = false)
 		{
 			if (stepNo == Core.Entities.Constants.CompletionStepWithMultipleQuestions)
 			{
@@ -89,9 +89,7 @@ namespace CJG.Application.Services
 				var questionIds = GetCompletionReportQuestionsForStep(completionReportId, stepNo).Select(cpr => cpr.Id).Distinct().ToArray();
 
 				foreach (var participantEnrollmentId in participantEnrollmentsForReport)
-				{
 					RemoveParticipantAnswers(questionIds, participantEnrollmentId);
-				}
 
 				CommitTransaction();
 			}
@@ -148,6 +146,9 @@ namespace CJG.Application.Services
 				// Check to see if this employer answer has already been recorded
 				if (!_dbContext.EmployerCompletionReportAnswers.Any(ecra => ecra.QuestionId == employerAnswer.QuestionId && ecra.GrantApplicationId == employerAnswer.GrantApplicationId))
 				{
+					if (saveForLater)
+						employerAnswer.DisableRequiredValidation();
+
 					_dbContext.EmployerCompletionReportAnswers.Add(employerAnswer);
 				}
 				else
@@ -157,6 +158,9 @@ namespace CJG.Application.Services
 					{
 						currentEmployerAnswer.AnswerId = employerAnswer.AnswerId;
 						currentEmployerAnswer.OtherAnswer = employerAnswer.OtherAnswer;
+
+						if (saveForLater)
+							currentEmployerAnswer.DisableRequiredValidation();
 					}
 				}
 			}
