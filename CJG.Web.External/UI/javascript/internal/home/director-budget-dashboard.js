@@ -9,6 +9,7 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
         return $scope.model;
       }
     },
+
     budgetTotal: 0,
     fiscalYearId: parseInt($attrs.ngFiscalYearId),
     currentFiscalYearId: parseInt($attrs.ngFiscalYearId)
@@ -46,6 +47,38 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
           $scope.recalculateBudget();
         });
       }).catch(angular.noop);
+  }
+
+  function Base64ToBytes(base64) {
+    console.log(base64);
+    var s = window.atob(base64);
+    var bytes = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) {
+      bytes[i] = s.charCodeAt(i);
+    }
+    return bytes;
+  };
+
+  //$scope.export = function () {
+  //  var data = JSON.stringify($scope.model);//.replace('#', '');
+  //  window.open('/Int/Home/Director/Dashboard/Export?data=' + data);
+  //};
+
+  $scope.export = function () {
+    return $scope.ajax({
+      url: '/Int/Home/Director/Dashboard/Export',
+      method: 'POST',
+      data: $scope.model
+    }).then(function (response) {
+        const blob = new Blob([Base64ToBytes(response.data.FileData)], { type: response.data.FileType });
+        const downloadUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = response.data.FileName;
+        document.body.appendChild(a);
+        a.click();
+      })
+      .catch(angular.noop);
   }
 
   $scope.onFiscalYearChange = function () {

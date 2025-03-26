@@ -3,6 +3,7 @@
         <div class="table--intake-management-dashboard">
 
             <div class="pull-right">
+                <button class="btn btn--primary btn--forward" ng-if="model.CanUpdateBudget" ng-click="export()">Export to Excel</button>
                 <button class="btn btn--primary btn--forward" ng-if="model.CanUpdateBudget" ng-click="save()">Save</button>
             </div>
             <div class="form__group-set">
