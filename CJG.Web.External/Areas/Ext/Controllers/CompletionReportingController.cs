@@ -237,20 +237,28 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			if (completionReportGroupId == Core.Entities.Constants.CompletionReportCWRGPage1)
 			{
 				var participants = grantApplication.ParticipantForms;
-				participantFormsForReport = participants.Select(pf => pf.Id).ToArray();
+				participantFormsForReport = participants
+					.Select(pf => pf.Id)
+					.ToArray();
 			}
 			else if (claimType == ClaimTypes.SingleAmendableClaim && claim != null)
 			{
-				participantFormsForReport = claim.EligibleCosts.SelectMany(ec => ec.ParticipantCosts.Select(pc => pc.ParticipantForm.Id)).Distinct().Where(peId => !doNotIncludeParticipants.Contains(peId)).ToArray();
+				participantFormsForReport = claim.EligibleCosts
+					.SelectMany(ec => ec.ParticipantCosts.Select(pc => pc.ParticipantForm.Id))
+					.Distinct()
+					.Where(peId => !doNotIncludeParticipants.Contains(peId))
+					.ToArray();
 			}
 			else
 			{
-				participantFormsForReport = grantApplication.ParticipantForms.Where(pf => !pf.IsExcludedFromClaim && !doNotIncludeParticipants.Contains(pf.Id)).Select(pe => pe.Id).ToArray();
+				participantFormsForReport = grantApplication.ParticipantForms
+					.Where(pf => !pf.IsExcludedFromClaim && !doNotIncludeParticipants.Contains(pf.Id))
+					.Select(pe => pe.Id)
+					.ToArray();
 			}
 
 			// Get the completion report
 			var completionReport = _completionReportService.GetCurrentCompletionReport(grantApplication.CompletionReportId);
-
 			var questions = _completionReportService.GetCompletionReportQuestionsForStep(completionReport.Id, completionReportGroupId);
 
 			switch (completionReportGroupId)
@@ -259,31 +267,31 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					foreach (var question in model.Questions)
 					{
 						var answer = question.Level1Answers.First();
-						if (!answer.BoolAnswer)
+
+						if (answer.BoolAnswer)
+							continue;
+
+						// record any entries where the answer was not in the affirmative
+						foreach (var participantAnswer in question.Level2Answers.Where(o => o.BoolAnswer))
 						{
-							// record any entries where the answer was not in the affirmative
-							foreach (var participantAnswer in question.Level2Answers.Where(o => o.BoolAnswer))
+							// make sure we don't record the same answer twice for a participant (currently only applies to reasons for training outcomes)
+							if (participantAnswers.Count(pa => pa.AnswerId == participantAnswer.IntAnswer && pa.ParticipantFormId == participantAnswer.ParticipantFormId) == 0)
 							{
-								// make sure we don't record the same answer twice for a participant (currently only applies to reasons for training outcomes)
-								if (participantAnswers.Count(pa => pa.AnswerId == participantAnswer.IntAnswer && pa.ParticipantFormId == participantAnswer.ParticipantFormId) == 0)
+								if (participantAnswer.IntAnswer == 0)
+									throw new InvalidOperationException("A reason must be specified for all participants not completed training.");
+
+								participantAnswers.Add(new ParticipantCompletionReportAnswer
 								{
-									if (participantAnswer.IntAnswer == 0)
-									{
-										throw new InvalidOperationException("A reason must be specified for all participants not completed training.");
-									}
-									participantAnswers.Add(new ParticipantCompletionReportAnswer
-									{
-										GrantApplicationId = grantApplication.Id,
-										QuestionId = question.Id,
-										AnswerId = participantAnswer.IntAnswer,
-										ParticipantFormId = participantAnswer.ParticipantFormId ?? 0,
-										OtherAnswer = participantAnswer.StringAnswer ?? string.Empty
-									});
-								}
+									GrantApplicationId = grantApplication.Id,
+									QuestionId = question.Id,
+									AnswerId = participantAnswer.IntAnswer,
+									ParticipantFormId = participantAnswer.ParticipantFormId ?? 0,
+									OtherAnswer = participantAnswer.StringAnswer ?? string.Empty
+								});
 							}
-							// get the ids of those that didn't answer in the affirmative
-							doNotIncludeParticipants = participantAnswers.Select(pa => pa.ParticipantFormId).Distinct().ToArray();
 						}
+						// get the ids of those that didn't answer in the affirmative
+						doNotIncludeParticipants = participantAnswers.Select(pa => pa.ParticipantFormId).Distinct().ToArray();
 					}
 					break;
 
@@ -381,13 +389,15 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					{
 						foreach (var employerAnswer in question.Level1Answers.OrEmptyIfNull())
 						{
-							employerAnswers.Add(new EmployerCompletionReportAnswer
+							var employerCompletionReportAnswer = new EmployerCompletionReportAnswer
 							{
 								QuestionId = employerAnswer.QuestionId,
 								AnswerId = employerAnswer.IntAnswer == 0 ? question.DefaultAnswerId : employerAnswer.IntAnswer,
 								GrantApplicationId = grantApplication.Id,
 								OtherAnswer = employerAnswer.StringAnswer
-							});
+							};
+
+							employerAnswers.Add(employerCompletionReportAnswer);
 						}
 					}
 					break;
@@ -441,7 +451,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				}
 			}
 
-			if (_completionReportService.RecordCompletionReportAnswersForStep(completionReportGroupId, participantAnswers, employerAnswers, completionReport.Id, participantIdsForStep))
+			if (_completionReportService.RecordCompletionReportAnswersForStep(completionReportGroupId, participantAnswers, employerAnswers, completionReport.Id, participantIdsForStep, model.SaveOnly))
 			{
 				var allParticipantsHaveCompletedReport = _completionReportService.AllParticipantsHaveCompletedReport(participantIdsForStep, completionReport.Id, Core.Entities.Constants.CompletionReportCWRGPage1);
 

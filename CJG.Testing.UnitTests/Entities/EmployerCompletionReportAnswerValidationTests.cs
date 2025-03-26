@@ -6,31 +6,23 @@ using CJG.Application.Services;
 
 namespace CJG.Testing.UnitTests.Entities
 {
-    [TestClass()]
+    [TestClass]
     public class EmployerCompletionReportAnswerValidationTests
     {
         [TestMethod, TestCategory("EmployerCompletionReportAnswer"), TestCategory("Validate")]
         public void Validate_When_EmployerCompletionReportAnswer_Missing_Answer()
         {
             var user = EntityHelper.CreateExternalUser();
-
             var helper = new ServiceHelper(typeof(EligibleExpenseBreakdownService), user);
-
             helper.MockContext();
-
-            var employerCompletionReportAnswer = new EmployerCompletionReportAnswer();
-
-            helper.MockDbSet<EmployerCompletionReportAnswer>(new[] { employerCompletionReportAnswer });
 
             var service = helper.Create<EligibleExpenseBreakdownService>();
 
-            // Act
+			var employerCompletionReportAnswer = new EmployerCompletionReportAnswer();
+            helper.MockDbSet(new[] { employerCompletionReportAnswer });
+
             var validationResults = service.Validate(employerCompletionReportAnswer).ToArray();
-
-            string validateMsg = "An answer must be entered.";
-
-            // Assert
-            Assert.AreEqual(true, validationResults.Any(x => x.ErrorMessage == validateMsg));
+            Assert.IsTrue(validationResults.Any(x => x.ErrorMessage == "An answer must be entered."));
         }
     }
 }
