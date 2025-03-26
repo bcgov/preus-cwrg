@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
-using CJG.Application.Business.Models;
 using CJG.Application.Business.Models.DirectorsReport;
 using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
@@ -10,7 +9,7 @@ using CJG.Web.External.Models.Shared;
 
 namespace CJG.Web.External.Areas.Int.Models
 {
-    public class DirectorBudgetSummaryModel : BaseViewModel
+	public class DirectorBudgetSummaryModel : BaseViewModel
 	{
 		public bool ShowDirectorDashboard { get; set; }
 		public bool CanUpdateBudget { get; set; }

@@ -1396,6 +1396,7 @@
     <Compile Include="Areas\Int\Models\Applications\ApplicationPreviewModel.cs" />
     <Compile Include="Areas\Int\Models\Attachments\AttachmentViewModel.cs" />
     <Compile Include="Areas\Int\Models\DirectorBudgetSummaryModel.cs" />
+    <Compile Include="Areas\Int\Models\DirectorBudgetSummaryModelExcelExtension.cs" />
     <Compile Include="Areas\Int\Models\EvaluationForm\ClaimEvaluationFormListViewModel.cs" />
     <Compile Include="Areas\Int\Models\EvaluationForm\ClaimEvaluationFormQuestionViewModel.cs" />
     <Compile Include="Areas\Int\Models\EvaluationForm\ClaimEvaluationQuestionAndAnswerViewModel.cs" />
