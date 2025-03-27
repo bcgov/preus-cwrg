@@ -199,7 +199,10 @@ namespace CJG.Application.Services
 			if (target == null)
 				throw new ArgumentNullException(nameof(target));
 
-			var sourceProperties = source.GetType().GetProperties().Where(p => p.CanRead && !p.GetGetMethod().IsVirtual);
+			// The IsFinal is required to find properties that are present on an Interfaces - those will be filtered out otherwise
+			var sourceProperties = source.GetType()
+				.GetProperties()
+				.Where(p => p.CanRead && (!p.GetGetMethod().IsVirtual || p.GetGetMethod().IsFinal));
 
 			MapProperties(source, target, sourceProperties);
 		}
@@ -218,13 +221,12 @@ namespace CJG.Application.Services
 		{
 			var targetProperties = typeof(TTo)
 				.GetProperties()
-				.Where(p => p.CanWrite && !p.GetGetMethod().IsVirtual)
+				.Where(p => p.CanWrite && (!p.GetGetMethod().IsVirtual || p.GetGetMethod().IsFinal))
 				.ToList();
 
 			foreach (var from in properties)
 			{
 				var to = targetProperties.FirstOrDefault(p => p.Name.Equals(from.Name));
-
 				if (to == null)
 					continue;
 
@@ -240,7 +242,7 @@ namespace CJG.Application.Services
 				}
 				else if (from.PropertyType == typeof(string) && to.PropertyType.IsEnum)
 				{
-					to.SetValue(target, Enum.Parse(to.PropertyType, (string) value));
+					to.SetValue(target, Enum.Parse(to.PropertyType, (string)value));
 				}
 				else if (from.PropertyType.IsEnum && to.PropertyType == typeof(string))
 				{
@@ -255,7 +257,9 @@ namespace CJG.Application.Services
 
 		public static IEnumerable<KeyValuePair<string, string>> GetErrors(DbEntityValidationException e)
 		{
-			return e.EntityValidationErrors.SelectMany(t => t.ValidationErrors).Select(t => new KeyValuePair<string, string>(t.PropertyName, t.ErrorMessage));
+			return e.EntityValidationErrors
+				.SelectMany(t => t.ValidationErrors)
+				.Select(t => new KeyValuePair<string, string>(t.PropertyName, t.ErrorMessage));
 		}
 
 		public static List<KeyValuePair<string, string>> GetErrors<T>(DbEntityValidationException e, T target)
@@ -273,7 +277,7 @@ namespace CJG.Application.Services
 					{
 						var properties = target.GetType().GetProperties().Where(t => !t.GetType().IsValueType
 							&& t.PropertyType != typeof(string)
-							&& t.PropertyType != typeof(Boolean));
+							&& t.PropertyType != typeof(bool));
 
 						foreach (var item in properties)
 						{
