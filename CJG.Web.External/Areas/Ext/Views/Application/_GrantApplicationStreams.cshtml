@@ -28,29 +28,16 @@
 						<input type="radio" id="grant-stream-{{item.Id}}" name="model.GrantOpeningId" ng-value="{{item.Id}}" ng-model="model.GrantOpeningId" data-start-date="{{item.StartDate}}" data-end-date="{{item.EndDate}}" data-reimbursement-rate="{{item.ReimbursementRate}}" ng-click="getRequirements(item.Id)">
 						<label for="grant-stream-{{item.Id}}">{{item.GrantStream.Name}}</label>
 					</div>
-					@*<div class="half-width is-hidden-on-mobile">
-						<label class="list-radio-toggle--label">Earliest submission:</label>
-					</div>*@
 				</div>
 
 				<div class="read-more">
-					<div class="half-width is-hidden-on-mobile">
-						<button class="list-radio-toggle--btn" ng-click="item.showDescription = true" ng-show="!item.showDescription">Show description</button>
-						<button class="list-radio-toggle--btn open" ng-click="item.showDescription = false" ng-show="item.showDescription">Hide description</button>
-					</div>
-					<div class="half-width is-hidden-on-mobile">{{item.OpeningDate}}</div>
-					<div class="half-width is-hidden-beyond-mobile">
+					<div class="half-width">
 						<button class="list-radio-toggle--btn" ng-click="item.showDescription = true" ng-show="!item.showDescription">Show description</button>
 						<button class="list-radio-toggle--btn open" ng-click="item.showDescription = false" ng-show="item.showDescription">Hide description</button>
 					</div>
 					<div class="list-radio-toggle--content clear-both" ng-show="item.showDescription">
 						<span ng-bind-html="item.GrantStream.ObjectiveHTML"></span>
 					</div>
-
-					<div class="half-width is-hidden-beyond-mobile">
-						<label class="list-radio-toggle--label">Earliest submission:</label>
-					</div>
-					<div class="half-width is-hidden-beyond-mobile">{{item.OpeningDate}}</div>
 				</div>
 			</li>
 		</ul>
