@@ -25,6 +25,7 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 		public DateTime? DateAgreementAccepted { get; set; }
 		public ApplicationStateViewModel ApplicationStateExternalViewModel { get; set; }
 		public ApplicationStateViewModel ApplicationStateInternalViewModel { get; set; }
+		public string GrantStreamPartialName { get; set; }
 		public string GrantStreamFullName { get; set; }
 		public int GrantProgramId { get; set; }
 		public DateTime TrainingPeriodStartDate { get; set; }
@@ -43,6 +44,7 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 		public InternalUser Assessor { get; set; }
 		public int? DeliveryPartnerId { get; set; }
 		public int? DeliveryPartnerServicesId { get; set; }
+		public int? ProgramInitiativeId { get; set; }
 		public int? RiskClassificationId { get; set; }
 		public bool ShowAssessorName { get; set; }
 		[Required(ErrorMessage = "Delivery Start Date is required.")]
@@ -64,7 +66,6 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 		public ProgramTypes ProgramType { get; private set; }
 		public List<int> ChecklistItemIds { get; set; }
 
-		#region Contructors
 		public ApplicationSummaryViewModel() { }
 
 		public ApplicationSummaryViewModel(GrantApplication grantApplication,
@@ -75,12 +76,23 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 											IFiscalYearService fiscalYearService,
 											IPrincipal user)
 		{
-			if (grantApplication == null) throw new ArgumentNullException(nameof(grantApplication));
-			if (deliveryPartnerService == null) throw new ArgumentNullException(nameof(deliveryPartnerService));
-			if (authorizationService == null) throw new ArgumentNullException(nameof(authorizationService));
-			if (grantApplicationService == null) throw new ArgumentNullException(nameof(grantApplicationService));
-			if (riskClassificationService == null) throw new ArgumentNullException(nameof(riskClassificationService));
-			if (user == null) throw new ArgumentNullException(nameof(user));
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
+
+			if (deliveryPartnerService == null)
+				throw new ArgumentNullException(nameof(deliveryPartnerService));
+
+			if (authorizationService == null)
+				throw new ArgumentNullException(nameof(authorizationService));
+
+			if (grantApplicationService == null)
+				throw new ArgumentNullException(nameof(grantApplicationService));
+
+			if (riskClassificationService == null)
+				throw new ArgumentNullException(nameof(riskClassificationService));
+
+			if (user == null)
+				throw new ArgumentNullException(nameof(user));
 
 			Id = grantApplication.Id;
 			RowVersion = Convert.ToBase64String(grantApplication.RowVersion);
@@ -112,6 +124,7 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 			DateAgreementAccepted = grantApplication.GrantAgreement?.DateAccepted?.ToLocalTime();
 			DateUpdated = grantApplication.DateUpdated?.ToLocalTime();
 			FileNumber = grantApplication.FileNumber;
+			GrantStreamPartialName = grantApplication.GrantOpening.GrantStream.Name;
 			GrantStreamFullName = grantApplication.GrantOpening.GrantStream.FullName;
 			GrantProgramId = grantApplication.GrantOpening.GrantStream.GrantProgramId;
 			OrgId = grantApplication.Organization.Id;
@@ -130,6 +143,7 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 			DeliveryStartDate = grantApplication.StartDate.ToLocalTime();
 			DeliveryEndDate = grantApplication.EndDate.ToLocalTime();
 			DeliveryPartnerId = grantApplication.DeliveryPartner?.Id;
+			ProgramInitiativeId = grantApplication.ProgramInitiative?.Id;
 			RiskClassificationId = grantApplication.RiskClassification?.Id;
 			AssignedBy = grantApplication.GetStateChange(ApplicationStateInternal.UnderAssessment)?.Assessor.FirstName + " " + grantApplication.GetStateChange(ApplicationStateInternal.UnderAssessment)?.Assessor.LastName;
 
@@ -168,9 +182,6 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 			};
 		}
 
-		#endregion
-
-		#region Methods
 		public GrantApplication MapToGrantApplication(ApplicationSummaryViewModel model, GrantApplication grantApplication)
 		{
 			grantApplication.RowVersion = Convert.FromBase64String(model.RowVersion);
@@ -178,9 +189,8 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 			grantApplication.EndDate = model.DeliveryEndDate.ToUniversalTime();
 			//grantApplication.RiskClassificationId = model.RiskClassificationId;
 			grantApplication.DeliveryPartnerId = model.DeliveryPartnerId;
-
+			grantApplication.ProgramInitiativeId = model.ProgramInitiativeId;
 			return grantApplication;
 		}
-		#endregion
 	}
 }

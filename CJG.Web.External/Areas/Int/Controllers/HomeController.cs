@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
 using CJG.Infrastructure.Identity;
 using CJG.Web.External.Areas.Int.Models;
@@ -127,10 +128,38 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			{
 				if (ModelState.IsValid)
 				{
-					_directorReportsService.UpdateBudget(model.DirectorsReport);
+					_directorReportsService.UpdateBudget(model.DirectorsReport, model.OpeningBudgetRows, model.ClosingBudgetRows);
 
 					var fiscalYear = _fiscalYearService.GetFiscalYear(model.FiscalYearId);
 					model = new DirectorBudgetSummaryModel(_directorReportsService, fiscalYear, User);
+				}
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex, model);
+			}
+
+			return Json(model, JsonRequestBehavior.AllowGet);
+		}
+
+		[Authorize(Roles = "Director, Financial Clerk")]
+		[Route("Int/Home/Director/Dashboard/Export")]
+		public ActionResult ExportDirectorDashboardToExcel(DirectorBudgetSummaryModel model)
+		{
+			try
+			{
+				if (ModelState.IsValid)
+				{
+					var excelOutput = model.GetExcelContent();
+					var fileDownloadName = $"director_report_{AppDateTime.Now:yyyy-MM-dd_HH-mm}.xlsx";
+					var base64 = Convert.ToBase64String(excelOutput, 0, excelOutput.Length);
+
+					return Json(new
+					{
+						FileData = base64,
+						FileName = fileDownloadName,
+						FileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+					}, JsonRequestBehavior.AllowGet);
 				}
 			}
 			catch (Exception ex)

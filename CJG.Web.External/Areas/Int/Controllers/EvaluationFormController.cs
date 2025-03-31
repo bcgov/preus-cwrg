@@ -29,7 +29,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		private readonly IAttachmentService _attachmentService;
 
 		/// <summary>
-		/// Creates a new instance of a <paramtyperef name="GrantStreamController"/> object.
+		/// Creates a new instance of a <paramtyperef name="EvaluationFormController"/> object.
 		/// </summary>
 		/// <param name="controllerService"></param>
 		/// <param name="evaluationFormService"></param>

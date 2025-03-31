@@ -34,6 +34,9 @@ require('./grant-opening');
 // Evaluation Form Management
 require('./evaluation-form');
 
+// Program Initiatives Management
+require('./program-initiatives');
+
 // Notification Management
 require('./notification');
 

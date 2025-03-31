@@ -3,6 +3,7 @@
         <div class="table--intake-management-dashboard">
 
             <div class="pull-right">
+                <button class="btn btn--primary btn--forward" ng-if="model.CanUpdateBudget" ng-click="export()">Export to Excel</button>
                 <button class="btn btn--primary btn--forward" ng-if="model.CanUpdateBudget" ng-click="save()">Save</button>
             </div>
             <div class="form__group-set">
@@ -19,7 +20,11 @@
         <div class="clearfix"></div>
         
         <div style="margin-bottom: 2em;">
-            <h2>CWRG {{ model.AgreementYearRange }} Forecast Report</h2>
+            <h2>CWRG Director Report
+                <span style="display: inline-block; margin-left: 3em; font-size: 0.7em; font-weight: normal;">
+                    <span style="display: inline-block; padding: 0 1em;">{{ model.FiscalYear }}</span>
+                </span>
+            </h2>
             <div class="table--horizontal-wrapper budget-overview-container">
                 <table class="table--horizontal table--datatable-horizontal table--intake-management-dashboard table--director-budget">
                     <thead>
@@ -30,42 +35,84 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th>Committed $ (Approved)</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ApprovedCommitmentAmount | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ApprovedCommitmentAmount') | currencyParentheses : "$" : 2 }}</td>
-                    </tr>
-                    <tr>
-                        <th>Claims $ Processed</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ClaimsProcessedTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ClaimsProcessedTotal') | currencyParentheses : "$" : 2  }}</td>
-                    </tr>
-                    <tr>
-                        <th>Receivables $ Set Up</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ReceivablesSetupTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ReceivablesSetupTotal') | currencyParentheses : "$" : 2  }}</td>
-                    </tr>
-                    <tr>
-                        <th>YTD Actuals (Claims Processed - Receivables)</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ (item.ClaimsProcessedTotal - item.ReceivablesSetupTotal) | currencyParentheses : "$" : 2 }}</td>
-                        <td>{{ (sumColumns(model.DirectorsReport, 'ClaimsProcessedTotal') - sumColumns(model.DirectorsReport, 'ReceivablesSetupTotal'))  | currencyParentheses : "$" : 2 }}</td>
-                    </tr>
-
-                    @*<tr>
-                        <th>Budget</th>
+                    <tr class="lead-row lead-cell">
+                        <th>Opening Budget</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">
-                            <input type="text" ng-model="item.ForecastBudget" ng-currency ng-editing="model.CanUpdateBudget" />
+                            <input type="text" ng-model="item.Budget" ng-editing="model.CanUpdateBudget" ng-currency ng-change="recalculateBudget()"/>
                         </td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ForecastBudget') | currencyParentheses : "$" : 2  }}</td>
-                    </tr>*@
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'Budget') | currencyParentheses : "$" : 2  }}</td>
+                    </tr>
+                    <tr ng-repeat="budgetRow in model.OpeningBudgetRows">
+                        <th>
+                            <input type="text" class="input--medium" ng-model="budgetRow.Name" ng-editing="model.CanUpdateBudget" placeholder="Name" />
+                        </th>
+                        <td class="budget-info" ng-repeat="item in budgetRow.DirectorBudgetEntries">
+                            <input type="text" ng-model="item.Budget" ng-editing="model.CanUpdateBudget" ng-currency placeholder="$0.00" ng-change="recalculateBudget()" />
+                        </td>
+                        <td class="budget-info">@*{{ sumRow(budgetRow.DirectorBudgetEntries, 'Budget') | currencyParentheses : "$" : 2  }}*@</td>
+                    </tr>
+                    <tr class="lead-row lead-cell">
+                        <th>Adjusted Budget</th>
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportAdjustedBudget | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'DirectorsReportAdjustedBudget') | currencyParentheses : "$" : 2 }}</td>
+                    </tr>
+                    <tr class="lead-cell">
+                        <th>Committed (Schedule A)</th>
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportCommittedScheduleA | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">@*{{ sumRow(model.DirectorsReport, 'DirectorsReportCommittedScheduleA') | currencyParentheses : "$" : 2 }}*@</td>
+                    </tr>
+                    <tr>
+                        <th>Claims Processed</th>
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportClaimsProcessed | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">@*{{ sumRow(model.DirectorsReport, 'DirectorsReportClaimsProcessed') | currencyParentheses : "$" : 2 }}*@</td>
+                    </tr>
+                    <tr>
+                        <th>Unclaimed</th>
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportUnclaimed | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">@*{{ sumRow(model.DirectorsReport, 'DirectorsReportUnclaimed') | currencyParentheses : "$" : 2 }}*@</td>
+                    </tr>
+                    <tr>
+                        <th>Receivables (total set up in current FY)</th>
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportReceivables | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">@*{{ sumRow(model.DirectorsReport, 'DirectorsReportReceivables') | currencyParentheses : "$" : 2 }}*@</td>
+                    </tr>
+                    <tr>
+                        <th>Slippage (Sched A - Claims Processed - Unclaimed)</th>
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportSlippage | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">@*{{ sumRow(model.DirectorsReport, 'DirectorsReportSlippage') | currencyParentheses : "$" : 2 }}*@</td>
+                    </tr>
+                    <tr class="lead-row">
+                        <th>YTD Actuals (Claims Processed - Receivables)</th>
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportYtdActual | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'DirectorsReportYtdActual') | currencyParentheses : "$" : 2 }}</td>
+                    </tr>
+                    <tr class="lead-cell">
+                        <th>Available Budget</th>
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportAvailableBudget | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'DirectorsReportAvailableBudget') | currencyParentheses : "$" : 2 }}</td>
+                    </tr>
+                    <tr ng-repeat="budgetRow in model.ClosingBudgetRows">
+                        <th>
+                            <input type="text" class="input--medium" ng-model="budgetRow.Name" ng-editing="model.CanUpdateBudget" placeholder="Name" />
+                        </th>
+                        <td class="budget-info" ng-repeat="item in budgetRow.DirectorBudgetEntries">
+                            <input type="text" ng-model="item.Budget" ng-editing="model.CanUpdateBudget" ng-currency placeholder="$0.00" ng-change="recalculateBudget()" />
+                        </td>
+                        <td class="budget-info">@*{{ sumRow(budgetRow.DirectorBudgetEntries, 'Budget') | currencyParentheses : "$" : 2  }}*@</td>
+                    </tr>
+                    <tr class="lead-row lead-cell">
+                        <th>Total Remaining Budget</th>
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportRemainingBudget | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'DirectorsReportRemainingBudget') | currencyParentheses : "$" : 2 }}</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        
+
         <div style="margin-bottom: 2em;">
             <h2>
-                CWRG Directors Report
+                CWRG Summary Report
                 <span style="display: inline-block; margin-left: 3em; font-size: 0.7em; font-weight: normal;">
                     <span style="display: inline-block; padding: 0 1em;" ng-if="section.currentFiscalYearId == section.fiscalYearId">{{ toPST(model.ReportDay, 'dddd, MMMM Do, YYYY') }}</span>
                     <span style="display: inline-block; padding: 0 1em;">{{ model.FiscalYear }}</span>
@@ -83,119 +130,59 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <th>Budget</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">
-                            <input type="text" ng-model="item.Budget" ng-editing="model.CanUpdateBudget" ng-currency />
-                        </td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'Budget') | currencyParentheses : "$" : 2  }}</td>
+                        <th>Budget</th> @*DirectorsReportsAdjustedBudget*@
+                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportAdjustedBudget | currencyParentheses : "$" : 2  }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'DirectorsReportAdjustedBudget') | currencyParentheses : "$" : 2  }}</td>
                         <td>{{ sumSlippage(model.DirectorsReport) | currencyParentheses : "$" : 2 }}</td>
                     </tr>
                     <tr>
                         <th># Applications Received</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ApplicationsReceived }}</td>
-                        <td>{{ sumColumns(model.DirectorsReport, 'ApplicationsReceived') }}</td>
+                        <td>{{ sumRow(model.DirectorsReport, 'ApplicationsReceived') }}</td>
                     </tr>
                     <tr>
                         <th># Applications Approved</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ApplicationsApproved }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ApplicationsApproved') }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'ApplicationsApproved') }}</td>
                     </tr>
                     <tr>
                         <th>Committed $ (Approved)</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ApprovedCommitmentAmount | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ApprovedCommitmentAmount') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'ApprovedCommitmentAmount') | currencyParentheses : "$" : 2 }}</td>
                     </tr>
                     <tr>
                         <th>Applications $ Pending / Under Assessment</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.NewApplicationsTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'NewApplicationsTotal') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'NewApplicationsTotal') | currencyParentheses : "$" : 2 }}</td>
                     </tr>
                     @*<tr>
                         <th>Forecasted Commitment $<br/>(Current Ask)</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ForecastCommitmentAmount | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ForecastCommitmentAmount') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'ForecastCommitmentAmount') | currencyParentheses : "$" : 2 }}</td>
                     </tr>*@
                     <tr>
                         <th>Withdrawn, Denied, Cancelled, Rejected Applications/Agreements</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.CancelledApplicationsTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'CancelledApplicationsTotal') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'CancelledApplicationsTotal') | currencyParentheses : "$" : 2 }}</td>
                     </tr>
                     <tr>
                         <th>Total Applications Received ($)</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ApplicationsReceivedTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ApplicationsReceivedTotal') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'ApplicationsReceivedTotal') | currencyParentheses : "$" : 2 }}</td>
                     </tr>
                     @*<tr>
                         <th>Claims $ Processed</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ClaimsProcessedTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ClaimsProcessedTotal') | currencyParentheses : "$" : 2 }}</td>
+                        <td class="budget-info">{{ sumRow(model.DirectorsReport, 'ClaimsProcessedTotal') | currencyParentheses : "$" : 2 }}</td>
                     </tr>*@
                     </tbody>
                 </table>
             </div>
         </div>
         
-        <div style="margin-bottom: 2em;">
-            <h2>Finance Report
-                <span style="display: inline-block; margin-left: 3em; font-size: 0.7em; font-weight: normal;">
-                    <span style="display: inline-block; padding: 0 1em;">{{ toPST(model.ReportDay, 'dddd, MMMM Do, YYYY') }}</span>
-                    <span style="display: inline-block; padding: 0 1em;">{{ model.FiscalYear }}</span>
-                </span>
-            </h2>
-            <div class="table--horizontal-wrapper budget-overview-container">
-                <table class="table--horizontal table--datatable-horizontal table--intake-management-dashboard table--director-budget">
-                    <thead>
-                    <tr>
-                        <th>{{ model.AgreementYearRange }} Agreements</th>
-                        <th class="stream-groups" ng-repeat="item in model.DirectorsReport">{{ item.GroupingName }}<span><br/>{{ item.GroupingStreams }}</span></th>
-                        <th>Total</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @*<tr>
-                        <th>Committed $ (Approved)</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ApprovedCommitmentAmount | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ApprovedCommitmentAmount') | currencyParentheses : "$" : 2 }}</td>
-                    </tr>*@
-                    @*<tr>
-                        <th># of Claims Submitted</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.NumberOfClaimsSubmitted }}</td>
-                        <td>{{ sumColumns(model.DirectorsReport, 'NumberOfClaimsSubmitted') }}</td>
-                    </tr>*@
-                    @*<tr>
-                        <th># of Claims Left to Submit<br />(Estimate) </th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.NumberOfClaimsLeftToSubmit }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'NumberOfClaimsLeftToSubmit') }}</td>
-                    </tr>*@
-                    <tr>
-                        <th>Claims $ Processed</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ClaimsProcessedTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ClaimsProcessedTotal') | currencyParentheses : "$" : 2 }}</td>
-                    </tr>
-                    <tr>
-                        <th>Slippage $</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.SlippageTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'SlippageTotal') | currencyParentheses : "$" : 2 }}</td>
-                    </tr>
-                    <tr>
-                        <th>Unclaimed $</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ClaimsUnclaimedTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ClaimsUnclaimedTotal') | currencyParentheses : "$" : 2 }}</td>
-                    </tr>
-                    @*<tr>
-                        <th># Receivables Set Up</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ReceivablesSetupNumber }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ReceivablesSetupNumber') }}</td>
-                    </tr>*@
-                    <tr>
-                        <th>Receivables $ Set Up</th>
-                        <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.ReceivablesSetupTotal | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">{{ sumColumns(model.DirectorsReport, 'ReceivablesSetupTotal') | currencyParentheses : "$" : 2  }}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <hr/><hr/>    
+
+    @*@Html.Partial("_DirectorDashboardForecastAndFinanceReport")*@
     </div>
 </div>
 

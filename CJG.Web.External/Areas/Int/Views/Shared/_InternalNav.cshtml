@@ -57,6 +57,7 @@
                         <li>@Html.ActionLink("Service Descriptions", nameof(WDAServiceController.WDAServicesView), typeof(WDAServiceController), new { Area = "Int" })</li>
                         if (sym || dir)
                         {
+                            <li>@Html.ActionLink("Program Initiatives", nameof(ProgramInitiativesController.ProgramInitiativesView), typeof(ProgramInitiativesController), new { Area = "Int" })</li>
                             <li>@Html.ActionLink("Evaluation Form", nameof(EvaluationFormController.EvaluationFormView), typeof(EvaluationFormController), new { Area = "Int" })</li>
                             <li>@Html.ActionLink("Notification Types", nameof(NotificationController.NotificationTypesView), typeof(NotificationController), new { Area = "Int" })</li>
                             <li>@Html.ActionLink("Program Notifications", nameof(ProgramNotificationController.ProgramNotificationsView), typeof(ProgramNotificationController), new { Area = "Int" })</li>

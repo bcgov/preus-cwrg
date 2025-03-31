@@ -10,8 +10,9 @@ namespace CJG.Core.Entities
     /// </summary>
     public class EmployerCompletionReportAnswer : EntityBase
     {
-        #region Properties
-        /// <summary>
+	    private bool _validationEnabled = true;
+
+	    /// <summary>
         /// get/set - The primary key and foreign key to the grant application.
         /// </summary>
         [Key, Column(Order = 0)]
@@ -51,53 +52,54 @@ namespace CJG.Core.Entities
         /// </summary>
         [MaxLength(2000, ErrorMessage = "Maximum length of text fields is 2000 characters")]
         public string OtherAnswer { get; set; }
-        #endregion
 
-        #region Constructors
+
+		public void DisableRequiredValidation()
+		{
+			_validationEnabled = false;
+		}
+
         /// <summary>
         /// Creates a new instance of an EmployerCompletionReportAnswer object.
         /// </summary>
         public EmployerCompletionReportAnswer()
         {
-
         }
 
-        /// <summary>
-        /// Creates a new instance of an EmployerCompletionReqportAnswer object and initializes it.
-        /// </summary>
-        /// <param name="grantApplication"></param>
-        /// <param name="question"></param>
-        /// <param name="answer"></param>
-        public EmployerCompletionReportAnswer(GrantApplication grantApplication, CompletionReportQuestion question, CompletionReportOption answer)
+		/// <summary>
+		/// Creates a new instance of an EmployerCompletionReportAnswer object and initializes it.
+		/// </summary>
+		/// <param name="grantApplication"></param>
+		/// <param name="question"></param>
+		/// <param name="answer"></param>
+		public EmployerCompletionReportAnswer(GrantApplication grantApplication, CompletionReportQuestion question, CompletionReportOption answer)
         {
-            this.GrantApplication = grantApplication ?? throw new ArgumentNullException(nameof(grantApplication));
-            this.GrantApplicationId = grantApplication.Id;
-            this.Question = question ?? throw new ArgumentNullException(nameof(question));
-            this.QuestionId = question.Id;
-            this.Answer = answer ?? throw new ArgumentNullException(nameof(answer));
-            this.AnswerId = answer.Id;
+            GrantApplication = grantApplication ?? throw new ArgumentNullException(nameof(grantApplication));
+            GrantApplicationId = grantApplication.Id;
+            Question = question ?? throw new ArgumentNullException(nameof(question));
+            QuestionId = question.Id;
+            Answer = answer ?? throw new ArgumentNullException(nameof(answer));
+            AnswerId = answer.Id;
         }
 
-        /// <summary>
-        /// Creates a new instance of an EmployerCompletionReqportAnswer object and initializes it.
-        /// </summary>
-        /// <param name="grantApplication"></param>
-        /// <param name="question"></param>
-        /// <param name="answer"></param>
-        public EmployerCompletionReportAnswer(GrantApplication grantApplication, CompletionReportQuestion question, string answer)
+		/// <summary>
+		/// Creates a new instance of an EmployerCompletionReportAnswer object and initializes it.
+		/// </summary>
+		/// <param name="grantApplication"></param>
+		/// <param name="question"></param>
+		/// <param name="answer"></param>
+		public EmployerCompletionReportAnswer(GrantApplication grantApplication, CompletionReportQuestion question, string answer)
         {
-            if (String.IsNullOrWhiteSpace(answer))
+            if (string.IsNullOrWhiteSpace(answer))
                 throw new ArgumentException("The answer is required.", nameof(answer));
 
-            this.GrantApplication = grantApplication ?? throw new ArgumentNullException(nameof(grantApplication));
-            this.GrantApplicationId = grantApplication.Id;
-            this.Question = question ?? throw new ArgumentNullException(nameof(question));
-            this.QuestionId = question.Id;
-            this.OtherAnswer = answer;
+            GrantApplication = grantApplication ?? throw new ArgumentNullException(nameof(grantApplication));
+            GrantApplicationId = grantApplication.Id;
+            Question = question ?? throw new ArgumentNullException(nameof(question));
+            QuestionId = question.Id;
+            OtherAnswer = answer;
         }
-        #endregion
 
-        #region Methods
         /// <summary>
         /// Validates the EmployerCompletionReportAnswer property values.
         /// </summary>
@@ -105,15 +107,13 @@ namespace CJG.Core.Entities
         /// <returns></returns>
         public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            // An answer must be provided.
-            if (this.AnswerId == null && String.IsNullOrWhiteSpace(this.OtherAnswer))
-                yield return new ValidationResult("An answer must be entered.", new[] { nameof(this.Answer) });
+			// An answer must be provided when not doing a 'save for later' on step 4.
+			if (_validationEnabled)
+				if (AnswerId == null && string.IsNullOrWhiteSpace(OtherAnswer))
+					yield return new ValidationResult("An answer must be entered.", new[] { nameof(Answer) });
 
-            foreach (var validation in base.Validate(validationContext))
-            {
-                yield return validation;
-            }
+			foreach (var validation in base.Validate(validationContext))
+	            yield return validation;
         }
-        #endregion
     }
 }

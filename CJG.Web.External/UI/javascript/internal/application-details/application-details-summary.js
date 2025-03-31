@@ -42,8 +42,10 @@ app.controller('ApplicationSummary', function ($scope, $attrs, $controller, $tim
     },
     maxTrainingPeriodDate: null
   };
+
   if (typeof ($scope.assessors) === 'undefined') $scope.assessors = [];
   if (typeof ($scope.riskClassifications) === 'undefined') $scope.riskClassifications = [];
+  if (typeof ($scope.programInitiatives) === 'undefined') $scope.programInitiatives = [];
   if (typeof ($scope.deliveryPartners) === 'undefined') $scope.deliveryPartners = [];
   if (typeof ($scope.deliveryPartnerServices) === 'undefined') $scope.deliveryPartnerServices = [];
   if (typeof ($scope.checklist) === 'undefined') $scope.checklist = [];
@@ -73,6 +75,15 @@ app.controller('ApplicationSummary', function ($scope, $attrs, $controller, $tim
       url: '/Int/Application/Summary/Risk/Classifications',
       set: 'riskClassifications',
       condition: !$scope.riskClassifications || !$scope.riskClassifications.length,
+      localCache: true
+    });
+  }
+
+  function loadProgramInitiatives() {
+    return $scope.load({
+      url: '/Int/Application/Summary/ProgramInitiatives',
+      set: 'programInitiatives',
+      condition: !$scope.programInitiatives || !$scope.programInitiatives.length,
       localCache: true
     });
   }
@@ -155,6 +166,7 @@ app.controller('ApplicationSummary', function ($scope, $attrs, $controller, $tim
     return Promise.all([
       loadAssessors(),
       loadRiskClassifications(),
+      loadProgramInitiatives(),
       loadDeliveryPartners(),
       loadDeliveryPartnerServices(),
       loadChecklist(),

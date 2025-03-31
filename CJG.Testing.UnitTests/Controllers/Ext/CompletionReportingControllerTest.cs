@@ -448,7 +448,8 @@ namespace CJG.Testing.UnitTests.Controllers.Ext
 					It.IsAny<IEnumerable<ParticipantCompletionReportAnswer>>(),
 					It.IsAny<IEnumerable<EmployerCompletionReportAnswer>>(),
 					It.IsAny<int>(),
-					It.IsAny<int[]>()))
+					It.IsAny<int[]>(),
+					It.IsAny<bool>()))
 				.Returns(false);
 			var controller = helper.Create();
 

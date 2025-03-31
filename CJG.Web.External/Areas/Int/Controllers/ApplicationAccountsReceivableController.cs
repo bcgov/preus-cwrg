@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CJG.Application.Business.Models;
-using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
 using CJG.Infrastructure.Identity;
 using CJG.Web.External.Areas.Int.Models.AccountsReceivables;
@@ -16,8 +15,8 @@ namespace CJG.Web.External.Areas.Int.Controllers
     /// <summary>
     /// <paramtyperef name="ApplicationAccountsReceivableController"/> class, provides endpoints to manage the application AR values.
     /// </summary>
+    [RouteArea("Int")]
     [Authorize(Roles = "Assessor, Director, Financial Clerk, System Administrator")]
-	[RouteArea("Int")]
 	public class ApplicationAccountsReceivableController : BaseController
 	{
 		private readonly IGrantApplicationService _grantApplicationService;

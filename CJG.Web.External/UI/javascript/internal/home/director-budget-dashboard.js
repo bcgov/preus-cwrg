@@ -1,4 +1,4 @@
-app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller) {
+app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller, $timeout) {
   $scope.section = {
     name: 'DirectorBudgetDashboard',
     save: {
@@ -9,6 +9,7 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller)
         return $scope.model;
       }
     },
+
     budgetTotal: 0,
     fiscalYearId: parseInt($attrs.ngFiscalYearId),
     currentFiscalYearId: parseInt($attrs.ngFiscalYearId)
@@ -21,8 +22,6 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller)
         url: '/Int/Home/Director/FiscalYears',
         set: 'fiscalYears'
       })
-      .then(function(response) {
-      })
       .catch(angular.noop);
   }
 
@@ -32,7 +31,7 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller)
       set: 'model'
     });
   }
-  
+
   /**
    * Fetch all the data for the form.
    * @function init
@@ -40,17 +39,161 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller)
    **/
   function init() {
     return Promise.all([
-      loadFiscalYears(),
-      loadDirectorDashboard()
-    ])
-    .catch(angular.noop);
+        loadFiscalYears(),
+        loadDirectorDashboard()
+      ])
+      .then(function() {
+        return $timeout(function() {
+          $scope.recalculateBudget();
+        });
+      }).catch(angular.noop);
+  }
+
+  function Base64ToBytes(base64) {
+    console.log(base64);
+    var s = window.atob(base64);
+    var bytes = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) {
+      bytes[i] = s.charCodeAt(i);
+    }
+    return bytes;
+  };
+
+  //$scope.export = function () {
+  //  var data = JSON.stringify($scope.model);//.replace('#', '');
+  //  window.open('/Int/Home/Director/Dashboard/Export?data=' + data);
+  //};
+
+  $scope.export = function () {
+    return $scope.ajax({
+      url: '/Int/Home/Director/Dashboard/Export',
+      method: 'POST',
+      data: $scope.model
+    }).then(function (response) {
+        const blob = new Blob([Base64ToBytes(response.data.FileData)], { type: response.data.FileType });
+        const downloadUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = response.data.FileName;
+        document.body.appendChild(a);
+        a.click();
+      })
+      .catch(angular.noop);
   }
 
   $scope.onFiscalYearChange = function () {
-    loadDirectorDashboard();
+    return Promise.all([
+        loadDirectorDashboard()
+      ])
+      .then(function () {
+        return $timeout(function () {
+          $scope.recalculateBudget();
+        });
+      }).catch(angular.noop);
   }
 
-  $scope.sumColumns = function(data, column) {
+  $scope.recalculateBudget = function() {
+    console.log('Recalculating Budget');
+
+    if ($scope.model.DirectorsReport == undefined)
+      return;
+
+    if ($scope.model.OpeningBudgetRows == undefined)
+      return;
+
+    if ($scope.model.ClosingBudgetRows == undefined)
+      return;
+
+    var data = $scope.model.DirectorsReport;
+    var openingRows = $scope.model.OpeningBudgetRows;
+    var closingRows = $scope.model.ClosingBudgetRows;
+
+    console.groupCollapsed("Director Budget Calc");
+    data.forEach(item => {
+
+      var directorBudgetId = item.DirectorBudgetId;
+      var directorBudgetValue = parseFloat(item.Budget);
+
+      if (isNaN(directorBudgetValue))
+        return;
+
+      console.log("Budget", directorBudgetValue);
+      console.log("NAN", isNaN(directorBudgetValue));
+
+      let directorOpeningBudgets = 0.0;
+      let directorClosingBudgets = 0.0;
+
+      openingRows.forEach(opening => {
+        console.log('OPR', opening.DirectorBudgetEntries);
+
+        opening.DirectorBudgetEntries.forEach(entry => {
+          if (entry.DirectorBudgetId !== directorBudgetId)
+            return;
+
+          if (entry.Budget == null)
+            return;
+
+          let entryBudget = parseFloat(entry.Budget);
+          if (isNaN(entryBudget))
+            return;
+
+          directorOpeningBudgets += entryBudget;
+          console.log("Budget Entry: ", entryBudget);
+        });
+      });
+
+      closingRows.forEach(closing => {
+        console.log('CLR', closing.DirectorBudgetEntries);
+
+        closing.DirectorBudgetEntries.forEach(entry => {
+          if (entry.DirectorBudgetId !== directorBudgetId)
+            return;
+
+          if (entry.Budget == null)
+            return;
+
+          let entryBudget = parseFloat(entry.Budget);
+          if (isNaN(entryBudget))
+            return;
+
+          directorClosingBudgets += entryBudget;
+          console.log("Budget Entry: ", entryBudget);
+        });
+      });
+
+      let adjustedBudget = directorBudgetValue + directorOpeningBudgets;
+      let availableBudget = adjustedBudget - item.DirectorsReportPartialAvailableBudget;
+      let remainingBudget = availableBudget + directorClosingBudgets;
+
+      item.DirectorsReportAdjustedBudget = adjustedBudget;
+      item.DirectorsReportAvailableBudget = availableBudget;
+      item.DirectorsReportRemainingBudget = remainingBudget;
+    });
+
+    console.groupEnd();
+    //  console.log($scope.model.DirectorsReport);
+    //  console.log($scope.model.OpeningBudgetRows);
+    //  console.log($scope.model.ClosingBudgetRows);
+
+  }
+
+  $scope.sumRow = function(data, fieldName) {
+    let sum = 0;
+    if (data == undefined)
+      return sum;
+
+    data.forEach(item => {
+      let columnValue = item[fieldName];
+      columnValue = parseFloat(columnValue);
+
+      if (!isNaN(columnValue))
+        sum += columnValue;
+    });
+
+    return sum;
+  }
+
+  $scope.sumColumn = function(data, column) {
     let sum = 0;
     if (data == undefined)
       return sum;

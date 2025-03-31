@@ -141,6 +141,7 @@ namespace CJG.Infrastructure.EF
 		#endregion
 
 		#region Grant Program
+		public virtual DbSet<ProgramInitiative> ProgramInitiatives { get; set; }
 		public virtual DbSet<ProgramType> ProgramTypes { get; set; }
 		public virtual DbSet<GrantProgram> GrantPrograms { get; set; }
 		public virtual DbSet<GrantProgramNotificationType> GrantProgramNotificationTypes { get; set; }
@@ -211,6 +212,8 @@ namespace CJG.Infrastructure.EF
 		public virtual DbSet<ApplicationRole> ApplicationRoles { get; set; }
 		public virtual DbSet<RateFormat> RateFormats { get; set; }
 		public virtual DbSet<DirectorBudget> DirectorBudgets { get; set; }
+		public virtual DbSet<DirectorBudgetRow> DirectorBudgetRows { get; set; }
+		public virtual DbSet<DirectorBudgetEntry> DirectorBudgetEntries { get; set; }
 		public virtual DbSet<GlobalProgramBudget> GlobalProgramBudgets { get; set; }
 		#endregion
 
@@ -797,6 +800,16 @@ namespace CJG.Infrastructure.EF
 			#region Configuration
 			modelBuilder.Entity<Community>().ToTable("Communities");
 			#endregion
+
+			modelBuilder.Entity<DirectorBudget>()
+				.HasOptional(b => b.ProgramInitiative)
+				.WithMany()
+				.WillCascadeOnDelete(false);
+
+			modelBuilder.Entity<DirectorBudgetRow>()
+				.HasRequired(b => b.FiscalYear)
+				.WithMany()
+				.WillCascadeOnDelete(false);
 
 			base.OnModelCreating(modelBuilder);
 		}
