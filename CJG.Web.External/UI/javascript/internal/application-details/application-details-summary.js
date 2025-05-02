@@ -84,7 +84,7 @@ app.controller('ApplicationSummary', function ($scope, $attrs, $controller, $tim
       url: '/Int/Application/Summary/ProgramInitiatives',
       set: 'programInitiatives',
       condition: !$scope.programInitiatives || !$scope.programInitiatives.length,
-      localCache: true
+      localCache: false
     });
   }
 

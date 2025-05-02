@@ -151,10 +151,13 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 			if (adminCost == null)
 				adminCost = new EligibleCost(grantApplication, new EligibleExpenseType(new ServiceCategory("Administration", ServiceTypes.Administration, true, false, 0, 0, 1, 5), ExpenseTypes.NotParticipantLimited), 560.55m, 2);
 
+			var pssCost = new EligibleCost(grantApplication, new EligibleExpenseType(new ServiceCategory("Participant Financial Supports", ServiceTypes.EmploymentServicesAndSupports, true, false, 0, 0, 1, 5), ExpenseTypes.NotParticipantLimited), 560.55m, 2);
+
 			provider.EligibleCost = essCost;
 
 			grantApplication.TrainingCost.EligibleCosts.Add(skillsTrainingCost);
 			grantApplication.TrainingCost.EligibleCosts.Add(essCost);
+			grantApplication.TrainingCost.EligibleCosts.Add(pssCost);
 			grantApplication.TrainingCost.EligibleCosts.Add(adminCost);
 			grantApplication.TrainingCost.RecalculateEstimatedCosts();
 
