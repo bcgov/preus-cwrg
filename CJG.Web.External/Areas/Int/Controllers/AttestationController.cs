@@ -1,13 +1,18 @@
 using System;
+using System.Collections.Generic;
+using System.Net.Mime;
+using System.Web;
 using System.Web.Mvc;
 using CJG.Application.Services;
 using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
+using CJG.Web.External.Areas.Ext.Models.Attachments;
 using CJG.Web.External.Areas.Int.Models;
 using CJG.Web.External.Areas.Int.Models.Attestation;
 using CJG.Web.External.Controllers;
 using CJG.Web.External.Helpers;
 using CJG.Web.External.Helpers.Filters;
+using CJG.Web.External.Models.Shared;
 
 namespace CJG.Web.External.Areas.Int.Controllers
 {
@@ -16,16 +21,22 @@ namespace CJG.Web.External.Areas.Int.Controllers
 	public class AttestationController : BaseController
 	{
 		private readonly IGrantApplicationService _grantApplicationService;
+		private readonly IAttachmentService _attachmentService;
 		private readonly ISuccessStoryService _successStoryService;
+		private readonly INoteService _noteService;
 
 		public AttestationController(
 			IControllerService controllerService,
 			IGrantApplicationService grantApplicationService,
-			ISuccessStoryService successStoryService
+			IAttachmentService attachmentService,
+			ISuccessStoryService successStoryService,
+			INoteService noteService
 		   ) : base(controllerService.Logger)
 		{
 			_grantApplicationService = grantApplicationService;
+			_attachmentService = attachmentService;
 			_successStoryService = successStoryService;
+			_noteService = noteService;
 		}
 
 		/// <summary>
@@ -80,21 +91,36 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			return Json(model, JsonRequestBehavior.AllowGet);
 		}
 
-
 		/// <summary>
 		/// Update the Attestation for the specified grant application.
 		/// </summary>
-		/// <param name="model"></param>
+		/// <param name="grantApplicationId"></param>
+		/// <param name="allocatedCosts"></param>
+		/// <param name="attestationNotApplicable"></param>
+		/// <param name="completeAttestation"></param>
+		/// <param name="files"></param>
+		/// <param name="documents"></param>
 		/// <returns></returns>
 		[HttpPut]
 		[PreventSpam]
 		[ValidateRequestHeader]
 		[Route("Application/Attestation/")]
-		public JsonResult SaveAttestation(AttestationViewModel model)
+		public JsonResult SaveAttestation(int grantApplicationId, decimal allocatedCosts, bool? attestationNotApplicable, bool? completeAttestation, HttpPostedFileBase[] files, string documents)
 		{
+			var model = new AttestationViewModel();
 			try
 			{
-				var grantApplication = _grantApplicationService.Get(model.Id);
+				var grantApplication = _grantApplicationService.Get(grantApplicationId);
+
+				model = new AttestationViewModel
+				{
+					AllocatedCosts = allocatedCosts,
+					AttestationNotApplicable = attestationNotApplicable,
+					CompleteAttestation = completeAttestation
+				};
+
+				// Deserialize model.  This is required because it isn't easy to deserialize an array when including files in a multipart data form.
+				var data = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Models.Attachments.UpdateAttachmentViewModel>>(documents);
 
 				if (grantApplication.Attestation == null)
 				{
@@ -125,7 +151,93 @@ namespace CJG.Web.External.Areas.Int.Controllers
 
 				_grantApplicationService.UpdateAttestation(grantApplication);
 
+				foreach (var attachment in data)
+				{
+					if (attachment.Delete) // Delete
+					{
+						var existing = _attachmentService.Get(attachment.Id);
+						existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);
+						grantApplication.Attestation.Documents.Remove(existing);
+						_noteService.AddSystemNote(grantApplication, $"Attestation document \'{existing.FileName}\' deleted.");
+						_attachmentService.Delete(existing);
+					}
+					else if (attachment.Index.HasValue == false) // Update data only
+					{
+						var existing = _attachmentService.Get(attachment.Id);
+						existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);
+						attachment.MapToEntity(existing);
+						_attachmentService.Update(existing, true);
+					}
+					else if (files.Length > attachment.Index.Value && files[attachment.Index.Value] != null && attachment.Id == 0) // Add
+					{
+						var file = files[attachment.Index.Value].UploadFile(attachment.Description, attachment.FileName);
+						grantApplication.Attestation.Documents.Add(file);
+						_noteService.AddSystemNote(grantApplication, $"Attestation document \'{file.FileName}\' uploaded.");
+						_attachmentService.Add(file, true);
+					}
+					else if (files.Length > attachment.Index.Value && files[attachment.Index.Value] != null && attachment.Id != 0) // Update with file
+					{
+						var file = files[attachment.Index.Value].UploadFile(attachment.Description, attachment.FileName);
+						var existing = _attachmentService.Get(attachment.Id);
+						existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);
+						_noteService.AddSystemNote(grantApplication, $"Attestation document \'{existing.FileName}\' replaced with \'{file.FileName}\'.");
+						attachment.MapToEntity(existing);
+						existing.AttachmentData = file.AttachmentData;
+						_attachmentService.Update(existing, true);
+					}
+				}
+
 				model = new AttestationViewModel(grantApplication);
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex, model);
+			}
+			return Json(model, JsonRequestBehavior.AllowGet);
+		}
+
+		/// <summary>
+		/// Return the attachment data for the specified Attestation document.
+		/// </summary>
+		/// <param name="grantApplicationId"></param>
+		/// <param name="attachmentId"></param>
+		/// <returns></returns>
+		[HttpGet]
+		[Route("Application/Attestation/Document/{grantApplicationId}/{attachmentId}/")]
+		public JsonResult GetAttachment(int grantApplicationId, int attachmentId)
+		{
+			var model = new GrantApplicationAttachmentViewModel();
+			try
+			{
+				var grantApplication = _grantApplicationService.Get(grantApplicationId);
+				var attachment = attachmentId > 0 ? _attachmentService.Get(attachmentId) : new Attachment();
+				model = new GrantApplicationAttachmentViewModel(grantApplication, attachment);
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex, model);
+			}
+			return Json(model, JsonRequestBehavior.AllowGet);
+		}
+
+
+		/// <summary>
+		/// Downloads specified attachment
+		/// </summary>
+		/// <param name="grantApplicationId"></param>
+		/// <param name="attachmentId"></param>
+		/// <returns></returns>
+		[HttpGet]
+		[PreventSpam]
+		[Route("Application/Attestation/Download/{grantApplicationId}/{attachmentId}")]
+		public ActionResult DownloadAttachment(int grantApplicationId, int attachmentId)
+		{
+			var model = new BaseViewModel();
+			try
+			{
+				var grantApplication = _grantApplicationService.Get(grantApplicationId);
+				var attachment = _attachmentService.Get(attachmentId);
+				return File(attachment.AttachmentData, MediaTypeNames.Application.Octet, attachment.FileName);
 			}
 			catch (Exception ex)
 			{

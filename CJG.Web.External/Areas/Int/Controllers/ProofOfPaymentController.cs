@@ -214,7 +214,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			{
 				var grantApplication = _grantApplicationService.Get(grantApplicationId);
 				var attachment = _attachmentService.Get(attachmentId);
-				return File(attachment.AttachmentData, MediaTypeNames.Application.Octet, $"{attachment.FileName}{attachment.FileExtension}");
+				return File(attachment.AttachmentData, MediaTypeNames.Application.Octet, attachment.FileName);
 			}
 			catch (Exception ex)
 			{

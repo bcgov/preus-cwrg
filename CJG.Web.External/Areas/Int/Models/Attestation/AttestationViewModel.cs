@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CJG.Core.Entities;
+using CJG.Web.External.Areas.Int.Models.Attachments;
 using CJG.Web.External.Models.Shared;
 
 namespace CJG.Web.External.Areas.Int.Models.Attestation
@@ -17,6 +20,9 @@ namespace CJG.Web.External.Areas.Int.Models.Attestation
 		public bool? CompleteAttestation { get; set; }
 
 		public bool IsComplete { get; set; }
+
+		public int MaximumDocuments { get; set; } = 1;
+		public IEnumerable<AttachmentViewModel> Documents { get; set; }
 
 		public AttestationViewModel() { }
 
@@ -36,6 +42,10 @@ namespace CJG.Web.External.Areas.Int.Models.Attestation
 
 			AttestationNotApplicable = attestation.AttestationNotApplicable;
 			IsComplete = attestation.State == AttestationState.Complete;
+
+			MaximumDocuments = 1;
+			Documents = attestation.Documents
+				.Select(a => new AttachmentViewModel(a));
 		}
 	}
 }

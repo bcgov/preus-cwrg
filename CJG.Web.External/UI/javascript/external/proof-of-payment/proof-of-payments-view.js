@@ -1,4 +1,4 @@
-app.controller('ProofOfPaymentsView', function ($scope, $attrs, $controller, $timeout, Utils, ngDialog) {
+app.controller('ProofOfPaymentsView', function ($scope, $attrs, $controller) {
   $scope.section = {
     name: 'ProofOfPaymentsView',
     displayName: 'Proof of Payments',
