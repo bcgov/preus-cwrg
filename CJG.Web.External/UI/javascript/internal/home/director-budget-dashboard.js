@@ -9,7 +9,6 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
         return $scope.model;
       }
     },
-
     budgetTotal: 0,
     fiscalYearId: parseInt($attrs.ngFiscalYearId),
     currentFiscalYearId: parseInt($attrs.ngFiscalYearId)
@@ -59,11 +58,6 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
     return bytes;
   };
 
-  //$scope.export = function () {
-  //  var data = JSON.stringify($scope.model);//.replace('#', '');
-  //  window.open('/Int/Home/Director/Dashboard/Export?data=' + data);
-  //};
-
   $scope.export = function () {
     return $scope.ajax({
       url: '/Int/Home/Director/Dashboard/Export',
@@ -93,8 +87,6 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
   }
 
   $scope.recalculateBudget = function() {
-    console.log('Recalculating Budget');
-
     if ($scope.model.DirectorsReport == undefined)
       return;
 
@@ -108,24 +100,17 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
     var openingRows = $scope.model.OpeningBudgetRows;
     var closingRows = $scope.model.ClosingBudgetRows;
 
-    console.groupCollapsed("Director Budget Calc");
     data.forEach(item => {
-
       var directorBudgetId = item.DirectorBudgetId;
       var directorBudgetValue = parseFloat(item.Budget);
 
       if (isNaN(directorBudgetValue))
         return;
 
-      console.log("Budget", directorBudgetValue);
-      console.log("NAN", isNaN(directorBudgetValue));
-
       let directorOpeningBudgets = 0.0;
       let directorClosingBudgets = 0.0;
 
       openingRows.forEach(opening => {
-        console.log('OPR', opening.DirectorBudgetEntries);
-
         opening.DirectorBudgetEntries.forEach(entry => {
           if (entry.DirectorBudgetId !== directorBudgetId)
             return;
@@ -138,13 +123,10 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
             return;
 
           directorOpeningBudgets += entryBudget;
-          console.log("Budget Entry: ", entryBudget);
         });
       });
 
       closingRows.forEach(closing => {
-        console.log('CLR', closing.DirectorBudgetEntries);
-
         closing.DirectorBudgetEntries.forEach(entry => {
           if (entry.DirectorBudgetId !== directorBudgetId)
             return;
@@ -157,7 +139,6 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
             return;
 
           directorClosingBudgets += entryBudget;
-          console.log("Budget Entry: ", entryBudget);
         });
       });
 
@@ -169,12 +150,6 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
       item.DirectorsReportAvailableBudget = availableBudget;
       item.DirectorsReportRemainingBudget = remainingBudget;
     });
-
-    console.groupEnd();
-    //  console.log($scope.model.DirectorsReport);
-    //  console.log($scope.model.OpeningBudgetRows);
-    //  console.log($scope.model.ClosingBudgetRows);
-
   }
 
   $scope.sumRow = function(data, fieldName) {
