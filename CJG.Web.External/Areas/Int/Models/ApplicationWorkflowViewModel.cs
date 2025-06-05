@@ -27,7 +27,8 @@ namespace CJG.Web.External.Areas.Int.Models
 
 		public ApplicationWorkflowViewModel(GrantApplication grantApplication)
 		{
-			if (grantApplication == null) throw new ArgumentNullException(nameof(grantApplication));
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
 
 			Id = grantApplication.Id;
 			RowVersion = Convert.ToBase64String(grantApplication.RowVersion);

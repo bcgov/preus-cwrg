@@ -764,18 +764,25 @@ namespace CJG.Core.Entities
 				var originalApplicationStateExternal = (ApplicationStateExternal)entry.OriginalValues[nameof(ApplicationStateExternal)];
 				var originalApplicationStateInternal = (ApplicationStateInternal)entry.OriginalValues[nameof(ApplicationStateInternal)];
 
-				// Must have valid dates.
-				if (!hasValidStartDate
-					&& ((originalApplicationStateExternal == ApplicationStateExternal.Complete && ApplicationStateExternal != ApplicationStateExternal.Incomplete) // Must allow for transition from Complete to Incomplete.
-						|| originalApplicationStateExternal == ApplicationStateExternal.Incomplete // Must not allow Applicant to enter invalid dates.
-						|| ApplicationStateExternal > ApplicationStateExternal.Complete)) // Must not allow Assessors to enter invalid dates.
-					yield return new ValidationResult($"Your project start date must fall in the period '{trainingPeriodStartDate.ToLocalMorning():yyyy-MM-dd}' to '{trainingPeriodEndDate.ToLocalMidnight():yyyy-MM-dd}' for the grant you have selected and it may not be before your application submission date.", new[] { nameof(StartDate) });
+				var applicationWasReturnedToDraft = originalApplicationStateInternal == ApplicationStateInternal.Draft && ReturnedToDraft.HasValue;
+				var applicationBeingDecommissioned = applicationWasReturnedToDraft && ApplicationStateInternal == ApplicationStateInternal.ApplicationDenied;
 
-				// When an application is withdrawn it becomes possible to lock in a past date, this makes sure all start dates are today or the future.
-				if (originalApplicationStateInternal == ApplicationStateInternal.ApplicationWithdrawn
-					&& ApplicationStateInternal == ApplicationStateInternal.New
-					&& StartDate < AppDateTime.UtcMorning)
-					yield return new ValidationResult("Your project start date must not start before today.", new[] { nameof(StartDate) });
+				// Must have valid dates.
+				if (!applicationBeingDecommissioned)
+				{
+					if (!hasValidStartDate
+					    && ((originalApplicationStateExternal == ApplicationStateExternal.Complete && ApplicationStateExternal != ApplicationStateExternal.Incomplete) // Must allow for transition from Complete to Incomplete.
+					        || originalApplicationStateExternal == ApplicationStateExternal.Incomplete // Must not allow Applicant to enter invalid dates.
+					        || ApplicationStateExternal > ApplicationStateExternal.Complete)) // Must not allow Assessors to enter invalid dates.
+						yield return new ValidationResult($"Your project start date must fall in the period '{trainingPeriodStartDate.ToLocalMorning():yyyy-MM-dd}' to '{trainingPeriodEndDate.ToLocalMidnight():yyyy-MM-dd}' for the grant you have selected and it may not be before your application submission date.", new[] { nameof(StartDate) });
+
+					// When an application is withdrawn it becomes possible to lock in a past date, this makes sure all start dates are today or the future.
+					if (originalApplicationStateInternal == ApplicationStateInternal.ApplicationWithdrawn
+					    && ApplicationStateInternal == ApplicationStateInternal.New
+					    && StartDate < AppDateTime.UtcMorning)
+						yield return new ValidationResult("Your project start date must not start before today.", new[] { nameof(StartDate) });
+
+				}
 
 				var originalStartDate = (DateTime)entry.OriginalValues[nameof(StartDate)];
 				var originalEndDate = (DateTime)entry.OriginalValues[nameof(EndDate)];
@@ -872,26 +879,30 @@ namespace CJG.Core.Entities
 					}
 				}
 
-				if (ApplicationStateInternal.In(ApplicationStateInternal.RecommendedForDenial, ApplicationStateInternal.ApplicationDenied, ApplicationStateInternal.ChangeForDenial, ApplicationStateInternal.ChangeRequestDenied, ApplicationStateInternal.ClaimDenied) || ApplicationStateExternal == ApplicationStateExternal.ApplicationWithdrawn)
+				if (ApplicationStateInternal.In(ApplicationStateInternal.RecommendedForDenial, ApplicationStateInternal.ApplicationDenied, ApplicationStateInternal.ChangeForDenial, ApplicationStateInternal.ChangeRequestDenied, ApplicationStateInternal.ClaimDenied)
+				    || ApplicationStateExternal == ApplicationStateExternal.ApplicationWithdrawn)
 				{
-					var applicationStateChange = this.GetReason(ApplicationStateInternal);
-
-					if (string.IsNullOrEmpty(applicationStateChange))
+					if (!applicationBeingDecommissioned)
 					{
-						// need to pull the reason for the state change, since it's not available in the context
-						applicationStateChange = context.Set<GrantApplicationStateChange>()
-							.Where(x => x.GrantApplicationId == Id && x.ToState == ApplicationStateInternal)
-							.OrderByDescending(s => s.DateAdded)
-							.Select(s => s.Reason)
-							.FirstOrDefault();
-					}
+						var applicationStateChange = this.GetReason(ApplicationStateInternal);
 
-					if (string.IsNullOrEmpty(applicationStateChange))
-					{
-						if (ApplicationStateExternal == ApplicationStateExternal.ApplicationWithdrawn)
-							yield return new ValidationResult("Please provide a reason for withdrawing your application", new[] { nameof(ApplicationStateInternal) });
-						else
-							yield return new ValidationResult("Please provide a reason for denial");
+						if (string.IsNullOrEmpty(applicationStateChange))
+						{
+							// need to pull the reason for the state change, since it's not available in the context
+							applicationStateChange = context.Set<GrantApplicationStateChange>()
+								.Where(x => x.GrantApplicationId == Id && x.ToState == ApplicationStateInternal)
+								.OrderByDescending(s => s.DateAdded)
+								.Select(s => s.Reason)
+								.FirstOrDefault();
+						}
+
+						if (string.IsNullOrEmpty(applicationStateChange))
+						{
+							if (ApplicationStateExternal == ApplicationStateExternal.ApplicationWithdrawn)
+								yield return new ValidationResult("Please provide a reason for withdrawing your application", new[] { nameof(ApplicationStateInternal) });
+							else
+								yield return new ValidationResult("Please provide a reason for denial");
+						}
 					}
 				}
 

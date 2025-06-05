@@ -1752,6 +1752,11 @@ Thank you.";
 
 					break;
 
+				case ApplicationStateInternal.ApplicationDenied:
+					if (_originalState == ApplicationStateInternal.Draft && _grantApplication.ReturnedToDraft != null)
+						noteContent = $"Changed from \"Returned to Draft\" to \"{_grantApplication.ApplicationStateInternal.GetDescription()}\"{suffix}";
+					break;
+
 				case ApplicationStateInternal.ApplicationWithdrawn:
 					noteContent = $"{_grantApplication.FileNumber} {noteContent}";
 					break;
