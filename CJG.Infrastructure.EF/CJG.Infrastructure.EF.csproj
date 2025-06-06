@@ -1249,7 +1249,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>App.config</DependentUpon>
     </None>
-    <None Include="App.QA.config.template" />
     <None Include="App.Release.config">
       <SubType>Designer</SubType>
       <DependentUpon>App.config</DependentUpon>
