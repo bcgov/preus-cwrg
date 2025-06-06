@@ -620,6 +620,10 @@
     <Compile Include="Migrations\202505302158226_v02.18.00.Designer.cs">
       <DependentUpon>202505302158226_v02.18.00.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202506061813432_v02.18.01.cs" />
+    <Compile Include="Migrations\202506061813432_v02.18.01.Designer.cs">
+      <DependentUpon>202506061813432_v02.18.01.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Content Include="Migrations\v02.02.03\PostDeploy\Seed\03 GrantOpenings.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1229,6 +1233,9 @@
     <Content Include="Migrations\v02.16.00\PostDeploy\Seed\01_DeactivateAndAddNewExitSurveyQuestionsAndOptions.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Migrations\v02.18.01\PostDeploy\Seed\01_UpdateCourseOutline.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Migrations\v02.17.07\PostDeploy\Seed\01_ScheduleATemplate.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1704,6 +1711,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202505302158226_v02.18.00.resx">
       <DependentUpon>202505302158226_v02.18.00.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202506061813432_v02.18.01.resx">
+      <DependentUpon>202506061813432_v02.18.01.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
