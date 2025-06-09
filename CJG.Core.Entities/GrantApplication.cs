@@ -69,6 +69,17 @@ namespace CJG.Core.Entities
 		public virtual InternalUser Assessor { get; set; }
 
 		/// <summary>
+		/// get/set - Foreign key to the primary assessor.
+		/// </summary>
+		public int? PrimaryAssessorId { get; set; }
+
+		/// <summary>
+		/// get/set - The Primary Assessor assigned to this grant application. This is the person that initially assigns the application to an assessor.
+		/// </summary>
+		[ForeignKey(nameof(PrimaryAssessorId))]
+		public virtual InternalUser PrimaryAssessor { get; set; }
+
+		/// <summary>
 		/// get/set - The unique filenumber assigned to this grant application.
 		/// </summary>
 		[MaxLength(50)]

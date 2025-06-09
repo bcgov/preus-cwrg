@@ -433,7 +433,10 @@ namespace CJG.Application.Services
 		/// <param name="assessor"></param>
 		private void OnBeginAssessment(InternalUser assessor)
 		{
+			var internalUser = GetInternalUser();
+
 			_grantApplication.Assessor = assessor;
+			_grantApplication.PrimaryAssessor = internalUser;
 
 			_grantOpeningService.AdjustFinancialStatements(_grantApplication, _originalState, ApplicationWorkflowTrigger.BeginAssessment);
 

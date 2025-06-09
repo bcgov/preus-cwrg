@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -238,6 +238,9 @@ namespace CJG.Application.Services
 					return isApplicationAdministrator || user.HasPrivilege(Privilege.IA1);
 
 				case ApplicationWorkflowTrigger.ReassignAssessor:
+					return user.HasPrivilege(Privilege.AM2, Privilege.AM3);
+
+				case ApplicationWorkflowTrigger.ReassignPrimaryAssessor:
 					return user.HasPrivilege(Privilege.AM2, Privilege.AM3, Privilege.AM5);
 
 				case ApplicationWorkflowTrigger.ViewClaim:

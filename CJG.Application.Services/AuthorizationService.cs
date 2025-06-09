@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
+using System.Web.Security;
 using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
 using CJG.Infrastructure.Entities;
@@ -14,18 +15,35 @@ namespace CJG.Application.Services
 {
 	public sealed class AuthorizationService : Service, IAuthorizationService
 	{
-		#region Variables
 		private readonly ApplicationUserManager _applicationUserManager;
-		#endregion
 
-		#region Constructors
 		public AuthorizationService(ApplicationUserManager applicationUserManager, IDataContext context, HttpContextBase httpContext, ILogger logger) : base(context, httpContext, logger)
 		{
 			_applicationUserManager = applicationUserManager;
 		}
-		#endregion
 
-		#region Methods
+		/// <summary>
+		/// Return an array of internal users who are 'primary' assessors.
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerable<InternalUser> GetPrimaryAssessors()
+		{
+			// This is currently the same logic as Assessors. Separate in case we need to split it.
+			string[] includeRoles = { "Assessor", "Financial Clerk" };
+
+			var roleIds = _dbContext.ApplicationClaims
+				.SelectMany(x => x.ApplicationRoles)
+				.Where(x => includeRoles.Contains(x.Name))
+				.Select(x => x.Id)
+				.Distinct();
+
+			return _applicationUserManager.Users
+				.Where(u => (u.Active ?? false) && u.Roles.Any(r => roleIds.Contains(r.RoleId)))
+				.OrderBy(u => u.InternalUser.LastName)
+				.ThenBy(u => u.InternalUser.FirstName)
+				.Select(a => a.InternalUser).AsEnumerable();
+		}
+
 		/// <summary>
 		/// Return an array of internal users who are assessors.
 		/// </summary>
@@ -130,6 +148,5 @@ namespace CJG.Application.Services
 				throw;
 			}
 		}
-		#endregion
 	}
 }

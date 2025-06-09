@@ -387,6 +387,12 @@ namespace CJG.Core.Entities
 		EditClaimAR = 120,
 
 		[Description("Edit Denial Reason")]
-		EditRecommendForDenialReasons = 121
+		EditRecommendForDenialReasons = 121,
+
+		/// <summary>
+		/// ReassignAssessor - Assessor/Director reassign the current primary assessor to another primary assessor on the Grant File.
+		/// </summary>
+		[Description("Reassign Primary Assessor")]
+		ReassignPrimaryAssessor = 130,
 	}
 }
