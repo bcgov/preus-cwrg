@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using CJG.Application.Business.Models;
 using CJG.Application.Business.Models.DirectorsReport;
 using CJG.Core.Entities;
 

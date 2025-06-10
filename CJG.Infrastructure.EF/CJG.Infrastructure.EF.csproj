@@ -616,6 +616,18 @@
     <Compile Include="Migrations\202504302203004_v02.17.07.Designer.cs">
       <DependentUpon>202504302203004_v02.17.07.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202505302158226_v02.18.00.cs" />
+    <Compile Include="Migrations\202505302158226_v02.18.00.Designer.cs">
+      <DependentUpon>202505302158226_v02.18.00.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202506061813432_v02.18.01.cs" />
+    <Compile Include="Migrations\202506061813432_v02.18.01.Designer.cs">
+      <DependentUpon>202506061813432_v02.18.01.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202506062017167_v02.18.02.cs" />
+    <Compile Include="Migrations\202506062017167_v02.18.02.Designer.cs">
+      <DependentUpon>202506062017167_v02.18.02.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Content Include="Migrations\v02.02.03\PostDeploy\Seed\03 GrantOpenings.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1225,6 +1237,9 @@
     <Content Include="Migrations\v02.16.00\PostDeploy\Seed\01_DeactivateAndAddNewExitSurveyQuestionsAndOptions.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Migrations\v02.18.01\PostDeploy\Seed\01_UpdateCourseOutline.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Migrations\v02.17.07\PostDeploy\Seed\01_ScheduleATemplate.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1238,7 +1253,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>App.config</DependentUpon>
     </None>
-    <None Include="App.QA.config.template" />
     <None Include="App.Release.config">
       <SubType>Designer</SubType>
       <DependentUpon>App.config</DependentUpon>
@@ -1697,6 +1711,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202504302203004_v02.17.07.resx">
       <DependentUpon>202504302203004_v02.17.07.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202505302158226_v02.18.00.resx">
+      <DependentUpon>202505302158226_v02.18.00.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202506061813432_v02.18.01.resx">
+      <DependentUpon>202506061813432_v02.18.01.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202506062017167_v02.18.02.resx">
+      <DependentUpon>202506062017167_v02.18.02.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -28,5 +29,7 @@ namespace CJG.Core.Entities
 		public decimal UnusedFunds { get; set; }
 
 		public bool? AttestationNotApplicable { get; set; }
+
+		public virtual ICollection<Attachment> Documents { get; set; } = new List<Attachment>();
 	}
 }

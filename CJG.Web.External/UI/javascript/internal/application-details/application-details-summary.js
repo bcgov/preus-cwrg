@@ -43,6 +43,7 @@ app.controller('ApplicationSummary', function ($scope, $attrs, $controller, $tim
     maxTrainingPeriodDate: null
   };
 
+  if (typeof ($scope.primaryAssessors) === 'undefined') $scope.primaryAssessors = [];
   if (typeof ($scope.assessors) === 'undefined') $scope.assessors = [];
   if (typeof ($scope.riskClassifications) === 'undefined') $scope.riskClassifications = [];
   if (typeof ($scope.programInitiatives) === 'undefined') $scope.programInitiatives = [];
@@ -51,6 +52,19 @@ app.controller('ApplicationSummary', function ($scope, $attrs, $controller, $tim
   if (typeof ($scope.checklist) === 'undefined') $scope.checklist = [];
 
   angular.extend(this, $controller('Section', { $scope: $scope, $attrs: $attrs }));
+
+  /**
+   * Make AJAX request for primary assessors data
+   * @function loadPrimaryAssessors
+   * @returns {Promise}
+   **/
+  function loadPrimaryAssessors() {
+    return $scope.load({
+      url: '/Int/Application/PrimaryAssessors/' + $scope.parent.grantApplicationId,
+      set: 'primaryAssessors',
+      condition: !$scope.primaryAssessors || !$scope.primaryAssessors.length
+    });
+  }
 
   /**
    * Make AJAX request for assessors data
@@ -164,6 +178,7 @@ app.controller('ApplicationSummary', function ($scope, $attrs, $controller, $tim
    **/
   $scope.init = function() {
     return Promise.all([
+      loadPrimaryAssessors(),
       loadAssessors(),
       loadRiskClassifications(),
       loadProgramInitiatives(),
@@ -177,23 +192,43 @@ app.controller('ApplicationSummary', function ($scope, $attrs, $controller, $tim
   }
 
   /**
+   * Reassign the primary assessor for this application.
+   * @function reassign
+   * @returns {Promise}
+   **/
+  $scope.reassignPrimary = function () {
+    return $scope.load({
+        url: '/Int/Application/Summary/AssignPrimary',
+        data: function() {
+          return $scope.model;
+        },
+        set: 'model',
+        method: 'PUT'
+      })
+      .then(function() {
+        return $scope.section.onSave();
+      })
+      .catch(angular.noop);
+  }
+  
+  /**
    * Reassign the assessor for this application.
    * @function reassign
    * @returns {Promise}
    **/
   $scope.reassign = function () {
     return $scope.load({
-      url: '/Int/Application/Summary/Assign',
-      data: function () {
-        return $scope.model;
-      },
-      set: 'model',
-      method: 'PUT'
-    })
-      .then(function () {
+        url: '/Int/Application/Summary/Assign',
+        data: function() {
+          return $scope.model;
+        },
+        set: 'model',
+        method: 'PUT'
+      })
+      .then(function() {
         return $scope.section.onSave();
       })
-      .catch(angular.noop)
+      .catch(angular.noop);
   }
 
   /**

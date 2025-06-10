@@ -95,6 +95,33 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		}
 
 		/// <summary>
+		/// Returns an array of eligible primary assessors.
+		/// </summary>
+		/// <returns></returns>
+		[HttpGet]
+		[Route("Application/PrimaryAssessors/{grantApplicationId}")]
+		public JsonResult GetPrimaryAssessors(int grantApplicationId)
+		{
+			InternalUserViewModel[] assessors = null;
+			try
+			{
+				_grantApplicationService.Get(grantApplicationId);
+
+				var list = _authorizationService
+					.GetPrimaryAssessors()
+					.ToList();
+
+				if (list.Any())
+					assessors = list.Select(x => new InternalUserViewModel { Id = x.Id, LastName = x.LastName, FirstName = x.FirstName }).ToArray();
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex);
+			}
+			return Json(assessors, JsonRequestBehavior.AllowGet);
+		}
+
+		/// <summary>
 		/// Returns an array of eligible assessors.
 		/// </summary>
 		/// <returns></returns>

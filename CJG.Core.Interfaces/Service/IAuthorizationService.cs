@@ -6,7 +6,8 @@ namespace CJG.Core.Interfaces.Service
 {
     public interface IAuthorizationService : IService
     {
-        IEnumerable<InternalUser> GetAssessors();
+	    IEnumerable<InternalUser> GetPrimaryAssessors();
+		IEnumerable<InternalUser> GetAssessors();
         IEnumerable<string> GetPrivileges(string roleName);
         void UpdatePrivilegeClaimsOnIdentity(ClaimsIdentity identity);
         IEnumerable<string> GetRolesWithPrivilege(string privilegeName);

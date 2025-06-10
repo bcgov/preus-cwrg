@@ -33,6 +33,11 @@ namespace CJG.Web.External.Areas.Int.Models
 		{
 			var directorBudgets = directorReportsService.GetDirectorBudgets(fiscalYear).ToList();
 
+			directorBudgets.Add(new DirectorBudget
+			{
+				ProgramInitiative = null
+			});
+
 			var directorsReport = directorReportsService.GetBudgetSummaryModels(fiscalYear, directorBudgets).ToList();
 			var openingBudgetRows = directorReportsService.GetBudgetRows(fiscalYear, directorBudgets, DirectorBudgetEntryType.Opening).ToList();
 			var closingBudgetRows = directorReportsService.GetBudgetRows(fiscalYear, directorBudgets, DirectorBudgetEntryType.Closing).ToList();

@@ -11,14 +11,6 @@ namespace CJG.Application.Business.Models.DirectorsReport
 
 		// Directors Report
 		public decimal Budget { get; set; }
-		public int ApplicationsReceived { get; set; }
-		public decimal ForecastCommitmentAmount { get; set; }
-		public decimal CancelledApplicationsTotal { get; set; }
-		public decimal ApplicationsReceivedTotal { get; set; }
-		public decimal NewApplicationsTotal { get; set; }
-		public int ApplicationsApproved { get; set; }
-		public decimal ApprovedCommitmentAmount { get; set; }
-		public decimal ClaimsProcessedTotal { get; set; }
 		public bool IncludeInSlippageCalculation { get; set; }
 
 		// New Directors Reports (Program Initiative Version)
@@ -35,16 +27,24 @@ namespace CJG.Application.Business.Models.DirectorsReport
 		public decimal DirectorsReportAvailableBudget { get; set; }
 		public decimal DirectorsReportRemainingBudget { get; set; }
 
+		// Summary Group Report Values
+		public int SummaryReportApplicationsReceived { get; set; }
+		public int SummaryReportApplicationsApproved { get; set; }
+		public decimal SummaryReportApprovedCommitmentAmount { get; set; }
+		public decimal SummaryReportApplicationsPendingDecision { get; set; }
+		public decimal SummaryReportCancelledApplicationsTotal { get; set; }
+		public decimal SummaryReportApplicationsReceivedTotal { get; set; }
+
 		// Weekly Claims Reports
-		public int NumberOfClaimsSubmitted { get; set; }
-		public int NumberOfClaimsLeftToSubmit { get; set; }
-		public decimal ClaimsUnclaimedTotal { get; set; }
-		public int ReceivablesSetupNumber { get; set; }
-		public decimal ReceivablesSetupTotal { get; set; }
-		public decimal SlippageTotal { get; set; }
+		//public int NumberOfClaimsSubmitted { get; set; }
+		//public int NumberOfClaimsLeftToSubmit { get; set; }
+		//public decimal ClaimsUnclaimedTotal { get; set; }
+		//public int ReceivablesSetupNumber { get; set; }
+		//public decimal ReceivablesSetupTotal { get; set; }
+		//public decimal SlippageTotal { get; set; }
 
 		// Forecast Report
-		public decimal ForecastBudget { get; set; }
+		//public decimal ForecastBudget { get; set; }
 
 		public DateTime? LastUpdated { get; set; }
 	}

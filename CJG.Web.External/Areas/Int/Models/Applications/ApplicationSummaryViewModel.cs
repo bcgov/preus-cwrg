@@ -40,7 +40,9 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 		public string DoingBusinessAsMinistry { get; set; }
 		public string StatementOfRegistrationNumber { get; set; }
 		public decimal EligibleTotalCost { get; set; }
+		public int? PrimaryAssessorId { get; set; }
 		public int? AssessorId { get; set; }
+		public InternalUser PrimaryAssessor { get; set; }
 		public InternalUser Assessor { get; set; }
 		public int? DeliveryPartnerId { get; set; }
 		public int? DeliveryPartnerServicesId { get; set; }
@@ -56,6 +58,7 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 		public bool AllowEditDeliveryPartner { get; set; }
 		public bool CanModifyDeliveryDates { get; set; }
 		public bool AllowDirectorUpdate { get; set; }
+		public bool AllowPrimaryReassign { get; set; }
 		public bool AllowReAssign { get; set; }
 		public bool EditSummary { get; set; }
 		public bool? HasRequestedAdditionalFunding { get; set; }
@@ -96,6 +99,15 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 
 			Id = grantApplication.Id;
 			RowVersion = Convert.ToBase64String(grantApplication.RowVersion);
+
+			PrimaryAssessor = grantApplication.PrimaryAssessor == null ? null : new InternalUser
+			{
+				Id = grantApplication.PrimaryAssessor.Id,
+				LastName = grantApplication.PrimaryAssessor.LastName,
+				FirstName = grantApplication.PrimaryAssessor.FirstName,
+				IDIR = grantApplication.PrimaryAssessor.IDIR,
+				Email = grantApplication.PrimaryAssessor.Email
+			};
 
 			Assessor = grantApplication.Assessor == null ? null : new InternalUser
 			{
@@ -152,6 +164,7 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 
 			EditSummary = user.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.EditApplication);
 			CanModifyDeliveryDates = user.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.EditApplication);
+			AllowPrimaryReassign = user.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.ReassignPrimaryAssessor);
 			AllowReAssign = user.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.ReassignAssessor);
 			AllowDirectorUpdate = user.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.DenyApplication);
 			HasRequestedAdditionalFunding = grantApplication.HasRequestedAdditionalFunding;
