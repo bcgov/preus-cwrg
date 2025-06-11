@@ -1,9 +1,6 @@
 app.controller('GrantAgreementPrint', function ($scope, $attrs, $controller, $timeout) {
   $scope.section = {
     name: 'GrantAgreementPrint',
-    //onRefresh: function () {
-    //  return loadGrantAgreement().catch(angular.noop);
-    //},
     grantApplicationId: $attrs.ngGrantApplicationId,
     version: $attrs.ngVersion
   };
@@ -22,18 +19,14 @@ app.controller('GrantAgreementPrint', function ($scope, $attrs, $controller, $ti
     });
   }
 
-  /**
-   * Fetch all the data for the form.
-   * @function init
-   * @returns {Promise}
-   **/
   function init() {
     $('body').addClass("print-mode");
-
     return Promise.all([
         loadGrantAgreement()
       ]).then(function() {
-        window.print();
+        $timeout(function () {
+          window.print();
+        }, 1500);
       })
       .catch(angular.noop);
   }
