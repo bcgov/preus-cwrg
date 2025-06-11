@@ -4,13 +4,7 @@
 </div>
 <div ng-if="process.AssociatedEligibleCost.ServiceLines.length > 0" class="margin-5px">
 	<p>{{process.ServiceCategoryDescription}}</p>
-	<h4>Services to be delivered</h4>
 	<div class="form--readonly" ng-if="process.AssociatedEligibleCost != null">
-		<div class="form__group" ng-repeat="line in process.AssociatedEligibleCost.ServiceLines">
-			<div class="form__label">{{line.Caption}}:</div>
-			<div class="form__control service-line-description" ng-bind-html="line.Description">
-			</div>
-		</div>
 		<div class="form__group">
 			<div class="form__label">Total cost:</div>
 			<div class="form__control">
