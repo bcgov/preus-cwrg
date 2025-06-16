@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Participant Financial Supports Attestation";
+    ViewBag.Title = "Attestation";
 }
 
 <div class="row" ng-controller="AttestationView" ng-grant-application-id="@ViewBag.GrantApplicationId" ng-redirect-url="@Url.Action("GrantFileView", "Reporting", new { grantApplicationId = (int)ViewBag.GrantApplicationId })">
@@ -8,7 +8,7 @@
     </div>
     <program-title-label ng-model="model.ProgramTitleLabel"></program-title-label>
 
-    <h2>Participant Financial Supports Attestation</h2>
+    <h2>Attestation</h2>
 
     <div class="attestations">
         <div ng-if="alert.message" class="row row--alert">
@@ -74,6 +74,30 @@
                     </ul>
                     <p>Once we have received your email, instructions for how to return the funds will be provided.</p>
                 </li>
+                <li>
+                    <p><strong>Please submit your Participant Financial Supports Tracker here</strong></p>
+                    <p>Accepted file types: PDF, JPG, JPEG, PNG, GIF. Maximum file size is 5 MB.</p>
+
+                    <div class="form__group" ng-if="model.Attachments">
+                        <table style="width: 100%;">
+                            <tr ng-repeat="attachment in model.Attachments">
+                                <td style="width: 10%; vertical-align: top">{{$index + 1}}</td>
+                                <td style="width: 60%; vertical-align: top; word-wrap: break-word; word-break: break-all;">
+                                    <a ng-if="attachment.Id" target="_blank" href="/Ext/Application/Attestation/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a>
+                                    <span ng-if="!attachment.Id">{{attachment.FileName}}</span>
+                                    <br/>{{attachment.Description}}
+                                </td>
+                                <td style="vertical-align: top" ng-if="!model.IsComplete" >
+                                    <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index)">Remove</button>
+                                    <button class="btn btn--secondary pull-right margin-left-10" ng-click="changeAttachment(attachment)">Change</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="form__group" ng-if="!model.IsComplete">
+                        <button ng-if="model.AttachmentsMaximum > model.Attachments.length" class="btn btn--secondary" ng-click="addAttachment()" data-disableonsubmit="false">Add Attachment</button>
+                    </div>
+                </li>
             </ol>
         </div>
         <br/>
@@ -94,7 +118,7 @@
 
         <div class="button-group">
             <button class="btn btn--secondary" ng-click="cancel()">Cancel</button>
-            <button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="model.IsComplete || !model.CompleteAttestation">Save</button>
+            <button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="model.IsComplete || !model.CompleteAttestation || model.Attachments.length == 0 ">Save</button>
         </div>
     </div>
 </div>

@@ -114,7 +114,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		[PreventSpam]
 		[ValidateRequestHeader]
 		[Route("Application/ProofOfPayment/Documents/{grantApplicationId}")]
-		public JsonResult UpdateProofOfPaymentDocuments(int grantApplicationId, bool? proofNotApplicable, bool? completeProofOfPayment,  HttpPostedFileBase[] files, string attachments)
+		public JsonResult UpdateProofOfPaymentDocuments(int grantApplicationId, bool? proofNotApplicable, bool? completeProofOfPayment, HttpPostedFileBase[] files, string attachments)
 		{
 			var model = new ProofOfPaymentsDocumentsViewModel();
 			try
@@ -210,7 +210,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				var grantApplication = _grantApplicationService.Get(grantApplicationId);
 				var attachment = _attachmentService.Get(attachmentId);
 
-				return File(attachment.AttachmentData, System.Net.Mime.MediaTypeNames.Application.Octet, $"{attachment.FileName}{attachment.FileExtension}");
+				return File(attachment.AttachmentData, System.Net.Mime.MediaTypeNames.Application.Octet, attachment.FileName);
 			}
 			catch (Exception ex)
 			{

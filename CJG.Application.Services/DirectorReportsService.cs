@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CJG.Application.Business.Models.DirectorsReport;
@@ -133,28 +134,29 @@ namespace CJG.Application.Services
 			var defaultGrantProgram = GetDefaultGrantProgram();
 
 			var directorsReport = new List<BudgetSummaryModel>();
-			var grantApplications = new List<GrantApplication>();
 
 			foreach (var budget in directorBudgets)
 			{
-				if (budget.ProgramInitiative == null)
-					continue;
+				var budgetTitle = budget.ProgramInitiative?.Name ?? "Not Assigned";
+				var budgetStreams = budget.ProgramInitiative?.Code ?? "No Program Initiative";
 
-				var budgetTitle = budget.ProgramInitiative.Name;
-				var budgetStreams = budget.ProgramInitiative.Code;
-
-				grantApplications = GetApplicationsFor(fiscalYear, budget.ProgramInitiative).ToList();
+				var grantApplications = GetApplicationsFor(fiscalYear, budget.ProgramInitiative).ToList();
 
 				var nonDraftApplications = grantApplications
-					.Where(ga => ga.ApplicationStateInternal != ApplicationStateInternal.Draft)
+					.Where(ga => ga.ApplicationStateInternal != ApplicationStateInternal.Draft
+					             || ga.ApplicationStateInternal == ApplicationStateInternal.Draft && ga.ReturnedToDraft != null)
 					.ToList();
 
-				var newApplications = GetIntakeNumbersFor(grantApplications, CommitmentType.Requested, new List<ApplicationStateInternal>
+				var newApplicationsPreAssignment = GetIntakeNumbersFor(grantApplications, CommitmentType.Requested, new List<ApplicationStateInternal>
 				{
 					ApplicationStateInternal.New,
-					ApplicationStateInternal.PendingAssessment,
+					ApplicationStateInternal.PendingAssessment
+				});
+				var newApplicationsPostAssignment = GetIntakeNumbersFor(grantApplications, CommitmentType.Agreed, new List<ApplicationStateInternal>
+				{
 					ApplicationStateInternal.UnderAssessment,
-					ApplicationStateInternal.ReturnedToAssessment
+					ApplicationStateInternal.ReturnedToAssessment,
+					ApplicationStateInternal.RecommendedForApproval
 				});
 
 				var cancelledRequests = GetIntakeNumbersFor(grantApplications, CommitmentType.Requested, new List<ApplicationStateInternal>
@@ -169,7 +171,8 @@ namespace CJG.Application.Services
 				{
 					ApplicationStateInternal.CancelledByAgreementHolder,
 					ApplicationStateInternal.CancelledByMinistry,
-					ApplicationStateInternal.AgreementRejected
+					ApplicationStateInternal.AgreementRejected,
+					ApplicationStateInternal.ReturnedToDraft
 				});
 
 				var committedWithNoClaims = GetIntakeNumbersFor(grantApplications, CommitmentType.Agreed, new List<ApplicationStateInternal>
@@ -190,19 +193,27 @@ namespace CJG.Application.Services
 
 				var (receivablesTotal, receivablesNumber) = GetReceivableValues(fiscalYear, budget.ProgramInitiative);
 
-				var cancelledTotal = cancelledAgreed.ValueOfApplications + cancelledRequests.ValueOfApplications;
+				//var cancelledTotal = cancelledAgreed.ValueOfApplications + cancelledRequests.ValueOfApplications;
+				var cancelledTotalCost = cancelledAgreed.TotalCostOfApplications + cancelledRequests.TotalCostOfApplications;
 				var claimTotal = GetClaimTotal(grantApplications, defaultGrantProgram);
 				var unclaimedTotal = GetUnclaimedTotal(grantApplications, defaultGrantProgram);
-				var numberOfClaimsSubmitted = GetTotalClaimsSubmitted(grantApplications);
+				//var numberOfClaimsSubmitted = GetTotalClaimsSubmitted(grantApplications);
 
 				var commitmentAmount = committedWithNoClaims.NumberOfApplications + committedWithClaims.NumberOfApplications;
 				var commitmentTotal = committedWithNoClaims.ValueOfApplications + committedWithClaims.ValueOfApplications;
+				var commitmentTotalCost = committedWithNoClaims.TotalCostOfApplications + committedWithClaims.TotalCostOfApplications;
 
 				var intakeCount = nonDraftApplications.Count;
-				var intakeTotal = newApplications.ValueOfApplications + commitmentTotal + cancelledTotal;
+				//var intakeTotal = newApplicationsPreAssignment.ValueOfApplications
+				//					+ newApplicationsPostAssignment.ValueOfApplications +
+				//				    + commitmentTotal
+				//					+ cancelledTotal;
+				var intakeTotalCost = newApplicationsPreAssignment.TotalCostOfApplications
+									+ newApplicationsPostAssignment.TotalCostOfApplications +
+								    + commitmentTotal
+									+ cancelledTotalCost;
 				// Slippage is the committed Schedule A amount of agreements with claims submitted minus Claims $ Processed  
-				var slippageTotal = committedWithClaims.ValueOfApplications - claimTotal;
-
+				//var slippageTotal = committedWithClaims.ValueOfApplications - claimTotal;
 
 
 				var directorsReportCommittedScheduleA = commitmentTotal;
@@ -221,24 +232,31 @@ namespace CJG.Application.Services
 					IncludeInSlippageCalculation = true,  //budget.BudgetEntryType == BudgetEntryType.CoreStream,
 
 					Budget = budget.Budget ?? 0m,
-					NewApplicationsTotal = newApplications.ValueOfApplications,
+					//NewApplicationsTotal = newApplicationsPreAssignment.ValueOfApplications + newApplicationsPostAssignment.ValueOfApplications,
 
-					ApplicationsReceived = intakeCount,
-					ApplicationsReceivedTotal = intakeTotal,
-					CancelledApplicationsTotal = cancelledTotal,
-					ForecastCommitmentAmount = intakeTotal - cancelledTotal,
-					ApplicationsApproved = commitmentAmount,
-					ApprovedCommitmentAmount = commitmentTotal,
+					//ApplicationsReceived = intakeCount,
+					//ApplicationsReceivedTotal = intakeTotal,
+					//CancelledApplicationsTotal = cancelledTotal,
+					//ForecastCommitmentAmount = intakeTotal - cancelledTotal,
+					//ApplicationsApproved = commitmentAmount,
+					//ApprovedCommitmentAmount = commitmentTotalCost,
 
-					ClaimsProcessedTotal = claimTotal,
-					NumberOfClaimsSubmitted = numberOfClaimsSubmitted,
-					NumberOfClaimsLeftToSubmit = commitmentAmount - numberOfClaimsSubmitted,
+					//ClaimsProcessedTotal = claimTotal,
+					//NumberOfClaimsSubmitted = numberOfClaimsSubmitted,
+					//NumberOfClaimsLeftToSubmit = commitmentAmount - numberOfClaimsSubmitted,
 					//ClaimsUnclaimedTotal = commitmentTotal - claimTotal,
-					ReceivablesSetupNumber = receivablesNumber,
-					ReceivablesSetupTotal = receivablesTotal,
+					//ReceivablesSetupNumber = receivablesNumber,
+					//ReceivablesSetupTotal = receivablesTotal,
 
-					SlippageTotal = slippageTotal,
-					ForecastBudget = budget.ForecastBudget ?? 0m,
+					//SlippageTotal = slippageTotal,
+					//ForecastBudget = budget.ForecastBudget ?? 0m,
+
+					SummaryReportApplicationsReceived = intakeCount,
+					SummaryReportApplicationsApproved = commitmentAmount,
+					SummaryReportApprovedCommitmentAmount = commitmentTotalCost,
+					SummaryReportApplicationsPendingDecision = newApplicationsPreAssignment.TotalCostOfApplications + newApplicationsPostAssignment.TotalCostOfApplications,
+					SummaryReportCancelledApplicationsTotal = cancelledTotalCost,
+					SummaryReportApplicationsReceivedTotal = intakeTotalCost,
 
 					DirectorsReportCommittedScheduleA = directorsReportCommittedScheduleA,
 					DirectorsReportClaimsProcessed = directorsReportClaimsProcessed,
@@ -253,15 +271,15 @@ namespace CJG.Application.Services
 					//  Committed $ Approved from Directors Report
 					//   MINUS Claims $ Processed from Finance Report
 					//   MINUS Slippage $ from Finance Report.
-					ClaimsUnclaimedTotal = commitmentTotal - claimTotal - slippageTotal,
+					//ClaimsUnclaimedTotal = commitmentTotal - claimTotal - slippageTotal,
 
 					/*
-"Sum of all schedule A of agreements that have not had a claim submitted & sum of Schedule A of agreements
-which have a claim in but are still in the statuses below:
-	NewClaim
-	ClaimAssessEligibility
-	ClaimAssessReimbursement
-	Claim Returned to Applicant"
+						"Sum of all schedule A of agreements that have not had a claim submitted & sum of Schedule A of agreements
+						which have a claim in but are still in the statuses below:
+							NewClaim
+							ClaimAssessEligibility
+							ClaimAssessReimbursement
+							Claim Returned to Applicant"
 					 
 					 */
 
@@ -410,26 +428,80 @@ which have a claim in but are still in the statuses below:
 
 		private IEnumerable<GrantApplication> GetApplicationsFor(FiscalYear fiscalYear, ProgramInitiative programInitiative)
 		{
-			var applications = _dbContext.GrantApplications
-				.Where(a => a.ProgramInitiativeId == programInitiative.Id)
-				.Where(a => a.GrantOpening.TrainingPeriod.FiscalYearId == fiscalYear.Id);
+			var programInitiativeId = programInitiative?.Id;  // Allows null initiatives allows us to report on applications with no assigned initiative
 
-			return applications;
+			return _dbContext.GrantApplications
+				.Where(a => a.GrantOpening.TrainingPeriod.FiscalYearId == fiscalYear.Id)
+				.Where(a => a.ProgramInitiativeId == programInitiativeId);
 		}
 
-		private (int NumberOfApplications, decimal ValueOfApplications) GetIntakeNumbersFor(IEnumerable<GrantApplication> grantApplications, CommitmentType commitmentType, IEnumerable<ApplicationStateInternal> internalStates)
+		private (int NumberOfApplications, decimal ValueOfApplications, decimal TotalCostOfApplications) GetIntakeNumbersFor(IEnumerable<GrantApplication> grantApplications, CommitmentType commitmentType, IEnumerable<ApplicationStateInternal> internalStates)
 		{
-			var applicationsWithStatus = grantApplications
-				.Where(g => internalStates.Contains(g.ApplicationStateInternal))
+			var checkStates = internalStates.ToList();
+			var applications = grantApplications.ToList();
+
+			var checkForReturnedToDraft = checkStates.Contains(ApplicationStateInternal.ReturnedToDraft);
+
+			var applicationsWithStatus = applications
+				.Where(g => checkStates.Contains(g.ApplicationStateInternal))
 				.ToList();
 
 			var count = applicationsWithStatus.Count;
-			var total = applicationsWithStatus.Sum(ga => commitmentType == CommitmentType.Requested
+			var totalValue = applicationsWithStatus.Sum(ga => commitmentType == CommitmentType.Requested
 				? ga.GetEstimatedReimbursement()
 				: ga.GetAgreedCommitment());
+			var totalCost = GetIntakeCost(applicationsWithStatus, commitmentType);
 
-			return (count, total);
+			if (!checkForReturnedToDraft)
+				return (count, totalValue, totalCost);
+
+			var applicationsReturnedToDraft = applications
+				.Where(g => g.ApplicationStateInternal == ApplicationStateInternal.Draft)
+				.Where(g => g.ReturnedToDraft != null)
+				.ToList();
+
+			var draftCount = applicationsReturnedToDraft.Count;
+			var draftTotalValue = applicationsReturnedToDraft.Sum(ga => commitmentType == CommitmentType.Requested
+				? ga.GetEstimatedReimbursement()
+				: ga.GetAgreedCommitment());
+			var draftTotalCost = GetIntakeCost(applicationsReturnedToDraft, commitmentType);
+
+			count += draftCount;
+			totalValue += draftTotalValue;
+			totalCost += draftTotalCost;
+
+			return (count, totalValue, totalCost);
 		}
+
+		private static decimal GetIntakeCost(List<GrantApplication> grantApplications, CommitmentType commitmentType)
+		{
+			var trainingCost = 0m;
+
+			if (commitmentType == CommitmentType.Requested)
+				trainingCost = grantApplications.Sum(ga => ga?.TrainingCost?.TotalEstimatedCost) ?? 0;
+
+			if (commitmentType == CommitmentType.Agreed)
+				trainingCost = grantApplications.Sum(ga => ga?.TrainingCost?.TotalAgreedMaxCost) ?? 0;
+
+			return Math.Round(trainingCost, 2);
+		}
+
+		public static decimal GetEstimatedReimbursement(GrantApplication grantApplication)
+		{
+			return Math.Round(grantApplication?.TrainingCost?.TotalEstimatedReimbursement ?? 0, 2);
+		}
+
+		/// <summary>
+		/// Get the total agreed commitment of all training programs in this grant application.
+		/// </summary>
+		/// <param name="grantApplication"></param>
+		/// <returns></returns>
+		public static decimal GetAgreedCommitment(GrantApplication grantApplication)
+		{
+			return Math.Round(grantApplication?.TrainingCost?.AgreedCommitment ?? 0, 2);
+		}
+
+
 
 		public void UpdateBudget(List<BudgetSummaryModel> budgetSummaries, List<BudgetRowModel> openingRows, List<BudgetRowModel> closingRows)
 		{
@@ -507,6 +579,9 @@ which have a claim in but are still in the statuses below:
 		{
 			foreach (var directorBudget in directorBudgets)
 			{
+				if (directorBudget.ProgramInitiative == null) // We don't want to try to save budget entries for unassigned DirectorBudgets
+					continue;
+
 				var hasEntry = _dbContext.DirectorBudgetEntries
 					.Where(e => e.DirectorBudgetId == directorBudget.Id)
 					.Where(e => e.DirectorBudgetRowId == budgetRow.Id)

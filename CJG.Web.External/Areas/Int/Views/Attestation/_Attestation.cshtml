@@ -53,6 +53,26 @@
                 </div>
             </div>
             
+            <div>
+                <div class="form__label"><strong>Participant Financial Supports Tracker</strong></div>
+                <div class="form__group" ng-if="model.Documents">
+                    <table style="width: 100%;">
+                        <tr ng-show="model.Documents.length === 0">
+                            <td colspan="3">There are no Participant Financial Supports Tracker documents uploaded.</td>
+                        </tr>
+                        <tr ng-repeat="document in model.Documents">
+                            <td style="width: 20%; vertical-align: top; word-wrap: break-word; word-break: break-all;"><a href="/Int/Application/Attestation/Download/{{grantFile.Id}}/{{document.Id}}">{{document.FileName}}</a></td>
+                            <td style="width: 45%; vertical-align: top; word-wrap: break-word; word-break: break-all;">{{document.Description}}</td>
+                            <td style="vertical-align: top" ng-if="section.editing">
+                                <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeDocument($index)">Remove</button>
+                                <button class="btn btn--secondary pull-right margin-left-10" ng-click="changeDocument(document)">Change</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <button ng-if="section.editing && model.MaximumDocuments > model.Documents.length" class="btn btn--secondary" ng-click="addDocument()" data-disableonsubmit="false">Add Participant Financial Supports Tracker</button>
+            </div>
+
             <div class="clearfix"></div>
         </div>
     </div>

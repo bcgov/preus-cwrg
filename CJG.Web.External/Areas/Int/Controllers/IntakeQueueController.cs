@@ -23,6 +23,8 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		private readonly IFiscalYearService _fiscalYearService;
 		private readonly IGrantProgramService _grantProgramService;
 		private readonly IGrantStreamService _grantStreamService;
+		private readonly ISiteMinderService _siteMinderService;
+		private readonly IUserService _userService;
 
 		public IntakeQueueController(
 			IControllerService controllerService,
@@ -33,6 +35,8 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			IGrantStreamService grantStreamService
 		   ) : base(controllerService.Logger)
 		{
+			_userService = controllerService.UserService;
+			_siteMinderService = controllerService.SiteMinderService;
 			_grantApplicationService = grantApplicationService;
 			_authorizationService = authorizationService;
 			_fiscalYearService = fiscalYearService;
@@ -51,7 +55,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[Route("Intake/Queue/Assessors")]
 		public JsonResult GetAssessors()
 		{
-			IEnumerable<KeyValuePair<int, string>> results = new KeyValuePair<int, string>[0];
+			var results = new KeyValuePair<int, string>[0];
 			try
 			{
 				var assessors = _authorizationService.GetAssessors();
@@ -68,7 +72,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[Route("Intake/Queue/Fiscal/Years")]
 		public JsonResult GetFiscalYears()
 		{
-			IEnumerable<KeyValuePair<int, string>> results = new KeyValuePair<int, string>[0];
+			var results = new KeyValuePair<int, string>[0];
 			try
 			{
 				var fiscalYears = _fiscalYearService.GetFiscalYears();
@@ -121,7 +125,10 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			IEnumerable<KeyValuePair<int, string>> results = new KeyValuePair<int, string>[0];
 			try
 			{
-				var grantStreams = grantProgramId.HasValue ? _grantStreamService.GetGrantStreamsForProgram(grantProgramId.Value) : _grantStreamService.GetAll();
+				var grantStreams = grantProgramId.HasValue
+					? _grantStreamService.GetGrantStreamsForProgram(grantProgramId.Value)
+					: _grantStreamService.GetAll();
+
 				results = grantStreams.Select(s => new KeyValuePair<int, string>(s.Id, s.Name)).ToArray();
 			}
 			catch (Exception ex)
@@ -177,7 +184,8 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			{
 				var grantApplication = _grantApplicationService.Get(grantApplicationId);
 
-				if (String.IsNullOrWhiteSpace(rowVersion)) throw new InvalidOperationException($"The parameter '{nameof(rowVersion)}' cannot be null, empty or whitespace.");
+				if (string.IsNullOrWhiteSpace(rowVersion))
+					throw new InvalidOperationException($"The parameter '{nameof(rowVersion)}' cannot be null, empty or whitespace.");
 				grantApplication.RowVersion = Convert.FromBase64String(rowVersion.Replace(" ", "+"));
 				_grantApplicationService.SelectForAssessment(grantApplication);
 
@@ -210,7 +218,9 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			{
 				var grantApplication = _grantApplicationService.Get(grantApplicationId);
 
-				if (String.IsNullOrWhiteSpace(rowVersion)) throw new InvalidOperationException($"The parameter '{nameof(rowVersion)}' cannot be null, empty or whitespace.");
+				if (string.IsNullOrWhiteSpace(rowVersion))
+					throw new InvalidOperationException($"The parameter '{nameof(rowVersion)}' cannot be null, empty or whitespace.");
+
 				grantApplication.RowVersion = Convert.FromBase64String(rowVersion.Replace(" ", "+"));
 				_grantApplicationService.BeginAssessment(grantApplication, assessorId);
 

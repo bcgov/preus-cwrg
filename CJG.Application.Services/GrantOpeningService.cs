@@ -782,6 +782,10 @@ namespace CJG.Application.Services
 					break;
 
 				case ApplicationWorkflowTrigger.DenyApplication:
+					// Was this returned to draft and now being decommissioned?
+					if (priorState == ApplicationStateInternal.Draft && grantApplication.ReturnedToDraft != null)
+						break;
+
 					DecreaseIntakeUnderAssessment(grantOpening, estimatedAmount);
 					IncreaseIntakeDenied(grantOpening, estimatedAmount);
 					DecreaseFinancialReservation(grantOpening, estimatedAmount);

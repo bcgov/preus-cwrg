@@ -178,6 +178,8 @@ namespace CJG.Application.Services
 			var fiscalStart = fiscalYear.StartDate;
 			var fiscalEnd = fiscalYear.EndDate;
 
+			var programInitiativeId = programInitiative?.Id;
+
 			var claimAccountsReceivableApplications = _dbContext.AccountsReceivables
 				.Include(ar => ar.GrantApplication)
 				.Include(ar => ar.AccountsReceivableEntries)
@@ -187,7 +189,7 @@ namespace CJG.Application.Services
 				.Where(ar => ar.PaidDate <= fiscalEnd)
 				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.GrantProgramId == defaultProgramId)
 				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.IsActive)
-				.Where(ar => ar.GrantApplication.ProgramInitiativeId == programInitiative.Id)
+				.Where(ar => ar.GrantApplication.ProgramInitiativeId == programInitiativeId)
 				.SelectMany(ar => ar.AccountsReceivableEntries.Where(are => are.Overpayment != 0))
 				.ToList();
 

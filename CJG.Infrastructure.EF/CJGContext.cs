@@ -797,9 +797,17 @@ namespace CJG.Infrastructure.EF
 					m.ToTable("ProofOfPaymentDocuments");
 				});
 
-			#region Configuration
+			modelBuilder.Entity<Attestation>()
+				.HasMany(c => c.Documents)
+				.WithMany()
+				.Map(m =>
+				{
+					m.MapLeftKey("AttestationId");
+					m.MapRightKey("AttachmentId");
+					m.ToTable("AttestationDocuments");
+				});
+
 			modelBuilder.Entity<Community>().ToTable("Communities");
-			#endregion
 
 			modelBuilder.Entity<DirectorBudget>()
 				.HasOptional(b => b.ProgramInitiative)

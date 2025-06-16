@@ -49,6 +49,8 @@ namespace CJG.Core.Interfaces.Service
 
 		void UnassignAssessor(int assessorId);
 
+		void AssignPrimaryAssessor(GrantApplication grantApplication, int? primaryAssessorId);
+
 		void AssignAssessor(GrantApplication grantApplication, int? assessorId);
 
 		void ChangeApplicationAdministrator(GrantApplication grantApplication, int? applicantId);

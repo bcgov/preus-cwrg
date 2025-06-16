@@ -1,8 +1,8 @@
-﻿using CJG.Core.Entities.Helpers;
-using Microsoft.AspNet.Identity;
-using System;
+﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using CJG.Core.Entities.Helpers;
+using Microsoft.AspNet.Identity;
 
 namespace CJG.Infrastructure.Identity
 {

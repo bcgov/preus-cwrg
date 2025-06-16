@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CJG.Core.Entities;
+using CJG.Web.External.Areas.Ext.Models.Attachments;
 using CJG.Web.External.Models.Shared;
 
 namespace CJG.Web.External.Areas.Ext.Models.Reporting
@@ -7,6 +10,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
     public class AttestationViewModel : BaseViewModel
 	{
 		public string RowVersion { get; set; }
+		public int AttachmentsMaximum { get; set; }
 
 		public decimal ClaimedCosts { get; set; }
 		public decimal AllocatedCosts { get; set; }
@@ -16,6 +20,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
 		public bool? CompleteAttestation { get; set; }
 
 		public bool IsComplete { get; set; }
+		public IEnumerable<AttachmentViewModel> Attachments { get; set; }
 
 		public ProgramTitleLabelViewModel ProgramTitleLabel { get; set; }
 
@@ -32,12 +37,16 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
 
 			Id = grantApplication.Id;
 			RowVersion = Convert.ToBase64String(grantApplication.RowVersion);
+			AttachmentsMaximum = 1;
 			ClaimedCosts = grantApplication.GetTotalForAllAssessedCostsInCategory(ServiceCategoryEnum.ParticipantFinancialSupports);
 			AllocatedCosts = attestation.AllocatedCosts;
 			UnusedFunds = ClaimedCosts - AllocatedCosts >= 0 ? ClaimedCosts - AllocatedCosts : 0;
 
 			AttestationNotApplicable = attestation.AttestationNotApplicable;
 			IsComplete = attestation.State == AttestationState.Complete;
+
+			Attachments = attestation.Documents
+				.Select(a => new AttachmentViewModel(a));
 		}
 	}
 }

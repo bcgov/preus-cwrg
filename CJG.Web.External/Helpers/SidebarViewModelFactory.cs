@@ -317,7 +317,7 @@ namespace CJG.Web.External.Helpers
 					)
 					.ToDictionary(x => x.LinkType, x => SetHighlighted(x.ViewModel, x.ContainerPath, path)));
 
-			var trainingEndDate = grantApplication.GetTrainingEndDate();
+			var trainingEndDate = grantApplication.GetTrainingEndDate().AddDays(-3);
 			var now = AppDateTime.UtcNow;
 
 			if (now >= trainingEndDate)

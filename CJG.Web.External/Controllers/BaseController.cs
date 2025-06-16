@@ -1,9 +1,4 @@
-﻿using CJG.Application.Services;
-using CJG.Core.Interfaces;
-using CJG.Web.External.Helpers;
-using CJG.Web.External.Models.Shared;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity.Infrastructure;
@@ -13,20 +8,22 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web.Mvc;
+using CJG.Application.Services;
 using CJG.Application.Services.Exceptions;
+using CJG.Core.Interfaces;
+using CJG.Web.External.Helpers;
+using CJG.Web.External.Models.Shared;
+using NLog;
 
 namespace CJG.Web.External.Controllers
 {
-	/// <summary>
-	/// <typeparamref name="BaseController"/> abstract class, provides shared implementation for all controllers.
-	/// </summary>
-	public abstract class BaseController : Controller
+    /// <summary>
+    /// <typeparamref name="BaseController"/> abstract class, provides shared implementation for all controllers.
+    /// </summary>
+    public abstract class BaseController : Controller
 	{
-		#region Properties
 		protected readonly ILogger _logger;
-		#endregion
 
-		#region Constructors
 		/// <summary>
 		/// Creates a new instance of a <typeparamref name="BaseController"/> class.
 		/// </summary>
@@ -35,10 +32,6 @@ namespace CJG.Web.External.Controllers
 		{
 			_logger = logger;
 		}
-		#endregion
-
-		#region Methods
-
 
 		protected override void OnActionExecuting(ActionExecutingContext filterContext){
 
@@ -52,7 +45,7 @@ namespace CJG.Web.External.Controllers
 				ContentType = contentType,
 				ContentEncoding = contentEncoding,
 				JsonRequestBehavior = behavior,
-				MaxJsonLength = Int32.MaxValue
+				MaxJsonLength = int.MaxValue
 			};
 		}
 
@@ -124,6 +117,7 @@ namespace CJG.Web.External.Controllers
 				filterContext.Result = new RedirectResult("/Error");
 				// filterContext.Result = this.ExceptionResult(error);
 			}
+
 			filterContext.ExceptionHandled = true;
 			base.OnException(filterContext);
 		}
@@ -149,9 +143,7 @@ namespace CJG.Web.External.Controllers
 			foreach (var key in ModelState.Keys)
 			{
 				if (ModelState[key].Errors.Count > 0)
-				{
 					result.Add(new KeyValuePair<string, string>(key, string.Join(",", ModelState[key].Errors.Select(t => t.ErrorMessage))));
-				}
 			}
 
 			return result;
@@ -179,7 +171,8 @@ namespace CJG.Web.External.Controllers
 		{
 			Response.StatusCode = code;
 			Response.TrySkipIisCustomErrors = true;
-			if (!String.IsNullOrWhiteSpace(error)) model.AddError(key, error);
+			if (!string.IsNullOrWhiteSpace(error))
+				model.AddError(key, error);
 		}
 
 		/// <summary>
@@ -276,6 +269,7 @@ namespace CJG.Web.External.Controllers
 		/// </summary>
 		/// <param name="error"></param>
 		/// <param name="delimiter"></param>
+		/// <param name="postback"></param>
 		/// <returns></returns>
 		protected string HandleAjaxException(Exception error, string delimiter = "<br/>", Action postback = null)
 		{
@@ -309,6 +303,5 @@ namespace CJG.Web.External.Controllers
 
 			return message;
 		}
-		#endregion
 	}
 }

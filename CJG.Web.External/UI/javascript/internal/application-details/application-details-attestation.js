@@ -1,12 +1,28 @@
 app.controller('Attestation', function ($scope, $attrs, $controller) {
   $scope.section = {
     name: 'Attestation',
-    displayName: 'Participant Financial Supports Attestation',
+    displayName: 'Attestation',
     save: {
       url: '/Int/Application/Attestation/',
       method: 'PUT',
+      dataType: 'file',
       data: function () {
-        return $scope.model;
+        var model = {
+          grantApplicationId: $scope.model.Id,
+          completeAttestation: $scope.model.CompleteAttestation,
+          attestationNotApplicable: $scope.model.AttestationNotApplicable,
+          allocatedCosts: $scope.model.AllocatedCosts,
+          files: $scope.section.documents.filter(function (attachment) {
+            return !attachment.Delete && typeof (attachment.File) !== 'undefined';
+          }).map(function (attachment, index) {
+            attachment.Index = index; // Map object to file array.
+            var file = attachment.File; // Add file to array.
+            return file;
+          }),
+          documents: JSON.stringify($scope.section.documents)
+        };
+
+        return model;
       },
       backup: true
     },
@@ -17,12 +33,17 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
       return $scope.model && $scope.model.RowVersion && $scope.model.RowVersion === $scope.grantFile.RowVersion;
     },
     onSave: function () {
+      $scope.section.documents = [];
       $scope.emit('refresh', { target: 'ApplicationNotes', force: true });
     },
     onRefresh: function () {
-      return loadAttestationDetails()
-        .catch(angular.noop);
+      $scope.section.documents = [];
+      return loadAttestationDetails().catch(angular.noop);
     },
+    onCancel: function () {
+      $scope.section.documents = [];
+    },
+    documents: []
   };
 
   angular.extend(this, $controller('Section', { $scope: $scope, $attrs: $attrs }));
@@ -77,4 +98,56 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
 
     $scope.model.UnusedFunds = newFunds;
   };
+
+  /**
+   * Open modal file uploader popup and then add the new file to the model.
+   * @function addAttachment
+   * @returns {void}
+   **/
+  $scope.addDocument = function () {
+    return $scope.attachmentDialog('Add Participant Financial Supports Tracker', {
+        Id: 0,
+        FileName: '',
+        Description: '',
+        File: {}
+      })
+      .then(function (attachment) {
+        $scope.model.Documents.push(attachment);
+        $scope.section.documents.push(attachment);
+      })
+      .catch(angular.noop);
+  }
+
+  /**
+   * Open modal file uploader popup and allow user to update the attachment and/or file.
+   * @function changeAttachment
+   * @param {any} attachment - The attachment to update.
+   * @returns {void}
+   */
+  $scope.changeDocument = function (attachment) {
+    $scope.section.document = attachment;
+    return $scope.attachmentDialog('Update Participant Financial Supports Tracker', attachment)
+      .then(function (attachment) {
+        $scope.section.documents.push(attachment); // TODO: Fix
+      })
+      .catch(angular.noop);
+  }
+
+  /**
+   * Mark the attachment for deletion.
+   * @function removeAttachment
+   * @param {any} attachment
+   * @returns {Promise}
+   */
+  $scope.removeDocument = function (index) {
+    var attachment = $scope.model.Documents[index];
+    return $scope.confirmDialog('Remove Participant Financial Supports Tracker', 'Do you want to delete this Participant Financial Supports Tracker "' + attachment.FileName + '"?')
+      .then(function (response) {
+        if (response === true) {
+          var attachment = $scope.model.Documents.splice(index, 1)[0];
+          attachment.Delete = true;
+          $scope.section.documents.push(attachment);
+        }
+      }).catch(angular.noop);
+  }
 });

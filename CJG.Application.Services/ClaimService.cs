@@ -455,7 +455,7 @@ namespace CJG.Application.Services
 		/// <summary>
 		/// Get all the <typeparamref name="Claim"/>'s for the specified GrantApplication.
 		/// </summary>
-		/// <param name="grantApplicationId">The grant applciation Id.</param>
+		/// <param name="grantApplicationId">The grant application Id.</param>
 		/// <returns></returns>
 		public IEnumerable<Claim> GetClaimsForGrantApplication(int grantApplicationId)
 		{

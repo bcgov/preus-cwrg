@@ -433,7 +433,10 @@ namespace CJG.Application.Services
 		/// <param name="assessor"></param>
 		private void OnBeginAssessment(InternalUser assessor)
 		{
+			var internalUser = GetInternalUser();
+
 			_grantApplication.Assessor = assessor;
+			_grantApplication.PrimaryAssessor = internalUser;
 
 			_grantOpeningService.AdjustFinancialStatements(_grantApplication, _originalState, ApplicationWorkflowTrigger.BeginAssessment);
 
@@ -1750,6 +1753,11 @@ Thank you.";
 					if (_originalState != ApplicationStateInternal.PendingAssessment)
 						noteContent = $"New application submitted and assigned file number: {_grantApplication.FileNumber}";
 
+					break;
+
+				case ApplicationStateInternal.ApplicationDenied:
+					if (_originalState == ApplicationStateInternal.Draft && _grantApplication.ReturnedToDraft != null)
+						noteContent = $"Changed from \"Returned to Draft\" to \"{_grantApplication.ApplicationStateInternal.GetDescription()}\"{suffix}";
 					break;
 
 				case ApplicationStateInternal.ApplicationWithdrawn:

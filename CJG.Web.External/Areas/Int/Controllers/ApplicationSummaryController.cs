@@ -234,6 +234,32 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		}
 
 		/// <summary>
+		/// Assign the specified primary assessor to the grant application.
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPut]
+		[PreventSpam]
+		[ValidateRequestHeader]
+		[Route("Application/Summary/AssignPrimary")]
+		public JsonResult AssignPrimary(ApplicationSummaryViewModel model)
+		{
+			try
+			{
+				var grantApplication = _grantApplicationService.Get(model.Id);
+				grantApplication.RowVersion = Convert.FromBase64String(model.RowVersion);
+
+				_grantApplicationService.AssignPrimaryAssessor(grantApplication, model.PrimaryAssessorId);
+				model = new ApplicationSummaryViewModel(grantApplication, _deliveryPartnerService, _authorizationService, _grantApplicationService, _riskClassificationService, _fiscalYearService, User);
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex, model);
+			}
+			return Json(model, JsonRequestBehavior.AllowGet);
+		}
+
+		/// <summary>
 		/// Assign the specified assessor to the grant application.
 		/// </summary>
 		/// <param name="model"></param>

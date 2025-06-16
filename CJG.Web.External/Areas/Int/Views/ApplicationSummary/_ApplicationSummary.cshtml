@@ -142,6 +142,16 @@
 
             <div class="col-50p">
                 <div class="form__group">
+                    <div class="form__label">Primary Assessor:</div>
+                    <div class="form__control">
+                        <div>{{model.PrimaryAssessor ? (model.PrimaryAssessor.FirstName + " " + model.PrimaryAssessor.LastName) : "Not Assigned"}}</div>
+                        <div class="control-wrapper selectmenu input--medium" ng-if="model.AllowPrimaryReassign">
+                            <select ng-model="model.PrimaryAssessorId" ng-options="item.Id as item.FirstName + item.LastName for item in primaryAssessors | filterExclusion:{Id: [model.PrimaryAssessor.Id]}" class="input--medium" ng-validation></select>
+                        </div>
+                        <button ng-if="model.AllowPrimaryReassign" ng-click="reassignPrimary()" class="btn btn--primary">Reassign</button>
+                    </div>
+                </div>
+                <div class="form__group">
                     <div class="form__label">Assessor:</div>
                     <div class="form__control">
                         <div>{{model.Assessor ? (model.Assessor.FirstName + " " + model.Assessor.LastName) : "Unassigned"}}</div>

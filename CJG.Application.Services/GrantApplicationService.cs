@@ -613,6 +613,32 @@ namespace CJG.Application.Services
 		}
 
 		/// <summary>
+		/// Assigns the specified assessor to the application as the primary assessor.
+		/// </summary>
+		/// <param name="grantApplication"></param>
+		/// <param name="primaryAssessorId"></param>
+		public void AssignPrimaryAssessor(GrantApplication grantApplication, int? primaryAssessorId)
+		{
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
+
+			if (!_httpContext.User.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.ReassignPrimaryAssessor))
+				throw new NotAuthorizedException($"User does not have permission to assign an assessor to application '{grantApplication.Id}'.");
+
+			if (primaryAssessorId == null)
+				return;
+
+			if (primaryAssessorId == grantApplication.PrimaryAssessorId)
+				return;
+
+			grantApplication.PrimaryAssessor = _dbContext.InternalUsers.Find(primaryAssessorId);
+
+			var noteContent = $"{grantApplication.PrimaryAssessor.FirstName} {grantApplication.PrimaryAssessor.LastName} assigned as primary assessor";
+			_noteService.AddNote(grantApplication, NoteTypes.AA, noteContent);
+			_dbContext.CommitTransaction();
+		}
+
+		/// <summary>
 		/// Assigns the specified assessor to the application.
 		/// </summary>
 		/// <param name="grantApplication"></param>
@@ -636,7 +662,7 @@ namespace CJG.Application.Services
 				grantApplication.Assessor = _dbContext.InternalUsers.Find(assessorId);
 			}
 
-			var internalUser = _userManager.FindById(_siteMinderService.CurrentUserGuid.ToString()).InternalUser;
+			//var internalUser = _userManager.FindById(_siteMinderService.CurrentUserGuid.ToString()).InternalUser;
 			var noteContent = (grantApplication.Assessor == null) ? "Assessor unassigned" : $"{grantApplication.Assessor.FirstName} {grantApplication.Assessor.LastName} assigned as assessor";
 			_noteService.AddNote(grantApplication, NoteTypes.AA, noteContent);
 			_dbContext.CommitTransaction();
@@ -810,7 +836,7 @@ namespace CJG.Application.Services
 				query = query.Where(ga => ga.FileNumber.Contains(filter.FileNumber));
 
 			if (filter.AssessorId.HasValue)
-				query = query.Where(ga => ga.AssessorId == filter.AssessorId);
+				query = query.Where(ga => ga.AssessorId == filter.AssessorId || ga.PrimaryAssessorId == filter.AssessorId);
 
 			if (filter.FiscalYearId.HasValue)
 				query = query.Where(ga => ga.GrantOpening.TrainingPeriod.FiscalYearId == filter.FiscalYearId);
