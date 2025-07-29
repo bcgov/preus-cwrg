@@ -373,7 +373,7 @@ namespace CJG.Application.Services
 				throw new ArgumentNullException(nameof(trainingProgram));
 
 			if (!_httpContext.User.CanPerformAction(trainingProgram.GrantApplication, ApplicationWorkflowTrigger.EditTrainingProgram))
-				throw new NotAuthorizedException($"User does not have permission to delete application '{trainingProgram.GrantApplicationId}'.");
+				throw new NotAuthorizedException($"User does not have permission to delete training program '{trainingProgram.Id}'.");
 
 			var grantApplication = trainingProgram.GrantApplication;
 
@@ -446,6 +446,10 @@ namespace CJG.Application.Services
 			_dbContext.CommitTransaction();
 
 			_grantApplicationService.SynchroniseDeliveryDatesToTraining(grantApplication);
+
+			_dbContext.Update(grantApplication);
+			_dbContext.CommitTransaction();
+
 		}
 		#endregion
 	}

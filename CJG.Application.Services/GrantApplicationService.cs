@@ -175,7 +175,9 @@ namespace CJG.Application.Services
 
 			// Under the condition that the user invalidates any form, then the state must return to Incomplete.
 			if (grantApplication.ApplicationStateExternal.In(ApplicationStateExternal.Complete, ApplicationStateExternal.Incomplete))
-				grantApplication.ApplicationStateExternal = grantApplication.IsSubmittable() ? ApplicationStateExternal.Complete : ApplicationStateExternal.Incomplete;
+				grantApplication.ApplicationStateExternal = grantApplication.IsSubmittable()
+					? ApplicationStateExternal.Complete
+					: ApplicationStateExternal.Incomplete;
 
 			// If the estimated number of participants is changed then recalculate costs.
 			var originalEstimatedParticipants = (int?)_dbContext.OriginalValue(grantApplication.TrainingCost, nameof(TrainingCost.EstimatedParticipants)) ?? 0;
@@ -399,8 +401,8 @@ namespace CJG.Application.Services
 			if (!changeRequired)
 				return;
 
-			_dbContext.Update(grantApplication);
-			_dbContext.CommitTransaction();
+			//_dbContext.Update(grantApplication);
+			//_dbContext.CommitTransaction();
 		}
 
 		/// <summary>

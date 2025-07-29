@@ -373,9 +373,8 @@ namespace CJG.Web.External.Areas.Int.Controllers
 
 					_grantApplicationService.UpdateChecklist(grantApplication, model.ChecklistItemIds);
 
-
-					if (_grantAgreementService.AgreementUpdateRequired(grantApplication))
-						_grantAgreementService.UpdateAgreement(grantApplication);
+					//if (_grantAgreementService.AgreementUpdateRequired(grantApplication))
+					//	_grantAgreementService.UpdateAgreement(grantApplication);
 
 					if (file != null)
 					{
@@ -392,15 +391,11 @@ namespace CJG.Web.External.Areas.Int.Controllers
 							_attachmentService.Update(attachment,true);
 						}
 					}
+
 					if (grantApplication.GrantOpening.GrantStream.IncludeDeliveryPartner)
-					{
 						_grantApplicationService.UpdateDeliveryPartner(grantApplication, model.DeliveryPartnerId, model.SelectedDeliveryPartnerServiceIds);
-						_grantApplicationService.Update(grantApplication, ApplicationWorkflowTrigger.EditSummary);
-					}
-					else
-					{
-						_grantApplicationService.Update(grantApplication, ApplicationWorkflowTrigger.EditSummary);
-					}
+
+					_grantApplicationService.Update(grantApplication, ApplicationWorkflowTrigger.EditSummary);
 
 					model = new ApplicationSummaryViewModel(grantApplication, _deliveryPartnerService, _authorizationService, _grantApplicationService, _riskClassificationService, _fiscalYearService, User);
 				}
