@@ -1611,34 +1611,51 @@ namespace CJG.Core.Entities
 		/// <returns></returns>
 		public static bool AgreementUpdateRequired(this GrantApplication grantApplication, EntityChanges changes)
 		{
-			if (grantApplication == null) throw new ArgumentNullException(nameof(grantApplication));
-			if (changes == null) throw new ArgumentNullException(nameof(changes));
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
 
-			if (grantApplication.GrantAgreement == null) return false;
+			if (changes == null)
+				throw new ArgumentNullException(nameof(changes));
+
+			if (grantApplication.GrantAgreement == null)
+				return false;
 
 			// If the grant application dates have been changed.
-			if (changes.HasChanged(grantApplication, nameof(GrantApplication.StartDate), nameof(GrantApplication.EndDate))) return true;
+			if (changes.HasChanged(grantApplication, nameof(GrantApplication.StartDate), nameof(GrantApplication.EndDate)))
+				return true;
 
 			// If the training programs have been changed.
-			if (changes.HasAdded(typeof(TrainingProgram))) return true;
-			if (changes.HasDeleted(typeof(TrainingProgram))) return true;
-			if (changes.HasChanged(typeof(TrainingProgram), nameof(TrainingProgram.CourseTitle), nameof(TrainingProgram.StartDate), nameof(TrainingProgram.EndDate), nameof(TrainingProgram.ServiceLineId), nameof(TrainingProgram.ServiceLineBreakdownId))) return true;
+			if (changes.HasAdded(typeof(TrainingProgram)))
+				return true;
+
+			if (changes.HasDeleted(typeof(TrainingProgram)))
+				return true;
+
+			if (changes.HasChanged(typeof(TrainingProgram), nameof(TrainingProgram.CourseTitle), nameof(TrainingProgram.StartDate), nameof(TrainingProgram.EndDate), nameof(TrainingProgram.ServiceLineId), nameof(TrainingProgram.ServiceLineBreakdownId)))
+				return true;
 
 			// If a training provider has been deleted.
-			if (changes.HasDeleted(typeof(TrainingProvider))) return true;
+			if (changes.HasDeleted(typeof(TrainingProvider)))
+				return true;
 
 			// If the approved training providers have been changed.
 			var approvedTrainingProviders = grantApplication.GetOriginalTrainingProviders().Where(tp => tp.IsValidated()).Select(tp => tp.ApprovedTrainingProvider);
 			foreach (var approved in approvedTrainingProviders)
 			{
 				var tpChanges = changes[approved];
-				if (tpChanges != null && tpChanges.IsChanged) return true;
+				if (tpChanges != null && tpChanges.IsChanged)
+					return true;
 			}
 
 			// If costs have been changed.
-			if (changes.HasChanged(typeof(TrainingCost))) return true;
-			if (changes.HasChanged(typeof(EligibleCost))) return true;
-			if (changes.HasChanged(typeof(EligibleCostBreakdown))) return true;
+			if (changes.HasChanged(typeof(TrainingCost)))
+				return true;
+
+			if (changes.HasChanged(typeof(EligibleCost)))
+				return true;
+
+			if (changes.HasChanged(typeof(EligibleCostBreakdown)))
+				return true;
 
 			return false;
 		}
