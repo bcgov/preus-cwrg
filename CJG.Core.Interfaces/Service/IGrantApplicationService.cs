@@ -1,26 +1,21 @@
-﻿using CJG.Application.Business.Models;
-using CJG.Core.Entities;
-using CJG.Core.Entities.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using CJG.Application.Business.Models;
+using CJG.Core.Entities;
+using CJG.Core.Entities.Helpers;
 
 namespace CJG.Core.Interfaces.Service
 {
 	public interface IGrantApplicationService : IService
 	{
 		GrantApplication Get(Guid invitationKey);
-
 		GrantApplication Get(int id);
-
 		GrantApplication Add(GrantApplication newGrantApplication);
-
 		GrantApplication Update(GrantApplication grantApplication, ApplicationWorkflowTrigger trigger = ApplicationWorkflowTrigger.EditApplication, Func<ApplicationWorkflowTrigger, bool> canPerformAction = null);
-
 		void Delete(GrantApplication grantApplication);
 
 		void UpdateDeliveryDates(GrantApplication grantApplication);
-
 		void SynchroniseDeliveryDatesToTraining(GrantApplication trainingProgram);
 
 		void ChangeGrantOpening(GrantApplication grantApplication);
@@ -30,15 +25,11 @@ namespace CJG.Core.Interfaces.Service
 		decimal GetApplicationsCostByFiscal(GrantApplication grantApplication);
 
 		PageList<GrantApplication> GetGrantApplications(int page, int quantity, ApplicationFilter filter);
-
 		PageList<GrantApplication> GetGrantApplications(int trainingProviderInventoryId, int page, int quantity, string search);
-
 		PageList<GrantApplication> GetGrantApplicationsForOrg(int orgId, int page, int quantity, int grantProgramId, string search);
-
 		IEnumerable<GrantApplication> GetGrantApplications(StreamAgreementDetailsFilterModel filter);
 
 		int GetTotalGrantApplications(List<ApplicationStateInternal> applicationStates, int assessorId, int grantOpeningId, int fiscalYearId, int intakePeriodId, int grantProgramId, int grantStreamId, string fileNumber, string applicant);
-
 		int GetTotalGrantApplications(int trainingProviderInventoryId);
 
 		ApplicationType GetDefaultApplicationType();
@@ -47,11 +38,9 @@ namespace CJG.Core.Interfaces.Service
 
 		List<User> GetAvailableApplicationContacts(GrantApplication grantApplication);
 
-		void UnassignAssessor(int assessorId);
-
-		void AssignPrimaryAssessor(GrantApplication grantApplication, int? primaryAssessorId);
-
 		void AssignAssessor(GrantApplication grantApplication, int? assessorId);
+		void UnassignAssessor(int assessorId);
+		void AssignPrimaryAssessor(GrantApplication grantApplication, int? primaryAssessorId);
 
 		void ChangeApplicationAdministrator(GrantApplication grantApplication, int? applicantId);
 
@@ -133,9 +122,7 @@ namespace CJG.Core.Interfaces.Service
 		void UpdateAttestation(GrantApplication grantApplication, bool sendCompletionNotification = false);
 		#endregion
 
-		#region Attachments
 		IEnumerable<AttachmentModel> GetAttachments(int id);
-		#endregion
 
 		#region TrainingCosts
 		void UpdateTrainingCosts(GrantApplication grantApplication);
