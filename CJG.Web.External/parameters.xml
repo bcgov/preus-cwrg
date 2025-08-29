@@ -103,6 +103,14 @@
                     scope="Web.config"
                     match="/configuration/appSettings/add[@key='EmailFromDisplayName']/@value" />
   </parameter>
+	<parameter name="ExternalUserOverrideEmail"
+			    description="Please provide the external user override email address."
+			    defaultValue=""
+			    tags="">
+		<parameterEntry kind="XmlFile"
+					    scope="Web.config"
+					    match="/configuration/appSettings/add[@key='ExternalUserOverrideEmail']/@value" />
+	</parameter>
   <parameter name="MaxUploadSizeInBytes"
              description="Please provide the maximum upload size in bytes."
              defaultValue="5"
@@ -119,4 +127,12 @@
                     scope="Web.config"
                     match="/configuration/appSettings/add[@key='ReCaptchaSecret']/@value" />
   </parameter>
+	<parameter name="CanadaPostAutoCompleteApiKey"
+				description="Please provide the Canada Post Autocomplete API key."
+				defaultValue=""
+				tags="">
+		<parameterEntry kind="XmlFile"
+						scope="Web.config"
+						match="/configuration/appSettings/add[@key='CanadaPostAutoCompleteApiKey']/@value" />
+	</parameter>
 </parameters>
