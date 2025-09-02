@@ -12,8 +12,9 @@ namespace CJG.Application.Services.Notifications
 		public GrantApplication GrantApplication { get; set; }
 		public INotificationRecipient Applicant { get; set; }
 
-		public int GrantApplicationId { get; set; }
 		public string BaseURL { get; set; }
+
+		public int GrantApplicationId { get; set; }
 		public string RecipientFirstName { get; set; }
 		public string RecipientLastName { get; set; }
 		public string RecipientEmail { get; set; }
@@ -31,10 +32,13 @@ namespace CJG.Application.Services.Notifications
 		public string TrainingPeriodEndDate { get; set; }
 		public string ApplicationSubmitDate { get; set; }
 		public string TrainingProgramTitle { get; set; }
+
 		public string DeliveryStartDate { get; set; }
 		public string DeliveryEndDate { get; set; }
+
 		public string TrainingStartDate { get; set; }
 		public string TrainingEndDate { get; set; }
+
 		public int NumberOfParticipants { get; set; }
 		public int MaximumNumberOfParticipants { get; set; }
 		public int ParticipantsWithCompletionReport { get; set; }
@@ -48,9 +52,13 @@ namespace CJG.Application.Services.Notifications
 		public string DeniedReason { get; set; }
 		public string CancellationReason { get; set; }
 		public decimal ReimbursementPayment { get; set; }
+
+		public string ApplicationReturnedToDraftReason { get; set; }
+
 		public string ClaimDeniedReason { get; set; }
 		public string ClaimReturnedReason { get; set; }
 		public string ClaimApprovedReason { get; set; }
+
 		public string NotificationTicketId { get; set; }
 		public string ExitFormLink { get; set; }
 		public bool IsPayment { get; set; }
@@ -103,6 +111,9 @@ namespace CJG.Application.Services.Notifications
 			CancellationReason = grantApplication.GetReason(ApplicationStateInternal.CancelledByMinistry);
 			IsPayment = IsReimbursementPayment(grantApplication);
 			ReimbursementPayment = GetReimbursementPayment(grantApplication);
+
+			ApplicationReturnedToDraftReason = grantApplication.GetReturnedToDraftReason();
+
 			ClaimDeniedReason = grantApplication.GetReason(ApplicationStateInternal.ClaimDenied);
 			ClaimReturnedReason = grantApplication.GetReason(ApplicationStateInternal.ClaimReturnedToApplicant);
 			ClaimApprovedReason = grantApplication.GetCurrentClaim()?.ClaimAssessmentNotes;

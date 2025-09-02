@@ -517,7 +517,12 @@ namespace CJG.Core.Entities
 				throw new ArgumentException(nameof(states));
 
 			var values = states.Select(s => s).ToArray();
-			return grantApplication.StateChanges.Where(s => values.Contains(s.ToState)).OrderByDescending(s => s.DateAdded).Select(s => s.Reason).FirstOrDefault();
+
+			return grantApplication.StateChanges
+				.Where(s => values.Contains(s.ToState))
+				.OrderByDescending(s => s.DateAdded)
+				.Select(s => s.Reason)
+				.FirstOrDefault();
 		}
 
 		public static int TimesSubmitted(this GrantApplication grantApplication)

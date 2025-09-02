@@ -1,16 +1,16 @@
+using System;
+using System.Linq;
+using System.Security.Principal;
 using CJG.Application.Services;
 using CJG.Core.Entities;
 using CJG.Core.Interfaces;
 using CJG.Core.Interfaces.Service;
 using CJG.Web.External.Models.Shared;
-using System;
-using System.Linq;
-using System.Security.Principal;
 using DeliveryPartnerService = CJG.Core.Entities.DeliveryPartnerService;
 
 namespace CJG.Web.External.Areas.Int.Models.Applications
 {
-	public class ApplicationPreviewModel : BaseViewModel
+    public class ApplicationPreviewModel : BaseViewModel
 	{
 		public int GrantProgramId { get; set; }
 		public ApplicationStateInternal ApplicationStateInternal { get; set; }
@@ -34,7 +34,7 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 		{
 			var now = AppDateTime.UtcNow;
 			var user = userService.GetInternalUser(_user.GetUserId().Value);
-			var grantProgram = grantProgramService.Get(this.GrantProgramId);
+			var grantProgram = grantProgramService.Get(GrantProgramId);
 			var fiscalYear = fiscalYearService.GetFiscalYear(now);
 			var applicantOrganization = new Organization(new OrganizationType("Business"), Guid.NewGuid(), "Organization Name", new LegalStructure("Legal Structure"), 2000, 50, 25, 5000, 5)
 			{
@@ -227,6 +227,10 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 					AddParticipants(grantApplication);
 					AddPaymentRequest(grantApplication);
 					break;
+
+				case ApplicationStateInternal.ReturnedToDraft:
+					AddReturnedToDraftInfo(grantApplication);
+					break;
 			}
 
 			return new TestEntities
@@ -302,6 +306,21 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 			var claim = AddClaim(grantApplication, ClaimState.ClaimApproved);
 
 			claim.PaymentRequests.Add(new PaymentRequest(grantApplication, new PaymentRequestBatch(grantApplication.GrantOpening.GrantStream.GrantProgram, "batch", PaymentBatchTypes.PaymentRequest, new InternalUser()), claim));
+		}
+
+		private void AddReturnedToDraftInfo(GrantApplication grantApplication)
+		{
+			var returnDate = grantApplication.DateSubmitted?.AddDays(12) ?? AppDateTime.UtcNow.AddDays(-5);
+
+			grantApplication.ReturnedToDraft = returnDate;
+			grantApplication.StateChanges.Add(new GrantApplicationStateChange
+			{
+				FromState = ApplicationStateInternal.UnderAssessment,
+				ToState = ApplicationStateInternal.Draft,
+				Reason = "This is the 'Returned to Draft' Reason.",
+				DateAdded = returnDate
+			});
+			
 		}
 	}
 }
