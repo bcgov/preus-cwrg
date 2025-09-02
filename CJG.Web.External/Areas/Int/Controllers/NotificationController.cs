@@ -158,7 +158,18 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			var internalStates = new InternalStateListViewModel();
 			try
 			{
-				internalStates = new InternalStateListViewModel(_grantApplicationService.GetInternalStates(true));
+				var grantApplicationInternalStates = _grantApplicationService.GetInternalStates(true).ToList();
+
+				var returnedToDraft = ApplicationStateInternal.ReturnedToDraft;
+				grantApplicationInternalStates.Add(new GrantApplicationInternalState
+				{
+					Id = (int)returnedToDraft,
+					Caption = returnedToDraft.GetDescription(),
+					Description = returnedToDraft.GetDescription(),
+					IsActive = true,
+					RowSequence = 0
+				});
+				internalStates = new InternalStateListViewModel(grantApplicationInternalStates);
 			}
 			catch (Exception ex)
 			{

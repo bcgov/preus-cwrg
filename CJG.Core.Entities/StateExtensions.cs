@@ -169,8 +169,11 @@ namespace CJG.Core.Entities
 				case ApplicationStateInternal.ReturnedUnassessed:
 					return ApplicationStateExternal.ReturnedUnassessed;
 
+				case ApplicationStateInternal.ReturnedToDraft:
+					return ApplicationStateExternal.Incomplete;
+
 				default:
-					throw new InvalidOperationException($"There is not external state associated with the specified internal state '{state.ToString("g")}'.");
+					throw new InvalidOperationException($"There is no external state associated with the specified internal state '{state.ToString("g")}'.");
 			}
 		}
 
