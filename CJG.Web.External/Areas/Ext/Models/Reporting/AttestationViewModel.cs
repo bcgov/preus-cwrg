@@ -37,7 +37,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
 
 			Id = grantApplication.Id;
 			RowVersion = Convert.ToBase64String(grantApplication.RowVersion);
-			AttachmentsMaximum = 1;
+			AttachmentsMaximum = 5;
 			ClaimedCosts = grantApplication.GetTotalForAllAssessedCostsInCategory(ServiceCategoryEnum.ParticipantFinancialSupports);
 			AllocatedCosts = attestation.AllocatedCosts;
 			UnusedFunds = ClaimedCosts - AllocatedCosts >= 0 ? ClaimedCosts - AllocatedCosts : 0;
