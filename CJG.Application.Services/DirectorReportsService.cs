@@ -196,7 +196,7 @@ namespace CJG.Application.Services
 				//var cancelledTotal = cancelledAgreed.ValueOfApplications + cancelledRequests.ValueOfApplications;
 				var cancelledTotalCost = cancelledAgreed.TotalCostOfApplications + cancelledRequests.TotalCostOfApplications;
 				var claimTotal = GetClaimTotal(grantApplications, defaultGrantProgram);
-				var unclaimedTotal = GetUnclaimedTotal(grantApplications, defaultGrantProgram);
+				//var unclaimedTotal = GetUnclaimedTotal(grantApplications, defaultGrantProgram);
 				//var numberOfClaimsSubmitted = GetTotalClaimsSubmitted(grantApplications);
 
 				var commitmentAmount = committedWithNoClaims.NumberOfApplications + committedWithClaims.NumberOfApplications;
@@ -216,11 +216,24 @@ namespace CJG.Application.Services
 				//var slippageTotal = committedWithClaims.ValueOfApplications - claimTotal;
 
 
-				var directorsReportCommittedScheduleA = commitmentTotal;
+
+				/*
+				Slippage = Schedule A of all agreements that have a submitted a claim
+							(minus)
+						   the approved Claimed Amount (files in Completion Reporting status only)
+
+				Unclaimed amount = Schedule A amount of all agreements
+									(minus)
+								   the approved Claimed Amount (files in Completion Reporting status only)
+									(minus)
+								   Slippage
+
+				 */
+				var directorsReportCommittedScheduleA = commitmentTotalCost;
 				var directorsReportClaimsProcessed = claimTotal;
-				var directorsReportUnclaimed = committedWithNoClaims.ValueOfApplications - unclaimedTotal;
+				var directorsReportSlippage = committedWithClaims.TotalCostOfApplications - claimTotal;
+				var directorsReportUnclaimed = commitmentTotalCost - (claimTotal + committedWithNoClaims.ValueOfApplications) - directorsReportSlippage;
 				var directorsReportReceivables = receivablesTotal;
-				var directorsReportSlippage = directorsReportCommittedScheduleA - directorsReportClaimsProcessed - directorsReportUnclaimed;
 				var directorsReportYtdActual = directorsReportClaimsProcessed - directorsReportReceivables;
 
 				var budgetModel = new BudgetSummaryModel
@@ -328,13 +341,12 @@ namespace CJG.Application.Services
 			var statesForTotalNumberOfAgreements = StateExtensions.GetInternalStatesForSummary();
 
 			var statesForProcessedPayments = new List<ApplicationStateInternal> {
-				ApplicationStateInternal.ClaimApproved,
-				ApplicationStateInternal.Closed,
+				//ApplicationStateInternal.ClaimApproved,
+				//ApplicationStateInternal.Closed,
 				ApplicationStateInternal.CompletionReporting
 			};
 
 			var processedPaymentsTotals = 0m;
-
 			var claimType = grantProgram?.ProgramConfiguration?.ClaimTypeId;
 
 			// There can be multiple claims, but they will be versioned and we only care about the highest version
@@ -500,8 +512,6 @@ namespace CJG.Application.Services
 		{
 			return Math.Round(grantApplication?.TrainingCost?.AgreedCommitment ?? 0, 2);
 		}
-
-
 
 		public void UpdateBudget(List<BudgetSummaryModel> budgetSummaries, List<BudgetRowModel> openingRows, List<BudgetRowModel> closingRows)
 		{
