@@ -143,7 +143,7 @@
                     <th class="data-grid-sub-header" ng-click="changeSorting('TrainingProgramTitle')"><img ng-src="{{imgSrcTrainingProgramTitle}}" />Training Project Title</th>
                     <th class="data-grid-sub-header" ng-click="changeSorting('StartDate')"><img ng-src="{{imgSrcStartDate}}" />Start Date</th>
                     <th class="data-grid-sub-header" ng-click="changeSorting('EndDate')"><img ng-src="{{imgSrcEndDate}}" />End Date</th>
-                    <th class="data-grid-sub-header" ng-click="changeSorting('NumberOfParticipants')"><img ng-src="{{imgSrcNumberOfParticipants}}" />No. of Part.</th>
+                    <th class="data-grid-sub-header" ng-click="changeSorting('NumberOfParticipants')"><img ng-src="{{imgSrcNumberOfParticipants}}" />No. of Part.<br/>(Requested/Approved)</th>
                     <th class="data-grid-sub-header" ng-click="changeSorting('RequestedAmount')"><img ng-src="{{imgSrcRequestedAmount}}" />Requested</th>
                     <th class="data-grid-sub-header" ng-click="changeSorting('ApprovedAmount')"><img ng-src="{{imgSrcApprovedAmount}}" />Approved</th>
                     <th class="data-grid-sub-header" ng-click="changeSorting('PaidAmount')"><img ng-src="{{imgSrcPaidAmount}}" />Paid</th>
@@ -160,7 +160,7 @@
                     <td style="padding:0; text-align:center;">{{application.TrainingProgramTitle}}</td>
                     <td style="padding:0;">{{application.StartDate}}</td>
                     <td style="padding:0;">{{application.EndDate}}</td>
-                    <td style="padding:0; text-align:center;">{{application.NumberOfParticipants}}</td>
+                    <td style="padding:0; text-align:center;">{{application.NumberOfParticipants}} / {{application.NumberOfParticipantsAgreed}}</td>
                     <td style="padding:0; text-align:center;">{{application.RequestedAmount| currency : '$' : 2}}</td>
                     <td style="padding:0; text-align:center;">{{application.ApprovedAmount| currency : '$' : 2}}</td>
                     <td style="padding:0; text-align:center;">{{application.PaidAmount| currency : '$' : 2}}</td>

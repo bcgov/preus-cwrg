@@ -50,7 +50,7 @@
                     <div class="form__label">Number of Participants:</div>
                     <div class="form__control">
                         Requested: {{model.NumberOfParticipants}}
-                        <span ng-if="model.GrantApplication.ApplicationStateExternal >= @((int)CJG.Core.Entities.ApplicationStateExternal.AcceptGrantAgreement)">; Agreed: {{model.NumberOfParticipantsAgreed}}</span>
+                        <span ng-if="model.NumberOfParticipantsAgreed != null">; Approved: {{model.NumberOfParticipantsAgreed}}</span>
                     </div>
                 </div>
                 <div class="form__group">

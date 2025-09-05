@@ -107,6 +107,10 @@ namespace CJG.Web.External.Areas.Int.Models.ProgramDescriptions
 
 			Id = programDescription.GrantApplicationId;
 			NumberOfParticipants = programDescription.RowVersion == null ? (int?)null : programDescription.GrantApplication.TrainingCost.EstimatedParticipants;
+
+			if (programDescription.GrantApplication.ApplicationStateInternal >= ApplicationStateInternal.UnderAssessment)
+				NumberOfParticipantsAgreed = programDescription.GrantApplication.TrainingCost.AgreedParticipants;
+
 			SupportingEmployers = programDescription.RowVersion == null ? (int?)null : programDescription.SupportingEmployers;
 			SelectedUnderRepresentedPopulationIds = programDescription.UnderRepresentedPopulations.Select(o => o.Id).ToArray();
 			SelectedVulnerableGroupIds = programDescription.VulnerableGroups.Select(o => o.Id).ToArray();
