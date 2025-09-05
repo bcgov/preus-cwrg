@@ -26,6 +26,9 @@ namespace CJG.Core.Entities
 		InstructorQualification = 10,
 
 		[Description("Certificate of Insurance")]
-		CertificateOfInsurance = 11
+		CertificateOfInsurance = 11,
+
+		[Description("Additional Supporting Document")]
+		AdditionalSupportingDocument = 15
 	}
 }

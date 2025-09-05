@@ -14,6 +14,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Attachments
 		public AttachmentType AttachmentType { get; set; }
 		public AttachmentDocumentType DocumentType { get; set; }
 		public string AttachmentTypeName { get; set; }
+		public string DocumentTypeName { get; set; }
 		public DateTime DateAdded { get; set; }
 		public DateTime? DateUpdated { get; set; }
 
@@ -31,6 +32,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Attachments
 			AttachmentType = attachment.AttachmentType;
 			AttachmentTypeName = attachment.AttachmentType.GetDescription();
 			DocumentType = attachment.DocumentType;
+			DocumentTypeName = attachment.DocumentType.GetDescription();
 			FileExtension = attachment.FileExtension;
 			VersionNumber = attachment.VersionNumber;
 			DateAdded = attachment.DateAdded;

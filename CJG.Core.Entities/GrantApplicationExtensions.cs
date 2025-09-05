@@ -292,44 +292,30 @@ namespace CJG.Core.Entities
 			// If attachments are required they must be provided.
 			if (grantApplication.GrantOpening.GrantStream.AttachmentsIsEnabled
 			    && grantApplication.GrantOpening.GrantStream.AttachmentsRequired
-			    && grantApplication.Attachments.Count == 0)
+			    && !grantApplication.HasMetAttachmentRequirements())
 			{
 				return false;
 			}
 
-			switch (grantApplication.GrantOpening.GrantStream.GrantProgram.ProgramTypeId)
-			{
-				case ProgramTypes.WDAService:
-					// These totals are not valid, however they will support the initial testing for v01.09.00.
-					var minPrograms = 0; // grantApplication.GrantOpening.GrantStream.ProgramConfiguration.EligibleExpenseTypes.Where(eet => eet.ServiceCategory.ServiceTypeId == ServiceTypes.SkillsTraining).Sum(eet => eet.ServiceCategory.MinPrograms);
-					var minProviders = grantApplication.GrantOpening.GrantStream.ProgramConfiguration
-						.EligibleExpenseTypes.Where(eet => eet.IsActive
-						                                   && eet.ServiceCategory.ServiceTypeId == ServiceTypes.EmploymentServicesAndSupports
-						                                   && eet.MinProviders > 0)
-						.Sum(eet => eet.MinProviders);
+			// These totals are not valid, however they will support the initial testing for v01.09.00.
+			var minPrograms = 0; // grantApplication.GrantOpening.GrantStream.ProgramConfiguration.EligibleExpenseTypes.Where(eet => eet.ServiceCategory.ServiceTypeId == ServiceTypes.SkillsTraining).Sum(eet => eet.ServiceCategory.MinPrograms);
+			var minProviders = grantApplication.GrantOpening.GrantStream.ProgramConfiguration
+				.EligibleExpenseTypes.Where(eet => eet.IsActive
+				                                   && eet.ServiceCategory.ServiceTypeId == ServiceTypes.EmploymentServicesAndSupports
+				                                   && eet.MinProviders > 0)
+				.Sum(eet => eet.MinProviders);
 
-					return grantApplication.GrantOpening.State != GrantOpeningStates.Closed
-							&& grantApplication.TrainingCost.TrainingCostState == TrainingCostStates.Complete
-							&& grantApplication.ProgramDescription?.DescriptionState == ProgramDescriptionStates.Complete
-							&& grantApplication.TrainingPrograms.All(tp => tp.TrainingProgramState == TrainingProgramStates.Complete && tp.TrainingProvider != null && tp.TrainingProvider.TrainingProviderState == TrainingProviderStates.Complete)
-							&& grantApplication.TrainingPrograms.Count >= minPrograms
-							&& grantApplication.TrainingProviders.All(tp => tp.TrainingProviderState == TrainingProviderStates.Complete)
-							&& grantApplication.TrainingProviders.Count >= minProviders
-							&& grantApplication.EligibilityConfirmed()
-							&& grantApplication.EmploymentServicesAndSupportsConfirmed()
-							&& grantApplication.SkillsTrainingConfirmed()
-							&& grantApplication.HasValidDates(grantApplication.GrantOpening.TrainingPeriod.StartDate, grantApplication.GrantOpening.TrainingPeriod.EndDate);
-
-				case ProgramTypes.EmployerGrant:
-				default:
-					return !grantApplication.GrantOpening.State.In(GrantOpeningStates.Unscheduled, GrantOpeningStates.Closed)
-						&& grantApplication.TrainingCost.TrainingCostState == TrainingCostStates.Complete
-						&& grantApplication.TrainingPrograms.Count() == 1
-						&& grantApplication.TrainingPrograms.FirstOrDefault(tp => tp.TrainingProgramState == TrainingProgramStates.Complete && tp.TrainingProviders.Count() == 1 && tp.TrainingProviders.First().TrainingProviderState == TrainingProviderStates.Complete) != null
-						&& grantApplication.EligibilityConfirmed()
-						&& grantApplication.HasValidDates(grantApplication.GrantOpening.TrainingPeriod.StartDate, grantApplication.GrantOpening.TrainingPeriod.EndDate)
-						&& grantApplication.HasValidBusinessCase();
-			}
+			return grantApplication.GrantOpening.State != GrantOpeningStates.Closed
+					&& grantApplication.TrainingCost.TrainingCostState == TrainingCostStates.Complete
+					&& grantApplication.ProgramDescription?.DescriptionState == ProgramDescriptionStates.Complete
+					&& grantApplication.TrainingPrograms.All(tp => tp.TrainingProgramState == TrainingProgramStates.Complete && tp.TrainingProvider != null && tp.TrainingProvider.TrainingProviderState == TrainingProviderStates.Complete)
+					&& grantApplication.TrainingPrograms.Count >= minPrograms
+					&& grantApplication.TrainingProviders.All(tp => tp.TrainingProviderState == TrainingProviderStates.Complete)
+					&& grantApplication.TrainingProviders.Count >= minProviders
+					&& grantApplication.EligibilityConfirmed()
+					&& grantApplication.EmploymentServicesAndSupportsConfirmed()
+					&& grantApplication.SkillsTrainingConfirmed()
+					&& grantApplication.HasValidDates(grantApplication.GrantOpening.TrainingPeriod.StartDate, grantApplication.GrantOpening.TrainingPeriod.EndDate);
 		}
 
 		/// <summary>

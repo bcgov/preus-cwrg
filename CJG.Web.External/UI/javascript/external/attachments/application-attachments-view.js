@@ -1,4 +1,4 @@
-app.controller('ApplicationAttachmentsView', function ($scope, $attrs, $controller, $timeout, Utils, ngDialog) {
+app.controller('ApplicationAttachmentsView', function ($scope, $attrs, $controller) {
   $scope.section = {
     name: 'ApplicationAttachmentsView',
     displayName: 'Application Attachments',
@@ -166,6 +166,12 @@ app.controller('ApplicationAttachmentsView', function ($scope, $attrs, $controll
    **/
   $scope.cancel = function () {
     window.location = $scope.section.redirectUrl;
+  }
+
+  $scope.documentTypeFilter = function (documentType) {
+    return function (attachment) {
+      return attachment.DocumentType === documentType;
+    }
   }
 
   init();
