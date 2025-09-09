@@ -15,8 +15,7 @@ namespace CJG.Web.External.Areas.Int.Models.WorkQueue
 		public int? AssessorId { get; set; }
 		public int? FiscalYearId { get; set; }
 		public int? GrantProgramId { get; set; }
-		public int? GrantStreamId { get; set; }
-		public string ProgramInitiativeName { get; set; }
+		public int? GrantStreamId { get; set; }		
 		public int? TrainingPeriodId { get; set; }
 		public string TrainingPeriodCaption { get; set; }
 		public string FileNumber { get; set; }
@@ -36,7 +35,7 @@ namespace CJG.Web.External.Areas.Int.Models.WorkQueue
 				             .Select(s => new StateFilter<ApplicationStateInternal>(s))
 				             .ToArray() ?? new[] { new StateFilter<ApplicationStateInternal>(ApplicationStateInternal.Draft, false) };
 
-			return new ApplicationFilter(states, FileNumber, Applicant, AssessorId, FiscalYearId, TrainingPeriodCaption, GrantProgramId, GrantStreamId, ProgramInitiativeName, IsAssigned, OrderBy);
+			return new ApplicationFilter(states, FileNumber, Applicant, AssessorId, FiscalYearId, TrainingPeriodCaption, GrantProgramId, GrantStreamId, IsAssigned, OrderBy);
 		}
 	}
 }
