@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using CJG.Core.Entities;
 using CJG.Web.External.Models.Shared;
@@ -20,6 +20,7 @@ namespace CJG.Web.External.Areas.Int.Models.WorkQueue
 		public string ApplicationStateInternalCaption { get; }
 		public DateTime StatusChanged { get; set; }
 		public string GrantStreamName { get; set; }
+		public string ProgramInitiativeName { get; set; }
 		public bool RiskFlag { get; set; }
 		public int OrgId { get; set; }
 
@@ -50,6 +51,8 @@ namespace CJG.Web.External.Areas.Int.Models.WorkQueue
 				StatusChanged = lastStateChange.ChangedDate.ToLocalTime();
 
 			GrantStreamName = grantApplication.GrantOpening.GrantStream.Name;
+			if (grantApplication.ProgramInitiative != null)
+				ProgramInitiativeName = grantApplication.ProgramInitiative.Name;
 			RiskFlag = grantApplication.Organization.RiskFlag;
 			OrgId = grantApplication.Organization.Id;
 
