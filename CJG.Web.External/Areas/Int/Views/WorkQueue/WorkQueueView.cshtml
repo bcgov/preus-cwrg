@@ -1,4 +1,4 @@
-﻿@model int
+@model int
 @{
 	ViewBag.Title = "Grant Files";
 }
@@ -96,7 +96,7 @@
 						<label class="action {{sortDirection('OrganizationLegalName')}}" ng-click="sort('OrganizationLegalName')">Applicant</label>
 					</div>
                     <div class="form-table-cell">
-                        <label class="action {{sortDirection('GrantOpening.GrantStream.Name')}}" ng-click="sort('GrantOpening.GrantStream.Name')">Initiative</label>
+                        <label class="action {{sortDirection('ProgramInitiativeName')}}" ng-click="sort('ProgramInitiativeName')">Initiative</label>
                     </div>
                     <div class="form-table-cell">
                         <label class="action {{sortDirection('DateSubmitted')}}" ng-click="sort('DateSubmitted')">Submission Date</label>
@@ -121,7 +121,7 @@
                         <a href="/Int/Organization/History/View/{{application.OrgId}}">{{application.Applicant}}</a>
                     </div>
                     <div class="form-table-cell">
-                        {{application.GrantStreamName}}
+                        {{application.ProgramInitiativeName === null ? '---' : application.ProgramInitiativeName}}
                     </div>
                     <div class="form-table-cell">
                         {{application.DateSubmitted === null ? '---' : toPST(application.DateSubmitted)}}
