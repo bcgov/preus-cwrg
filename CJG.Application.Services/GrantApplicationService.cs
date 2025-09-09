@@ -895,14 +895,6 @@ namespace CJG.Application.Services
 					var sortDesc = filter.OrderBy[0].Contains("desc");
 					query = query.OrderByDynamic(f => f.TrainingStartDate, !sortDesc);
 				}
-				else if (filter.OrderBy != null && filter.OrderBy[0].StartsWith("ProgramInitiativeName"))
-				{
-					query = query.ToList()
-						.AsQueryable();
-
-					var sortDesc = filter.OrderBy[0].Contains("desc");
-					query = query.OrderByDynamic(f => f.ProgramInitiative.Name, !sortDesc);
-				}
 				else
 				{
 					query = query.OrderByProperty(orderBy);
