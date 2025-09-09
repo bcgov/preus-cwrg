@@ -24,6 +24,7 @@ namespace CJG.Core.Interfaces.Service
 
 		int GetParticipantsWithClaimEligibleCostCount(int claimId, int claimVersion);
 		IDictionary<string, decimal> GetParticipantYTD(GrantApplication grantApplication);
+		IDictionary<string, bool> GetParticipantMultipleInstances(GrantApplication grantApplication);
 
 		void UpdateReportedDate(IEnumerable<ParticipantForm> participantEnrollments, DateTime reportedDate);
 		void UpdateSINReportedDate(IEnumerable<ParticipantForm> participantEnrollments, DateTime reportedDate);

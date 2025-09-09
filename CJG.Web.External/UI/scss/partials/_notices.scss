@@ -23,6 +23,22 @@
   }
 }
 
+.icon-duplicate {
+  position: relative;
+}
+
+.icon-duplicate {
+  &:before {
+    position: relative;
+    display: inline-block;
+    content: ' ';
+    margin-right: 5px;
+    background: url('#{$icon-img-path}/info-red.svg') no-repeat !important;
+    width: $notice-icon-width - 9 !important;
+    height: $notice-icon-height - 9 !important;
+  }
+}
+
 .pif-warning {
   @extend ._notice-icon;
 
