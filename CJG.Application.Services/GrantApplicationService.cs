@@ -849,6 +849,9 @@ namespace CJG.Application.Services
 			if (filter.GrantStreamId.HasValue)
 				query = query.Where(ga => ga.GrantOpening.GrantStreamId == filter.GrantStreamId);
 
+			if (!string.IsNullOrWhiteSpace(filter.ProgramInitiativeName))
+				query = query.Where(ga => ga.ProgramInitiative.Name == filter.ProgramInitiativeName);
+
 			if (!filter.GrantProgramId.HasValue || filter.GrantProgramId.Value == 0)
 				filter.GrantProgramId = GetDefaultGrantProgramId();
 
@@ -891,6 +894,14 @@ namespace CJG.Application.Services
 
 					var sortDesc = filter.OrderBy[0].Contains("desc");
 					query = query.OrderByDynamic(f => f.TrainingStartDate, !sortDesc);
+				}
+				else if (filter.OrderBy != null && filter.OrderBy[0].StartsWith("ProgramInitiativeName"))
+				{
+					query = query.ToList()
+						.AsQueryable();
+
+					var sortDesc = filter.OrderBy[0].Contains("desc");
+					query = query.OrderByDynamic(f => f.ProgramInitiative.Name, !sortDesc);
 				}
 				else
 				{
