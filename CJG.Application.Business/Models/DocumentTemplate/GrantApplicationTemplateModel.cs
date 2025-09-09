@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,6 +24,7 @@ namespace CJG.Application.Business.Models.DocumentTemplate
 		public string GrantProgramName { get; set; }
 		public string GrantProgramCode { get; set; }
 		public string GrantStreamName { get; set; }
+		public string ProgramInitiativeName { get; set; }
 		public string GrantProgramEmail { get; set; }
 
 		public string GrantAgreementStartDate { get; set; }
@@ -89,6 +90,7 @@ namespace CJG.Application.Business.Models.DocumentTemplate
 			EndDate = grantApplication.EndDate.ToLocalTime().ToString("MMMM dd, yyyy");
 
 			OrganizationLegalName = grantApplication.Organization.LegalName;
+			ProgramInitiativeName = grantApplication.ProgramInitiative?.Name;
 
 			GrantProgramName = grantApplication.GrantOpening.GrantStream.GrantProgram.Name;
 			GrantProgramCode = grantApplication.GrantOpening.GrantStream.GrantProgram.ProgramCode;
