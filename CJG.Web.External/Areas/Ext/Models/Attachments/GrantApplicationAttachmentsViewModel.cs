@@ -34,6 +34,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Attachments
 			NotRequestingESS = grantApplication.NotRequestingESS;
 			Attachments = grantApplication.Attachments
 				.Where(a => a.AttachmentType == AttachmentType.Attachment)
+				.OrderBy(a => a.DocumentType)
 				.Select(a => new AttachmentViewModel(a));
 		}
 	}

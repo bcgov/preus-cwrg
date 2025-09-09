@@ -17,6 +17,7 @@ namespace CJG.Web.External.Areas.Int.Models.Organizations
 		public string StartDate { get; set; }
 		public string EndDate { get; set; }
 		public int NumberOfParticipants { get; set; }
+		public int NumberOfParticipantsAgreed { get; set; }
 		public decimal RequestedAmount { get; set; } = decimal.Zero;
 		public decimal ApprovedAmount { get; set; } = decimal.Zero;
 		public decimal PaidAmount { get; set; } = decimal.Zero;
@@ -35,6 +36,7 @@ namespace CJG.Web.External.Areas.Int.Models.Organizations
 			StartDate = grantApplication.GetTrainingStartDate().ToLocalMorning().ToString("yyyy-MM-dd");
 			EndDate = grantApplication.GetTrainingEndDate().ToLocalMorning().ToString("yyyy-MM-dd");
 			NumberOfParticipants = grantApplication.TrainingCost.EstimatedParticipants;
+			NumberOfParticipantsAgreed = grantApplication.TrainingCost.AgreedParticipants;
 			RequestedAmount = grantApplication.TrainingCost.TotalEstimatedReimbursement;
 			ApprovedAmount = grantApplication.TrainingCost.CalculateApprovedAmount();
 			PaidAmount = grantApplication.Claims.Where(c => c.ClaimState.In(ClaimState.ClaimApproved, ClaimState.AmountReceived, ClaimState.ClaimPaid, ClaimState.PaymentRequested)).Sum(c => c.TotalAssessedReimbursement);

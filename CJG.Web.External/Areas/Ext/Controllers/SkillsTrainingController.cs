@@ -1,5 +1,11 @@
-﻿using CJG.Application.Business.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CJG.Application.Business.Models;
 using CJG.Application.Services;
+using CJG.Application.Services.Exceptions;
 using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
 using CJG.Web.External.Controllers;
@@ -7,23 +13,16 @@ using CJG.Web.External.Helpers;
 using CJG.Web.External.Helpers.Filters;
 using CJG.Web.External.Models.Shared.SkillsTrainings;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using CJG.Application.Services.Exceptions;
 
 namespace CJG.Web.External.Areas.Ext.Controllers
 {
-	/// <summary>
-	/// SkillsTrainingController class, provides endpoints to manage training programs.
-	/// </summary>
-	[RouteArea("Ext")]
+    /// <summary>
+    /// SkillsTrainingController class, provides endpoints to manage training programs.
+    /// </summary>
+    [RouteArea("Ext")]
 	[ExternalFilter]
 	public class SkillsTrainingController : BaseController
 	{
-		#region Variables
 		private readonly IStaticDataService _staticDataService;
 		private readonly IGrantApplicationService _grantApplicationService;
 		private readonly IApplicationAddressService _applicationAddressService;
@@ -32,9 +31,6 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		private readonly ITrainingProviderService _trainingProviderService;
 		private readonly IEligibleExpenseBreakdownService _eligibleExpenseBreakdownService;
 		private readonly IServiceLineBreakdownService _serviceLineBreakdownService;
-		#endregion
-
-		#region Constructors
 
 		/// <summary>
 		/// Creates a new instance of a SkillsTrainingController object.
@@ -65,7 +61,6 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			_eligibleExpenseBreakdownService = eligibleExpenseBreakdownService;
 			_serviceLineBreakdownService = serviceLineBreakdownService;
 		}
-		#endregion
 
 		#region Endpoints
 
