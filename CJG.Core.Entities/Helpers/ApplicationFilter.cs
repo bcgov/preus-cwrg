@@ -9,8 +9,7 @@ namespace CJG.Core.Entities.Helpers
 		public int? FiscalYearId { get; }
 		public string TrainingPeriodCaption { get; }
 		public int? GrantProgramId { get; set; }
-		public int? GrantStreamId { get; }
-		public string ProgramInitiativeName { get; }
+		public int? GrantStreamId { get; }		
 		public bool? IsAssigned { get; }
 		public string FileNumber { get; }
 		public string Applicant { get; }
@@ -25,8 +24,7 @@ namespace CJG.Core.Entities.Helpers
 			FiscalYearId = null;
 			TrainingPeriodCaption = null;
 			GrantProgramId = null;
-			GrantStreamId = null;
-			ProgramInitiativeName = null;
+			GrantStreamId = null;		
 			OrderBy = null;
 			IsAssigned = null;
 			FileNumber = null;
@@ -47,15 +45,14 @@ namespace CJG.Core.Entities.Helpers
 			Applicant = null;
 		}
 
-		public ApplicationFilter(StateFilter<ApplicationStateInternal>[] states, string fileNumber, string applicant, int? assessorId, int? fiscalYearId, string trainingPeriodCaption, int? grantProgramId, int? grantStreamId, string programInitiativeName, bool? isAssigned, string[] orderBy = null)
+		public ApplicationFilter(StateFilter<ApplicationStateInternal>[] states, string fileNumber, string applicant, int? assessorId, int? fiscalYearId, string trainingPeriodCaption, int? grantProgramId, int? grantStreamId, bool? isAssigned, string[] orderBy = null)
 		{
 			States = states;
 			AssessorId = assessorId;
 			FiscalYearId = fiscalYearId;
 			TrainingPeriodCaption = trainingPeriodCaption;
 			GrantProgramId = grantProgramId;
-			GrantStreamId = grantStreamId;
-			ProgramInitiativeName = programInitiativeName;
+			GrantStreamId = grantStreamId;			
 			OrderBy = orderBy;
 			IsAssigned = isAssigned;
 			FileNumber = fileNumber;
