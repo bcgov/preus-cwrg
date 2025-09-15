@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CJG.Core.Entities.Helpers
@@ -9,7 +9,7 @@ namespace CJG.Core.Entities.Helpers
 		public int? FiscalYearId { get; }
 		public string TrainingPeriodCaption { get; }
 		public int? GrantProgramId { get; set; }
-		public int? GrantStreamId { get; }
+		public int? GrantStreamId { get; }		
 		public bool? IsAssigned { get; }
 		public string FileNumber { get; }
 		public string Applicant { get; }
@@ -24,7 +24,7 @@ namespace CJG.Core.Entities.Helpers
 			FiscalYearId = null;
 			TrainingPeriodCaption = null;
 			GrantProgramId = null;
-			GrantStreamId = null;
+			GrantStreamId = null;		
 			OrderBy = null;
 			IsAssigned = null;
 			FileNumber = null;
@@ -52,7 +52,7 @@ namespace CJG.Core.Entities.Helpers
 			FiscalYearId = fiscalYearId;
 			TrainingPeriodCaption = trainingPeriodCaption;
 			GrantProgramId = grantProgramId;
-			GrantStreamId = grantStreamId;
+			GrantStreamId = grantStreamId;			
 			OrderBy = orderBy;
 			IsAssigned = isAssigned;
 			FileNumber = fileNumber;

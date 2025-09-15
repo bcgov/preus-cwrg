@@ -1,34 +1,31 @@
-﻿using CJG.Application.Business.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 using CJG.Core.Entities;
 using CJG.Core.Interfaces;
 using CJG.Core.Interfaces.Service;
+using CJG.Web.External.Areas.Int.Models.ESS;
 using CJG.Web.External.Controllers;
 using CJG.Web.External.Helpers;
 using CJG.Web.External.Helpers.Filters;
 using CJG.Web.External.Models.Shared;
 using CJG.Web.External.Models.Shared.SkillsTrainings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.Web;
-using System.Web.Mvc;
-using CJG.Web.External.Areas.Int.Models.ESS;
+using Newtonsoft.Json;
 
 namespace CJG.Web.External.Areas.Int.Controllers
 {
-	/// <summary>
-	/// <paramtyperef name="ESSController"/> class, provides endpoints to manage ESS Services.
-	/// </summary>
-	[RouteArea("Int")]
+    /// <summary>
+    /// <paramtyperef name="ESSController"/> class, provides endpoints to manage ESS Services.
+    /// </summary>
+    [RouteArea("Int")]
 	[RoutePrefix("Application/ESS")]
 	public class ESSController : BaseController
 	{
 		#region Variables
 		private readonly IStaticDataService _staticDataService;
 		private readonly IGrantApplicationService _grantApplicationService;
-		private readonly IGrantAgreementService _grantAgreementService;
 		private readonly IEligibleCostService _eligibleCostService;
 		private readonly IEligibleCostBreakdownService _eligibleCostBreakdownService;
 		private readonly ITrainingProviderService _trainingProviderService;
@@ -38,11 +35,9 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		private readonly IAttachmentService _attachmentService;
 		#endregion
 
-		#region Constructors
 		public ESSController(
 			IControllerService controllerService,
 			IGrantApplicationService grantApplicationService,
-			IGrantAgreementService grantAgreementService,
 			IEligibleCostService eligibleCostService,
 			IEligibleCostBreakdownService eligibleCostBreakdownService,
 			IEligibleExpenseBreakdownService eligibleExpenseBreakdownService,
@@ -54,7 +49,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		{
 			_staticDataService = controllerService.StaticDataService;
 			_grantApplicationService = grantApplicationService;
-			_grantAgreementService = grantAgreementService;
 			_eligibleCostService = eligibleCostService;
 			_eligibleCostBreakdownService = eligibleCostBreakdownService;
 			_eligibleExpenseBreakdownService = eligibleExpenseBreakdownService;
@@ -63,9 +57,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			_attachmentService = attachmentService;
 			_eligibleExpenseTypeService = eligibleExpenseTypeService;
 		}
-		#endregion
 
-		#region Endpoints
 		#region Services
 		/// <summary>
 		/// Get the data for the ESS Services section in Application Details View.
@@ -76,11 +68,11 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[Route("Services/{eligibleCostId}")]
 		public JsonResult GetServices(int eligibleCostId)
 		{
-			var model = new Models.ESS.EmploymentServicesViewModel();
+			var model = new EmploymentServicesViewModel();
 			try
 			{
 				var eligibleCost = _eligibleCostService.Get(eligibleCostId);
-				model = new Models.ESS.EmploymentServicesViewModel(eligibleCost);
+				model = new EmploymentServicesViewModel(eligibleCost);
 			}
 			catch (Exception ex)
 			{
@@ -98,9 +90,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[Route("Service/Lines/{eligibleExpenseTypeId}")]
 		public JsonResult GetServiceLines(int eligibleExpenseTypeId)
 		{
-
-			//KeyValueListItem<int, string>[] model = null;
-
 			var model = new List<EmploymentServicesLinesViewModel>();
 			try
 			{
@@ -208,11 +197,11 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[Route("Provider/{trainingProviderId}")]
 		public JsonResult GetProvider(int trainingProviderId)
 		{
-			var model = new Models.ESS.ProviderViewModel();
+			var model = new ProviderViewModel();
 			try
 			{
 				var trainingProvider = _trainingProviderService.Get(trainingProviderId);
-				model = new Models.ESS.ProviderViewModel(trainingProvider, User);
+				model = new ProviderViewModel(trainingProvider, User);
 			}
 			catch (Exception ex)
 			{
@@ -232,10 +221,10 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[Route("Provider")]
 		public JsonResult UpdateProvider(HttpPostedFileBase[] files, string provider)
 		{
-			var returnModel = new Models.ESS.ProviderViewModel();
+			var returnModel = new ProviderViewModel();
 			try
 			{
-				var model = Newtonsoft.Json.JsonConvert.DeserializeObject<ServiceProviderDetailsViewModel>(provider);
+				var model = JsonConvert.DeserializeObject<ServiceProviderDetailsViewModel>(provider);
 
 				if (!String.IsNullOrWhiteSpace(model.ContactPhoneAreaCode) || !String.IsNullOrWhiteSpace(model.ContactPhoneExchange) || !String.IsNullOrWhiteSpace(model.ContactPhoneNumber))
 				{
@@ -268,7 +257,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 												files);
 
 					_trainingProviderService.Update(trainingProvider);
-					returnModel = new Models.ESS.ProviderViewModel(trainingProvider, User);
+					returnModel = new ProviderViewModel(trainingProvider, User);
 				}
 				else
 				{
@@ -294,10 +283,10 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[Route("Provider")]
 		public JsonResult AddProvider(HttpPostedFileBase[] files, string provider)
 		{
-			var returnModel = new Models.ESS.ProviderViewModel();
+			var returnModel = new ProviderViewModel();
 			try
 			{
-				var model = Newtonsoft.Json.JsonConvert.DeserializeObject<ServiceProviderDetailsViewModel>(provider);
+				var model = JsonConvert.DeserializeObject<ServiceProviderDetailsViewModel>(provider);
 
 				if (!String.IsNullOrWhiteSpace(model.ContactPhoneAreaCode) || !String.IsNullOrWhiteSpace(model.ContactPhoneExchange) || !String.IsNullOrWhiteSpace(model.ContactPhoneNumber))
 				{
@@ -331,7 +320,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 												files);
 
 					_trainingProviderService.Add(trainingProvider);
-					returnModel = new Models.ESS.ProviderViewModel(trainingProvider, User);
+					returnModel = new ProviderViewModel(trainingProvider, User);
 				}
 				else
 				{
@@ -383,7 +372,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[PreventSpam]
 		[ValidateRequestHeader]
 		[Route("Provider/Approve")]
-		public JsonResult ApproveProvider(Models.ESS.ProviderViewModel model)
+		public JsonResult ApproveProvider(ProviderViewModel model)
 		{
 			try
 			{
@@ -392,7 +381,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 				trainingProvider.TrainingProviderState = trainingProvider.TrainingProviderState == TrainingProviderStates.RequestApproved ? TrainingProviderStates.Requested : TrainingProviderStates.RequestApproved;
 				_trainingProviderService.Update(trainingProvider);
 
-				model = new Models.ESS.ProviderViewModel(trainingProvider, User);
+				model = new ProviderViewModel(trainingProvider, User);
 			}
 			catch (Exception ex)
 			{
@@ -412,7 +401,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[PreventSpam]
 		[ValidateRequestHeader]
 		[Route("Provider/Deny")]
-		public JsonResult DenyProvider(Models.ESS.ProviderViewModel model)
+		public JsonResult DenyProvider(ProviderViewModel model)
 		{
 			try
 			{
@@ -421,7 +410,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 				trainingProvider.TrainingProviderState = trainingProvider.TrainingProviderState == TrainingProviderStates.RequestDenied ? TrainingProviderStates.Requested : TrainingProviderStates.RequestDenied;
 				_trainingProviderService.Update(trainingProvider);
 
-				model = new Models.ESS.ProviderViewModel(trainingProvider, User);
+				model = new ProviderViewModel(trainingProvider, User);
 			}
 			catch (Exception ex)
 			{
@@ -431,7 +420,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			jsonResult.MaxJsonLength = int.MaxValue;
 			return jsonResult;
 		}
-		#endregion
 		#endregion
 	}
 }

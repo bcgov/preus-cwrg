@@ -375,6 +375,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 				int numQuestions = 0;
 				int numFoundQuestions = 0;
 				bool passedEligibilityQuestions = true;
+
 				if (dbModel.StreamEligibilityQuestions.Count() != 0)
 				{
 					foreach (var question in dbModel.StreamEligibilityQuestions)

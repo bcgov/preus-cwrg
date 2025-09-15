@@ -21,7 +21,7 @@ namespace CJG.Web.External.Areas.Int.Models.ProgramDescriptions
 		[Required(ErrorMessage = "Program Description is required.")]
 		public string Description { get; set; }
 
-		[MaxLength(1000, ErrorMessage = "Publicly Available Project Description cannot be longer than 1000 characters.")]
+		[MaxLength(1000, ErrorMessage = "Project Summary cannot be longer than 1000 characters.")]
 		public string PubliclyAvailableDescription { get; set; }
 
 		//[Required(ErrorMessage = "Number of Supporting Employers is required.")]
@@ -107,6 +107,10 @@ namespace CJG.Web.External.Areas.Int.Models.ProgramDescriptions
 
 			Id = programDescription.GrantApplicationId;
 			NumberOfParticipants = programDescription.RowVersion == null ? (int?)null : programDescription.GrantApplication.TrainingCost.EstimatedParticipants;
+
+			if (programDescription.GrantApplication.ApplicationStateInternal >= ApplicationStateInternal.UnderAssessment)
+				NumberOfParticipantsAgreed = programDescription.GrantApplication.TrainingCost.AgreedParticipants;
+
 			SupportingEmployers = programDescription.RowVersion == null ? (int?)null : programDescription.SupportingEmployers;
 			SelectedUnderRepresentedPopulationIds = programDescription.UnderRepresentedPopulations.Select(o => o.Id).ToArray();
 			SelectedVulnerableGroupIds = programDescription.VulnerableGroups.Select(o => o.Id).ToArray();

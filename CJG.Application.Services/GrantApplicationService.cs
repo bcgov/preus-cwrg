@@ -849,6 +849,7 @@ namespace CJG.Application.Services
 			if (filter.GrantStreamId.HasValue)
 				query = query.Where(ga => ga.GrantOpening.GrantStreamId == filter.GrantStreamId);
 
+
 			if (!filter.GrantProgramId.HasValue || filter.GrantProgramId.Value == 0)
 				filter.GrantProgramId = GetDefaultGrantProgramId();
 

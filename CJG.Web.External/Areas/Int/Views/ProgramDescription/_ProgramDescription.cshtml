@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="form__group">
-                    <div class="form__label">Publicly Available Project Description:</div>
+                    <div class="form__label">Project Summary:</div>
                     <div class="form__control">
                         <div class="control-wrapper">
                             <textarea maxlength="1000" ng-model="model.PubliclyAvailableDescription" class="input--full textarea--short" ng-validation ng-editing></textarea>
@@ -50,7 +50,7 @@
                     <div class="form__label">Number of Participants:</div>
                     <div class="form__control">
                         Requested: {{model.NumberOfParticipants}}
-                        <span ng-if="model.GrantApplication.ApplicationStateExternal >= @((int)CJG.Core.Entities.ApplicationStateExternal.AcceptGrantAgreement)">; Agreed: {{model.NumberOfParticipantsAgreed}}</span>
+                        <span ng-if="model.NumberOfParticipantsAgreed != null">; Approved: {{model.NumberOfParticipantsAgreed}}</span>
                     </div>
                 </div>
                 <div class="form__group">

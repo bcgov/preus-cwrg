@@ -633,6 +633,7 @@ namespace CJG.Application.Services
 			_dbContext.CommitTransaction();
 		}
 
+		[Obsolete("May not be needed anymore. Consider removing, but leaving for reference for now.")]
 		public IDictionary<string, decimal> GetParticipantYTD(GrantApplication grantApplication)
 		{
 			var enteredSiNs = grantApplication.ParticipantForms.Select(x => x.SIN).ToList();
@@ -672,6 +673,34 @@ namespace CJG.Application.Services
 					.GroupBy(o => o.pf.SIN)
 					.Select(o => new { Amount = o.Sum(b => b.ce.AssessedMaxParticipantReimbursementCost), SIN = o.Key })
 					.ToDictionary(x => x.SIN, x => x.Amount);
+		}
+
+		public IDictionary<string, bool> GetParticipantMultipleInstances(GrantApplication grantApplication)
+		{
+			var defaultGrantProgramId = GetDefaultGrantProgramId();
+			var fiscalYearId = grantApplication.GrantOpening.TrainingPeriod.FiscalYearId;
+
+			var applicationStates = new[]
+			{
+				ApplicationStateInternal.AgreementAccepted, ApplicationStateInternal.ChangeRequest,
+				ApplicationStateInternal.ChangeForApproval, ApplicationStateInternal.ChangeForDenial,
+				ApplicationStateInternal.ChangeReturned, ApplicationStateInternal.ChangeRequestDenied,
+				ApplicationStateInternal.NewClaim,
+				ApplicationStateInternal.ClaimAssessEligibility, ApplicationStateInternal.ClaimReturnedToApplicant,
+				ApplicationStateInternal.ClaimDenied, ApplicationStateInternal.ClaimApproved,
+				ApplicationStateInternal.Closed,
+				ApplicationStateInternal.ClaimAssessReimbursement, ApplicationStateInternal.CompletionReporting
+			};
+
+			var multipleParticipants = _dbContext.ParticipantForms
+				.Where(pf => pf.GrantApplication.GrantOpening.GrantStream.GrantProgramId == defaultGrantProgramId)
+				.Where(pf => applicationStates.Contains(pf.GrantApplication.ApplicationStateInternal))
+				.Where(pf => pf.GrantApplication.GrantOpening.TrainingPeriod.FiscalYearId == fiscalYearId)
+				.GroupBy(pf => pf.SIN)
+				.Select(o => new { SIN = o.Key, HasMultiple = o.Count() > 1 })
+				.ToDictionary(x => x.SIN, x => x.HasMultiple);
+
+			return multipleParticipants;
 		}
 	}
 }

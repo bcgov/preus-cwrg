@@ -24,7 +24,8 @@ namespace CJG.Web.External.Areas.Int.Models.ESS
 			RowVersion = Convert.ToBase64String(eligibleCost.RowVersion);
 			SelectedServiceLineIds = eligibleCost.Breakdowns.Select(b => b.EligibleExpenseBreakdownId).ToArray();
 
-			AllowEstimatedCostEntry = eligibleCost.EligibleExpenseType.MaxProviders == 0;
+			//AllowEstimatedCostEntry = eligibleCost.EligibleExpenseType.MaxProviders == 0;
+			AllowEstimatedCostEntry = false;
 
 			var allExpenseTypes = eligibleCost.EligibleExpenseType.Breakdowns.OrderBy(eet => eet.RowSequence).ThenBy(eet => eet.Caption);
 
@@ -41,7 +42,7 @@ namespace CJG.Web.External.Areas.Int.Models.ESS
 					AssessedCost = costBreakdown?.AssessedCost ?? 0m,
 					IsSelected = costBreakdown != null,
 					EnableCustomTitle = enableCustomTitle,
-					CustomCostTitle = costBreakdown?.CustomCostTitle
+					CustomCostTitle = costBreakdown?.CustomCostTitle,
 				};
 			}).ToList();
 		}

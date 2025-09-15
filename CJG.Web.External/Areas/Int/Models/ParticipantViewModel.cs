@@ -12,13 +12,15 @@ namespace CJG.Web.External.Areas.Int.Models
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
-		public decimal YTDFunded { get; set; } = 0;
+		[Obsolete("No longer in use")]
+        public decimal YTDFunded { get; set; } = 0;
 		public string SIN { get; set; }
 		public string ReportedBy { get; set; }
         public string ReportedOn { get; set; }
         public int? ConsentFormAttachmentId { get; set; }
 		public bool? Approved { get; set; }
 		public bool? Attended { get; set; }
+		public bool MultipleInstancesInFiscalYear { get; set; }
 
 		public ParticipantViewModel() { }
 
@@ -37,11 +39,13 @@ namespace CJG.Web.External.Areas.Int.Models
 
             var participantReportingDueDate = participant.GrantApplication.GetParticipantReportingDueDate();
             var isReportedLate = participant.DateAdded > participantReportingDueDate;
-			ReportedOn = $"{ participant.DateAdded.ToLocalTime() } { (isReportedLate ? " (Late)" : "") }";
+
+            ReportedOn = $"{ participant.DateAdded.ToLocalTime() } { (isReportedLate ? " (Late)" : "") }";
             ConsentFormAttachmentId = participant.ParticipantConsentAttachmentId;
 			SIN = participant.SIN;
 			Approved = participant.Approved;
 			Attended = participant.Attended;
-		}
+			MultipleInstancesInFiscalYear = false;
+        }
     }
 }

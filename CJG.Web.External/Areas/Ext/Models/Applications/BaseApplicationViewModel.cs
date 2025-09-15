@@ -79,15 +79,9 @@ namespace CJG.Web.External.Areas.Ext.Models
 			EnableAttachments = grantApplication.GrantOpening.GrantStream.AttachmentsIsEnabled;
 			AttachmentsRequired = grantApplication.GrantOpening.GrantStream.AttachmentsRequired;
 			AttachmentsHeader = grantApplication.GrantOpening.GrantStream.AttachmentsHeader;
-			AttachmentCount = grantApplication.Attachments.Count();
+			AttachmentCount = grantApplication.Attachments.Count;
 
-			AttachmentsState =
-				AttachmentsRequired
-				&& grantApplication.ApplicationStateExternal == ApplicationStateExternal.ApplicationWithdrawn
-					? 1
-					: grantApplication.HasMetAttachmentRequirements()
-						? 2
-						: 0;
+			AttachmentsState = GetAttachmentState(grantApplication);
 
 			CanReportParticipants = grantApplication.CanReportParticipants;
 			EnableBusinessCase = grantApplication.GrantOpening.GrantStream.BusinessCaseIsEnabled;
@@ -153,6 +147,27 @@ namespace CJG.Web.External.Areas.Ext.Models
 					TrainingCost.ESSAveragePerParticipant = TrainingCost.EstimatedCosts.Where(x => x.ServiceType == (int?)ServiceTypes.EmploymentServicesAndSupports).Sum(x => !hasOfferBeenIssued ? x.EstimatedParticipantCost : x.AgreedMaxParticipantCost);
 				}
 			}
+		}
+
+		private int GetAttachmentState(GrantApplication grantApplication)
+		{
+			/*
+				0 = Not Started
+				1 = Incomplete
+				2 = Complete
+				3 = Optional
+			 */
+
+			if (AttachmentsRequired && grantApplication.ApplicationStateExternal == ApplicationStateExternal.ApplicationWithdrawn)
+				return 1;
+
+			if (grantApplication.HasMetAttachmentRequirements())
+				return 2;
+
+			if (grantApplication.Attachments.Count > 0)
+				return 1;
+
+			return 0;
 		}
 	}
 }

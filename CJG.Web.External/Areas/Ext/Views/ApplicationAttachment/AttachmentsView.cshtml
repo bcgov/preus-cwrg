@@ -60,6 +60,7 @@
                         ESS Quote: 2 files
                         Instructor Qualifications: Max 5
                         Certificate of Insurance: Max 2
+                        Additional Supporting Documents: Max 5
                 *@
 
                 <tbody>
@@ -69,16 +70,16 @@
                         Please complete and upload the provided project description template. It is important to provide as much information on your intended project as possible to assist in the assessment of your proposed project’s needs and training components.
                     </td>
                     <td class="documents-attached">
-                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 1 }">
+                        <div ng-repeat="attachment in model.Attachments | filter: documentTypeFilter(1)">
                             <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 1)">Remove</button>
                             <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
                             <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
                             <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
                             <br/>
                         </div>
-                        <button ng-click="addAttachment(1)" ng-if="(model.Attachments | filter: { DocumentType: 1 }).length < 2" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                        <button ng-click="addAttachment(1)" ng-if="(model.Attachments | filter: documentTypeFilter(1)).length < 2" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
                     </td>
-                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 1 }).length > 0" class="icon--checkmark">Yes</span></td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: documentTypeFilter(1)).length > 0" class="icon--checkmark">Yes</span></td>
                 <tr>
                 <tr>
                     <td>
@@ -86,16 +87,16 @@
                         Please provide each employer supporting your project with the Employer Support Form, along with the training project curriculum/outline provided by your skills training provider. Additional forms may be requested during evaluation.
                     </td>
                     <td class="documents-attached">
-                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 2 }">
+                        <div ng-repeat="attachment in model.Attachments | filter: documentTypeFilter(2)">
                             <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 2)">Remove</button>
                             <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
                             <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
                             <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
                             <br/>
                         </div>
-                        <button ng-click="addAttachment(2)" ng-if="(model.Attachments | filter: { DocumentType: 2 }).length < 5" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                        <button ng-click="addAttachment(2)" ng-if="(model.Attachments | filter: documentTypeFilter(2)).length < 5" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
                     </td>
-                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 2 }).length > 0" class="icon--checkmark">Yes</span></td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: documentTypeFilter(2)).length > 0" class="icon--checkmark">Yes</span></td>
                 <tr>
                 <tr>
                     <td>
@@ -103,16 +104,16 @@
                         All training for a CWRG funded project must engage a third-party skills training provider. At time of application, a quote from the skills training provider must be uploaded. For the information required on the quote, please review the provided sample.
                     </td>
                     <td class="documents-attached">
-                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 3 }">
+                        <div ng-repeat="attachment in model.Attachments | filter: documentTypeFilter(3)">
                             <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 3)">Remove</button>
                             <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
                             <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
                             <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
                             <br/>
                         </div>
-                        <button ng-click="addAttachment(3)" ng-if="(model.Attachments | filter: { DocumentType: 3 }).length < 3" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                        <button ng-click="addAttachment(3)" ng-if="(model.Attachments | filter: documentTypeFilter(3)).length < 3" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
                     </td>
-                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 3 }).length > 0" class="icon--checkmark">Yes</span></td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: documentTypeFilter(3)).length > 0" class="icon--checkmark">Yes</span></td>
                 <tr>
                 <tr>
                     <td>
@@ -123,16 +124,16 @@
                         <label for="not-requesting-ess">Not requesting ESS</label>
                     </td>
                     <td class="documents-attached">
-                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 4 }">
+                        <div ng-repeat="attachment in model.Attachments | filter: documentTypeFilter(4)">
                             <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 4)">Remove</button>
                             <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
                             <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
                             <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
                             <br/>
                         </div>
-                        <button ng-click="addAttachment(4)" ng-if="(model.Attachments | filter: { DocumentType: 4 }).length < 2" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                        <button ng-click="addAttachment(4)" ng-if="(model.Attachments | filter: documentTypeFilter(4)).length < 2" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
                     </td>
-                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 4 }).length > 0" class="icon--checkmark">Yes</span></td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: documentTypeFilter(4)).length > 0" class="icon--checkmark">Yes</span></td>
                 <tr>
                 </tbody>
             </table>
@@ -160,16 +161,16 @@
                         </ul>
                     </td>
                     <td class="documents-attached">
-                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 10 }">
+                        <div ng-repeat="attachment in model.Attachments | filter: documentTypeFilter(10)">
                             <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 10)">Remove</button>
                             <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
                             <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
                             <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
                             <br/>
                         </div>
-                        <button ng-click="addAttachment(10)" ng-if="(model.Attachments | filter: { DocumentType: 10 }).length < 5" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                        <button ng-click="addAttachment(10)" ng-if="(model.Attachments | filter: documentTypeFilter(10)).length < 5" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
                     </td>
-                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 10 }).length < 0" class="icon--checkmark">Yes</span></td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: documentTypeFilter(10)).length < 0" class="icon--checkmark">Yes</span></td>
                 <tr>
                 <tr>
                     <td>
@@ -177,23 +178,53 @@
                         The FIN 173 BC Certificate of Insurance is optional at the time of application. Before a training project is approved for funding, an applicant will be required to submit a <a href="https://www.workbc.ca/sites/default/files/2024-01/BC Certificate of Insurance.pdf" target="_blank">FIN 173</a> form completed by their broker. The certificate must demonstrate at least $2 million in general commercial liability insurance that covers the duration of training. Prior to completing the form, the broker may wish to review the CWRG agreement that pertains to insurance requirements (section 8 of Schedule B) by opening this <a href="https://www.workbc.ca/sites/default/files/2023-01/CWRG%20Sample%20Agreement%20Schedule%20B.pdf" target="_blank">link</a>. If necessary, this certificate can be forwarded to <a href="mailto: CWRG@gov.bc.ca">CWRG@gov.bc.ca</a> after the application submission. 
                     </td>
                     <td class="documents-attached">
-                        <div ng-repeat="attachment in model.Attachments | filter: { DocumentType: 11 }">
+                        <div ng-repeat="attachment in model.Attachments | filter: documentTypeFilter(11)">
                             <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 11)">Remove</button>
                             <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
                             <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
                             <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
                             <br/>
                         </div>
-                        <button ng-click="addAttachment(11)" ng-if="(model.Attachments | filter: { DocumentType: 11 }).length < 2" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                        <button ng-click="addAttachment(11)" ng-if="(model.Attachments | filter: documentTypeFilter(11)).length < 2" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
                     </td>
-                    <td class="complete"><span ng-if="(model.Attachments | filter: { DocumentType: 11 }).length > 0" class="icon--checkmark">Yes</span></td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: documentTypeFilter(11)).length > 0" class="icon--checkmark">Yes</span></td>
+                <tr>
+                </tbody>
+            </table>
+        
+            <h3>Additional Supporting Documents:</h3>
+            <table class="documents-listing">
+                <thead>
+                <tr>
+                    <th style="width: 50%">Document</th>
+                    <th>Attach File</th>
+                    <th style="width: 10%">Complete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <p>Additional Supporting Documents are optional documents that may be submitted with the application such as needs assessment documents, surveys, letters of support, published articles from newspapers, etc., that support the project.</p>
+                    </td>
+                    <td class="documents-attached">
+                        <div ng-repeat="attachment in model.Attachments | filter: documentTypeFilter(15)">
+                            <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index, 15)">Remove</button>
+                            <span ng-if="attachment.Id"><a target="_blank" href="/Ext/Application/Attachment/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a><br/></span>
+                            <span ng-if="!attachment.Id">{{attachment.FileName}}<br/></span>
+                            <span ng-if="attachment.Description">{{attachment.Description}}<br/></span>
+                            <br/>
+                        </div>
+                        <button ng-click="addAttachment(15)" ng-if="(model.Attachments | filter: documentTypeFilter(15)).length < 5" class="btn btn--secondary pull-right" data-disableonsubmit="false">Add attachment</button>
+                    </td>
+                    <td class="complete"><span ng-if="(model.Attachments | filter: documentTypeFilter(15)).length < 0" class="icon--checkmark">Yes</span></td>
                 <tr>
                 </tbody>
             </table>
 
             <div class="button-group">
 				<button class="btn btn--secondary" ng-click="cancel()">Cancel</button>
-				<button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="!canProceed()">Done</button>
+                <button class="btn btn--primary btn--forward pull-right" ng-click="save()" ng-disabled="!canProceed()">Done</button>
+                <button class="btn btn--primary pull-right" style="float: right" ng-click="save()">Save for Later</button>
 			</div>
 		</div>
     </div>

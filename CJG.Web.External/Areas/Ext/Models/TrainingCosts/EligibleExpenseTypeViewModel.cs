@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CJG.Application.Services;
@@ -24,7 +24,6 @@ namespace CJG.Web.External.Areas.Ext.Models.TrainingCosts
 
 		public EligibleExpenseTypeViewModel()
 		{
-
 		}
 
 		public EligibleExpenseTypeViewModel(EligibleExpenseType eligibleExpenseType)
