@@ -75,9 +75,7 @@
                 Notes:
             </label>
             <div class="form__control padding-bottom-20">
-                <textarea ng-model="model.Notes"
-                          ng-class="{'has-error': $ctrl.getError()}"
-                          class="input--full copy-box--huge"></textarea>
+                <textarea ng-model="model.Notes" ng-class="{'has-error': $ctrl.getError()}" class="input--full copy-box--huge"></textarea>
                 <span class="char-count-status">{{(model.Notes.length || 0)}} chars</span>
             </div>
             <button type="button" class="pull-left btn btn--secondary" ng-disabled="checkNotesDiff()" ng-click="resetNote()">Reset Notes</button>
