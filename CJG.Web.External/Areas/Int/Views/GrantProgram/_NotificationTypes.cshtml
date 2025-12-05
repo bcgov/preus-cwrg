@@ -16,7 +16,7 @@
                     <div>Trigger</div>
                     <div class="selectmenu">
                         <select ng-model="trigger" ng-options="item as item.Caption for item in triggers track by item.Id" ng-change="updateTriggerFilter(trigger)">
-                            <option value="">< All Triggers ></option>
+                            <option value="">All Triggers</option>
                         </select>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                         <div>Notification Types</div>
                         <div class="selectmenu">
                             <select ng-model="notificationTypesId" ng-options="item.Id as item.Caption for item in notificationTypeList">
-                                <option value="">< Select Notification Type ></option>
+                                <option value="">Select Notification Type</option>
                             </select>
                         </div>
                     </div>

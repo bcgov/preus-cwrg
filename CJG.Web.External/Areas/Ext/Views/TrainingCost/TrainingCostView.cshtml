@@ -104,7 +104,7 @@
                                                 ng-model="EligibleCost.EligibleExpenseType"
                                                 ng-options="item.Caption for item in EligibleExpenseTypes track by item.Id"
                                                 ng-change="changeEligibleCostExpenseType()">
-                                            <option value="">< Select value ></option>
+                                            <option value="">&lt; Select value &gt;</option>
                                         </select>
                                     </div>
                                     <div ng-if="EligibleExpenseTypes.length == 0">
