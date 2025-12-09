@@ -215,8 +215,6 @@ namespace CJG.Application.Services
 				// Slippage is the committed Schedule A amount of agreements with claims submitted minus Claims $ Processed  
 				//var slippageTotal = committedWithClaims.ValueOfApplications - claimTotal;
 
-
-
 				/*
 				Slippage = Schedule A of all agreements that have a submitted a claim
 							(minus)

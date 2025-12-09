@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     @if (IsSectionDefined("Styles"))
@@ -29,7 +28,6 @@
 	<title>@ViewBag.Title</title>
 </head>
 <body>
-
 	@RenderBody()
 
 	@**
@@ -44,13 +42,11 @@
 		}
 	}
 	<input type="hidden" name="__AjaxRequestVerificationToken" value="@TokenHeaderValue()">
-	<script type="text/javascript" src="~/Scripts/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery/jquery-3.7.1.min.js"></script>
 	<script type="text/javascript" src="~/js/common.js"></script>
-
 	@if (IsSectionDefined("Scripts"))
 	{
 		@RenderSection("Scripts")
 	}
-
 </body>
 </html>
