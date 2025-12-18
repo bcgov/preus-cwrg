@@ -97,7 +97,8 @@ jobs:
         powershell.exe -ExecutionPolicy Bypass -File "${{ vars.CD_SCRIPTS_FOLDER }}\replaceoffline.ps1" `
           "${{ vars.WEB_FOLDER }}\app_offline_template.htm" `
           "${{ vars.WEB_FOLDER }}\${{ vars.ENVIRONMENT }}\app_offline.htm" `
-          $config_values $maintenance_duration
+          @($config_values) `
+          $maintenance_duration
       shell: powershell
       
     - name: Deploy web application (Web Deploy)
