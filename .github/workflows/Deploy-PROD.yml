@@ -93,6 +93,8 @@ jobs:
         $maintenance_end = $maintenance_start.AddMinutes($maintenance_duration)       
         $config_values = (@{tag="maintenance-date"; val="$now"}, @{tag="maintenance-start"; val="$maintenance_start"}, @{tag="maintenance-end"; val="$maintenance_end"})        
         
+        Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+
         # ${{ vars.CD_SCRIPTS_FOLDER }}\replaceoffline.ps1 "${{ vars.WEB_FOLDER }}\app_offline_template.htm" "${{ vars.WEB_FOLDER }}\${{ vars.ENVIRONMENT }}\app_offline.htm" ($config_values) $maintenance_duration
         # Run the script with ExecutionPolicy Bypass
         & "${{ vars.CD_SCRIPTS_FOLDER }}\replaceoffline.ps1" `
