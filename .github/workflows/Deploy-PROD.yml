@@ -93,14 +93,12 @@ jobs:
         $maintenance_end = $maintenance_start.AddMinutes($maintenance_duration)       
         $config_values = (@{tag="maintenance-date"; val="$now"}, @{tag="maintenance-start"; val="$maintenance_start"}, @{tag="maintenance-end"; val="$maintenance_end"})        
         
-        # Serialize the array to JSON to safely pass it
-        $config_json = $config_values | ConvertTo-Json -Compress
         # ${{ vars.CD_SCRIPTS_FOLDER }}\replaceoffline.ps1 "${{ vars.WEB_FOLDER }}\app_offline_template.htm" "${{ vars.WEB_FOLDER }}\${{ vars.ENVIRONMENT }}\app_offline.htm" ($config_values) $maintenance_duration
         # Run the script with ExecutionPolicy Bypass
-        powershell.exe -ExecutionPolicy Bypass -File "${{ vars.CD_SCRIPTS_FOLDER }}\replaceoffline.ps1" `
+        & "${{ vars.CD_SCRIPTS_FOLDER }}\replaceoffline.ps1" `
           "${{ vars.WEB_FOLDER }}\app_offline_template.htm" `
           "${{ vars.WEB_FOLDER }}\${{ vars.ENVIRONMENT }}\app_offline.htm" `
-          $config_json `
+          $config_values `
           $maintenance_duration
       shell: powershell
       
