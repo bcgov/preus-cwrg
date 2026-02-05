@@ -8,13 +8,12 @@ namespace CJG.Web.External.Areas.Int.Models
 	public class ParticipantEmploymentInfoViewModel
 	{
 		public string EmploymentStatus { get; set; }
+		public string MultipleEmploymentPositions { get; set; }
 		public string CityofWork { get; set; }
 		public string ReceivingEIValue { get; set; }
 
-		#region NOC
 		public string CurrentNocLevel4 { get; set; }
 		public string FutureNocLevel4 { get; set; }
-		#endregion
 
 		public string ReceivingIA { get; set; }
 		public string Apprentice { get; set; }
@@ -35,13 +34,13 @@ namespace CJG.Web.External.Areas.Int.Models
 
 		public ParticipantEmploymentInfoViewModel()
 		{
-
 		}
 
 		public ParticipantEmploymentInfoViewModel(ParticipantForm participantForm, INationalOccupationalClassificationService nationalOccupationalClassificationService)
 		{
 			EmploymentStatus = participantForm.EmploymentStatus?.Caption;
 			CityofWork = participantForm.PrimaryCity;
+			MultipleEmploymentPositions = participantForm.MultipleEmploymentPositions.AsYesOrNo();
 			ReceivingEIValue = participantForm.EIBenefit?.Caption;
 			if (participantForm?.GrantApplication?.GrantOpening?.GrantStream?.GrantProgram?.ProgramTypeId == ProgramTypes.WDAService)
 				ReceivingEIValue = participantForm.ReceivingEIBenefit.ToStringValue();
@@ -58,8 +57,8 @@ namespace CJG.Web.External.Areas.Int.Models
 			ITARegistered = participantForm.ItaRegistered ? "Yes" : "No";
 			DurationOfEmployment = participantForm.HowLongYears.HasValue || participantForm.HowLongMonths.HasValue
 				? $"{participantForm.HowLongYears ?? 0} Years {participantForm.HowLongMonths ?? 0} Months"
-				:null;
-			ParticipatingInOtherFundingProg = participantForm.OtherPrograms ? "Yes" :  "No";
+				: null;
+			ParticipatingInOtherFundingProg = participantForm.OtherPrograms ? "Yes" : "No";
 			OwnerOfBusiness = participantForm.BusinessOwner ? "Yes" : "No";
 			ProgramDescription = participantForm.ProgramDescription;
 			OtherProgramDesc = participantForm.OtherProgramDesc;

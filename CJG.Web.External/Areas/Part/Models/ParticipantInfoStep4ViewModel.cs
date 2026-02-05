@@ -8,13 +8,16 @@ namespace CJG.Web.External.Areas.Part.Models
 	public class ParticipantInfoStep4ViewModel : StepCompletedViewModelBase
 	{
 		[Required(ErrorMessage = "The Employment Status field is required.")]
-		[Range(1, 5, ErrorMessage = "The Employment Status field is required.")]
+		[Range(1, 6, ErrorMessage = "The Employment Status field is required.")]
 		public int EmploymentStatus { get; set; }
 		public List<KeyValuePair<int, string>> EmploymentStatuses { get; set; } = new List<KeyValuePair<int, string>>();
 		
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateEmploymentType")]
 		public int? EmploymentType { get; set; }
 		public List<KeyValuePair<int, string>> EmploymentTypes { get; set; } = new List<KeyValuePair<int, string>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateMultipleEmploymentPositions")]
+		public bool? MultipleEmploymentPositions { get; set; }
 
 		[Required(ErrorMessage = "The Training Result field is required.")]
 		[Range(1, int.MaxValue, ErrorMessage = "The Training Result field is required.")]

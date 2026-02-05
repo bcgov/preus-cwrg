@@ -1,128 +1,154 @@
-﻿using CJG.Core.Entities;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using CJG.Core.Entities;
 
 namespace CJG.Web.External.Areas.Part.Models
 {
-	public class ParticipantInfoStep4VmValidation
+    public class ParticipantInfoStep4VmValidation
 	{
 		private static bool IsEmployed(int employmentType)
 		{
-			return employmentType == 2 || employmentType == 3;
+			return employmentType == 2 || employmentType == 3 || employmentType == 6;
 		}
 
-        //public static ValidationResult ValidateHowLongYears(int? HowLongYears, ValidationContext context)
-        //{
-        //	ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-        //	if (model == null) throw new ArgumentNullException();
-        //	ValidationResult result = ValidationResult.Success;
-
-        //	if (IsEmployed(model.EmploymentStatus))
-        //	{
-        //		if (!HowLongYears.HasValue)
-        //		{
-        //			result = new ValidationResult("The Year field is required.");
-        //		}
-        //		else if (HowLongYears.Value < 0)
-        //		{
-        //			result = new ValidationResult("The Year field must be greater than or equal to 0.");
-        //		}
-        //	}
-        //	return result;
-        //}
-
-        //public static ValidationResult ValidateHowLongMonths(int? HowLongMonths, ValidationContext context)
-        //{
-        //	ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-        //	if (model == null) throw new ArgumentNullException();
-        //	ValidationResult result = ValidationResult.Success;
-
-        //	if (IsEmployed(model.EmploymentStatus))
-        //	{
-        //		if (!HowLongMonths.HasValue)
-        //		{
-        //			result = new ValidationResult("The Month field is required.");
-        //		}
-        //		else if (HowLongMonths.Value < 0)
-        //		{
-        //			result = new ValidationResult("The Month field must be greater than or equal to 0.");
-        //		}
-        //	}
-        //	return result;
-        //}
-
-        //public static ValidationResult ValidateAvgHoursPerWeek(int? AvgHoursPerWeek, ValidationContext context)
-        //{
-        //	ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-        //	if (model == null) throw new ArgumentNullException();
-        //	ValidationResult result = ValidationResult.Success;
-
-        //	if (IsEmployed(model.EmploymentStatus))
-        //	{
-        //		if (!AvgHoursPerWeek.HasValue)
-        //		{
-        //			result = new ValidationResult("The Average Hour field is required.");
-        //		}
-        //		else if (AvgHoursPerWeek.Value < 0)
-        //		{
-        //			result = new ValidationResult("The Average Hour field must be greater than or equal to 0.");
-        //		}
-        //	}
-        //	return result;
-        //}
-
-        public static ValidationResult ValidateAvgHoursPerWeekDuringTraining(int? AvgHoursPerWeekDuringTraining, ValidationContext context)
-        {
-            ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-            if (model == null)
-                throw new ArgumentNullException();
-
-            ValidationResult result = ValidationResult.Success;
-
-            if (IsEmployed(model.EmploymentStatus))
-            {
-                if (!AvgHoursPerWeekDuringTraining.HasValue)
-                {
-                    result = new ValidationResult("The Average Hours during Training field is required.");
-                }
-                else if (AvgHoursPerWeekDuringTraining.Value < 0)
-                {
-                    result = new ValidationResult("The Average Hours during Training field must be greater than or equal to 0.");
-                }
-            }
-            return result;
-        }
-
-        public static ValidationResult ValidateApprentice(bool? Apprentice, ValidationContext context)
+		public static ValidationResult ValidateMultipleEmploymentPositions(bool? multipleEmploymentPositions, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
+			var result = ValidationResult.Success;
+
+			if (!IsEmployed(model.EmploymentStatus))
+				return result;
+
+			if (!multipleEmploymentPositions.HasValue)
+				result = new ValidationResult("The Multiple Employment Positions field is required.");
+
+			return result;
+		}
+
+		//public static ValidationResult ValidateHowLongYears(int? HowLongYears, ValidationContext context)
+		//{
+		//	ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+		//	if (model == null) throw new ArgumentNullException();
+		//	ValidationResult result = ValidationResult.Success;
+
+		//	if (IsEmployed(model.EmploymentStatus))
+		//	{
+		//		if (!HowLongYears.HasValue)
+		//		{
+		//			result = new ValidationResult("The Year field is required.");
+		//		}
+		//		else if (HowLongYears.Value < 0)
+		//		{
+		//			result = new ValidationResult("The Year field must be greater than or equal to 0.");
+		//		}
+		//	}
+		//	return result;
+		//}
+
+		//public static ValidationResult ValidateHowLongMonths(int? HowLongMonths, ValidationContext context)
+		//{
+		//	ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+		//	if (model == null) throw new ArgumentNullException();
+		//	ValidationResult result = ValidationResult.Success;
+
+		//	if (IsEmployed(model.EmploymentStatus))
+		//	{
+		//		if (!HowLongMonths.HasValue)
+		//		{
+		//			result = new ValidationResult("The Month field is required.");
+		//		}
+		//		else if (HowLongMonths.Value < 0)
+		//		{
+		//			result = new ValidationResult("The Month field must be greater than or equal to 0.");
+		//		}
+		//	}
+		//	return result;
+		//}
+
+		//public static ValidationResult ValidateAvgHoursPerWeek(int? AvgHoursPerWeek, ValidationContext context)
+		//{
+		//	ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+		//	if (model == null) throw new ArgumentNullException();
+		//	ValidationResult result = ValidationResult.Success;
+
+		//	if (IsEmployed(model.EmploymentStatus))
+		//	{
+		//		if (!AvgHoursPerWeek.HasValue)
+		//		{
+		//			result = new ValidationResult("The Average Hour field is required.");
+		//		}
+		//		else if (AvgHoursPerWeek.Value < 0)
+		//		{
+		//			result = new ValidationResult("The Average Hour field must be greater than or equal to 0.");
+		//		}
+		//	}
+		//	return result;
+		//}
+
+		public static ValidationResult ValidateAvgHoursPerWeekDuringTraining(int? AvgHoursPerWeekDuringTraining, ValidationContext context)
+		{
+			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
+			ValidationResult result = ValidationResult.Success;
+
+			if (IsEmployed(model.EmploymentStatus))
+			{
+				if (!AvgHoursPerWeekDuringTraining.HasValue)
+				{
+					result = new ValidationResult("The Average Hours during Training field is required.");
+				}
+				else if (AvgHoursPerWeekDuringTraining.Value < 0)
+				{
+					result = new ValidationResult("The Average Hours during Training field must be greater than or equal to 0.");
+				}
+			}
+
+			return result;
+		}
+
+		public static ValidationResult ValidateApprentice(bool? Apprentice, ValidationContext context)
+		{
+			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (!Apprentice.HasValue)
 			{
 				result = new ValidationResult("The Apprentice field is required.");
 			}
+
 			return result;
 		}
 
 		public static ValidationResult ValidateOtherPrograms(bool? OtherPrograms, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (!OtherPrograms.HasValue)
 			{
 				result = new ValidationResult("The Other Funded field is required.");
 			}
+
 			return result;
 		}
 
 		public static ValidationResult ValidateItaRegistered(bool? itaRegistered, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (model.Apprentice.HasValue && model.Apprentice.Value == true)
@@ -132,13 +158,16 @@ namespace CJG.Web.External.Areas.Part.Models
 					result = new ValidationResult("The ITA Registered field is required.");
 				}
 			}
+
 			return result;
 		}
 
 		public static ValidationResult ValidateEIBenefit(int eIBenefit, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 			bool currentReceiveEI = model.CurrentReceiveEI ?? false;
 
@@ -156,7 +185,9 @@ namespace CJG.Web.External.Areas.Part.Models
 		public static ValidationResult ValidateMaternalPaternal(bool? maternalPaternal, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			bool currentReceiveEI = model.CurrentReceiveEI ?? false;
@@ -168,13 +199,16 @@ namespace CJG.Web.External.Areas.Part.Models
 					result = new ValidationResult("The Maternal / Paternal field is required.");
 				}
 			}
+
 			return result;
 		}
 
 		public static ValidationResult ValidatePastMaternalPaternal(bool? pastMaternalPaternal, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			bool currentReceiveEI = model.CurrentReceiveEI ?? false;
@@ -191,20 +225,25 @@ namespace CJG.Web.External.Areas.Part.Models
 		public static ValidationResult ValidateCurrentReceiveEI(bool? currentReceiveEI, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (!currentReceiveEI.HasValue && model.ProgramType == ProgramTypes.WDAService)
 			{
 				result = new ValidationResult("Currently receiving EI field is required.");
 			}
+
 			return result;
 		}
 
 		public static ValidationResult ValidateBceaClient(bool? bceaClient, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (model.EmploymentStatus == 1)
@@ -214,6 +253,7 @@ namespace CJG.Web.External.Areas.Part.Models
 					result = new ValidationResult("The Income Assistance field is required.");
 				}
 			}
+
 			return result;
 		}
 
@@ -252,7 +292,9 @@ namespace CJG.Web.External.Areas.Part.Models
 		public static ValidationResult ValidateHourlyWage(decimal? HourlyWage, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (IsEmployed(model.EmploymentStatus))
@@ -272,7 +314,9 @@ namespace CJG.Web.External.Areas.Part.Models
 		public static ValidationResult ValidatePrimaryCity(string PrimaryCity, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (IsEmployed(model.EmploymentStatus))
@@ -288,7 +332,9 @@ namespace CJG.Web.External.Areas.Part.Models
 		public static ValidationResult ValidateEmploymentType(int? EmploymentType, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (IsEmployed(model.EmploymentStatus))
@@ -304,7 +350,9 @@ namespace CJG.Web.External.Areas.Part.Models
 		public static ValidationResult ValidateCurrentNoc(int? nocCode, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (model.EmploymentStatus == 2 || model.EmploymentStatus == 3)
@@ -320,7 +368,9 @@ namespace CJG.Web.External.Areas.Part.Models
 		public static ValidationResult ValidateFutureNoc(int? nocCode, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (!nocCode.HasValue || nocCode <= 0)
@@ -333,12 +383,14 @@ namespace CJG.Web.External.Areas.Part.Models
 		public static ValidationResult ValidateOtherProgramDesc(string otherProgramDesc, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
-			if (model == null) throw new ArgumentNullException();
+			if (model == null)
+				throw new ArgumentNullException();
+
 			ValidationResult result = ValidationResult.Success;
 
 			if (model.OtherPrograms.HasValue && model.OtherPrograms.Value == true)
 			{
-				if (String.IsNullOrWhiteSpace(otherProgramDesc))
+				if (string.IsNullOrWhiteSpace(otherProgramDesc))
 				{
 					result = new ValidationResult("The provincially or federally funded program field is required.");
 				}
