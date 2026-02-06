@@ -265,7 +265,7 @@
     </div>
 
     <div>
-        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3">
+        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 6">
             @Html.TextBoxBlock(new FormControl
             {
                 Label = "While in training, how many hours per week will you be working? <abbr title='Required'>*</abbr>",
@@ -302,7 +302,18 @@
             })
         </div>
 
-        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3">
+        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4">
+            @Html.TextBoxBlock(new FormControl
+            {
+                Label = "What was your previous hourly rate of pay? <abbr title='Required'>*</abbr>",
+                Model = "model.ParticipantInfoStep4ViewModel.PreviousHourlyWage",
+                IsInnerModel = true,
+                Size = "input--small",
+                Options = "maxlength = '5'"
+            })
+        </div>
+
+        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 6">
             <div class="form__group form__group--radio-inline">
                 <label class="form__label" for="">What is your <u><em>current</em></u> National Occupation Classification (NOC) <u><em>before training</em></u>? <abbr title="Required">*</abbr></label>
                 <div class="form__control">

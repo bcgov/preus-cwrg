@@ -446,6 +446,12 @@ namespace CJG.Core.Entities
 		[Range(0, 99999, ErrorMessage = "The hourly rate must be within $0 to $99,999.")]
 		public decimal? HourlyWage { get; set; }
 
+
+		/// <summary>
+		/// get/set - The hourly rate this participant used to make.
+		/// </summary>
+		public decimal? PreviousHourlyWage { get; set; }
+
 		/// <summary>
 		/// get/set - The primary city this participant works from.
 		/// </summary>

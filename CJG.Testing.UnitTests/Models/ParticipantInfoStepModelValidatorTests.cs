@@ -69,6 +69,37 @@ namespace CJG.Testing.UnitTests.Models
 			Assert.AreEqual(hasError, results.Any(x => x.ErrorMessage == errorToLookFor));
 		}
 
+		[DataTestMethod]
+		[DataRow(1, true)]
+		[DataRow(2, false)]
+		[DataRow(3, false)]
+		[DataRow(4, true)]
+		public void PreviousAverageWageShouldBeRequired(int employmentStatus, bool required)
+		{
+			_model.EmploymentStatus = employmentStatus;
+			_model.PreviousHourlyWage = null;
+
+			var results = ValidateModel(_model);
+			var errorToLookFor = "The Previous Hourly Wage field is required.";
+
+			Assert.AreEqual(required, results.Any(x => x.ErrorMessage == errorToLookFor));
+		}
+
+		[DataTestMethod]
+		[DataRow(-50, true)]
+		[DataRow(0, false)]
+		[DataRow(50, false)]
+		public void PreviousAverageWageShouldBeNoZero(int wage, bool hasError)
+		{
+			_model.EmploymentStatus = 1; // Required state
+			_model.PreviousHourlyWage = wage;
+
+			var results = ValidateModel(_model);
+			var errorToLookFor = "The Previous Hourly Wage field must be greater than or equal to 0.";
+
+			Assert.AreEqual(hasError, results.Any(x => x.ErrorMessage == errorToLookFor));
+		}
+
 		public IList<ValidationResult> ValidateModel(object model)
 		{
 			var results = new List<ValidationResult>();

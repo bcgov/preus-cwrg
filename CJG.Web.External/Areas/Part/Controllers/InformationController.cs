@@ -1062,6 +1062,7 @@ namespace CJG.Web.External.Areas.Part.Controllers
 					AvgHoursPerWeek = model.ParticipantInfoStep4ViewModel.AvgHoursPerWeek,
 					AvgHoursPerWeekDuringTraining = model.ParticipantInfoStep4ViewModel.AvgHoursPerWeekDuringTraining,
 					HourlyWage = model.ParticipantInfoStep4ViewModel.HourlyWage,
+					PreviousHourlyWage = GetPreviousHourlyWage(model),
 					PrimaryCity = model.ParticipantInfoStep4ViewModel.PrimaryCity,
 					Apprentice = model.ParticipantInfoStep4ViewModel.Apprentice ?? false,
 					ItaRegistered = model.ParticipantInfoStep4ViewModel.ItaRegistered ?? false,
@@ -1141,9 +1142,22 @@ namespace CJG.Web.External.Areas.Part.Controllers
 				: (DateTime?)null;
 		}
 
+		private decimal? GetPreviousHourlyWage(ParticipantInfoViewModel model)
+		{
+			if (!HasPreviouslyEmployedStatus(model.ParticipantInfoStep4ViewModel))
+				return (decimal?)null;
+
+			return model.ParticipantInfoStep4ViewModel.PreviousHourlyWage;
+		}
+
 		private bool HasEmployedStatus(ParticipantInfoStep4ViewModel model)
 		{
 			return model.EmploymentStatus == 2 || model.EmploymentStatus == 3 || model.EmploymentStatus == 6;
+		}
+
+		private bool HasPreviouslyEmployedStatus(ParticipantInfoStep4ViewModel model)
+		{
+			return model.EmploymentStatus == 1 || model.EmploymentStatus == 4;
 		}
 
 		private bool HasConsentForm()
