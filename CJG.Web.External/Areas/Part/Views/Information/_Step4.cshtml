@@ -12,7 +12,8 @@
             Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.EmploymentStatuses",
             CssClass = "input--full",
             IsInnerModel = true,
-            DefaultOverride = true
+            DefaultOverride = true,
+            OnChange = "initializeDatePickerForLastDayOfWork()"
         })
         <p class="inline-help" ng-show="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4">
             Those who were unable or unwilling to work, but are now seeking to return to the workforce. This includes individuals who believe it would be impossible to rejoin the workforce without the assistance of this project.
@@ -21,7 +22,19 @@
             Your employment is unstable due to circumstances such as: having just cause to leave one’s employment; having received a lay-off notice; self-employment income is below the poverty line; the job is likely to be replaced with automation; an industry shut down is imminent or there have been changes in the marketplace due to such situations as a pandemic.
         </p>
     </div>
-        
+
+    <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4">
+        @Html.DatePickerDropDownList(new DatePickerFormControl
+        {
+            Id = "previouslastdayofwork-date",
+            Date = "model.ParticipantInfoStep2ViewModel.PreviousEmploymentLastDayOfWork",
+            IsRequired = false,
+            Label = "What was the end date of most recent employment?",
+            StartYear = "{{calculatedYear(model.ParticipantInfoStep0ViewModel.AppDateTimeNow, -20)}}",
+            EndYear = "{{calculatedYear(model.ParticipantInfoStep0ViewModel.AppDateTimeNow, 0)}}"
+        })
+    </div>
+
     <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 6">
         <div class="form__group form__group--radio-inline">
             <div class="form__label">

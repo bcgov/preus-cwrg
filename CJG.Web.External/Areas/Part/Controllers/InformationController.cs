@@ -18,10 +18,10 @@ using Newtonsoft.Json;
 
 namespace CJG.Web.External.Areas.Part.Controllers
 {
-    /// <summary>
-    /// InformationController class, provides the controller for external participant enrollment.
-    /// </summary>
-    [ParticipantFilter]
+	/// <summary>
+	/// InformationController class, provides the controller for external participant enrollment.
+	/// </summary>
+	[ParticipantFilter]
 	[RouteArea("Part")]
 	[RoutePrefix("Information")]
 	public class InformationController : BaseController
@@ -969,13 +969,13 @@ namespace CJG.Web.External.Areas.Part.Controllers
 			try
 			{
 				if ((model.ParticipantInfoStep0ViewModel == null
-				 || model.ParticipantInfoStep1ViewModel == null
-				 || model.ParticipantInfoStep2ViewModel == null
-				 || model.ParticipantInfoStep3ViewModel == null
-				 || model.ParticipantInfoStep4ViewModel == null
-				 || model.ParticipantInfoStep5ViewModel == null
-				 || model.ParticipantInfoStep6ViewModel == null)
-				 && !model.ParticipantInfoStep0ViewModel.ReportedByApplicant)
+				     || model.ParticipantInfoStep1ViewModel == null
+				     || model.ParticipantInfoStep2ViewModel == null
+				     || model.ParticipantInfoStep3ViewModel == null
+				     || model.ParticipantInfoStep4ViewModel == null
+				     || model.ParticipantInfoStep5ViewModel == null
+				     || model.ParticipantInfoStep6ViewModel == null)
+				    && !model.ParticipantInfoStep0ViewModel.ReportedByApplicant)
 				{
 					// Set error message - most likely the browser back button was used
 					ControllerContext.SetAlert("All steps must be performed in sequence. Please close your browser and start again.", AlertType.Error, false);
@@ -983,11 +983,11 @@ namespace CJG.Web.External.Areas.Part.Controllers
 				}
 
 				if ((model.ParticipantInfoStep0ViewModel == null
-				 || model.ParticipantInfoStep1ViewModel == null
-				 || model.ParticipantInfoStep2ViewModel == null
-				 || model.ParticipantInfoStep3ViewModel == null
-				 || model.ParticipantInfoStep4ViewModel == null)
-				 && model.ParticipantInfoStep0ViewModel.ReportedByApplicant)
+				     || model.ParticipantInfoStep1ViewModel == null
+				     || model.ParticipantInfoStep2ViewModel == null
+				     || model.ParticipantInfoStep3ViewModel == null
+				     || model.ParticipantInfoStep4ViewModel == null)
+				    && model.ParticipantInfoStep0ViewModel.ReportedByApplicant)
 				{
 					// Set error message - most likely the browser back button was used
 					ControllerContext.SetAlert("All steps must be performed in sequence. Please close your browser and start again.", AlertType.Error, false);
@@ -1013,18 +1013,15 @@ namespace CJG.Web.External.Areas.Part.Controllers
 					LastName = model.ParticipantInfoStep2ViewModel.LastName,
 					SIN = $"{model.ParticipantInfoStep2ViewModel.SIN1}-{model.ParticipantInfoStep2ViewModel.SIN2}-{model.ParticipantInfoStep2ViewModel.SIN3}",
 					PhoneNumber1 = $"{model.ParticipantInfoStep2ViewModel.Phone1AreaCode}{model.ParticipantInfoStep2ViewModel.Phone1Exchange}{model.ParticipantInfoStep2ViewModel.Phone1Number}".FormatPhoneNumber(),
-					PhoneExtension1 = !String.IsNullOrWhiteSpace(model.ParticipantInfoStep2ViewModel.Phone1Extension) ? $"{model.ParticipantInfoStep2ViewModel.Phone1Extension}" : null,
+					PhoneExtension1 = !string.IsNullOrWhiteSpace(model.ParticipantInfoStep2ViewModel.Phone1Extension) ? $"{model.ParticipantInfoStep2ViewModel.Phone1Extension}" : null,
 					PhoneNumber2 = $"{model.ParticipantInfoStep2ViewModel.Phone2AreaCode}{model.ParticipantInfoStep2ViewModel.Phone2Exchange}{model.ParticipantInfoStep2ViewModel.Phone2Number}".FormatPhoneNumber(),
-					PhoneExtension2 = !String.IsNullOrWhiteSpace(model.ParticipantInfoStep2ViewModel.Phone2Extension) ? $"{model.ParticipantInfoStep2ViewModel.Phone2Extension}" : null,
+					PhoneExtension2 = !string.IsNullOrWhiteSpace(model.ParticipantInfoStep2ViewModel.Phone2Extension) ? $"{model.ParticipantInfoStep2ViewModel.Phone2Extension}" : null,
 					EmailAddress = model.ParticipantInfoStep2ViewModel.EmailAddress.Trim(),
 					AddressLine1 = model.ParticipantInfoStep2ViewModel.AddressLine1,
 					AddressLine2 = model.ParticipantInfoStep2ViewModel.AddressLine2,
 					City = model.ParticipantInfoStep2ViewModel.City,
 					PostalCode = model.ParticipantInfoStep2ViewModel.PostalCode,
-					BirthDate = DateTime.SpecifyKind(DateTime.Parse(
-					model.ParticipantInfoStep2ViewModel.DateOfBirth.Year.ToString() + "/" +
-					model.ParticipantInfoStep2ViewModel.DateOfBirth.Month.ToString() + "/" +
-					model.ParticipantInfoStep2ViewModel.DateOfBirth.Day.ToString()), DateTimeKind.Local).ToUniversalTime(),
+					BirthDate = GetDateOfBirth(model),
 
 					// Step 3 of 6
 					CanadianStatusId = model.ParticipantInfoStep3ViewModel.CanadianStatus,
@@ -1053,6 +1050,7 @@ namespace CJG.Web.External.Areas.Part.Controllers
 					MultipleEmploymentPositions = HasEmployedStatus(model.ParticipantInfoStep4ViewModel)
 						? model.ParticipantInfoStep4ViewModel.MultipleEmploymentPositions
 						: null,
+					PreviousEmploymentLastDayOfWork = GetPreviousEmploymentLastDayOfWork(model),
 					EIBenefitId = model.ParticipantInfoStep4ViewModel.EIBenefit != 0 ? model.ParticipantInfoStep4ViewModel.EIBenefit : EI_BENEFIT_NONE_OF_THE_ABOVE,
 					MaternalPaternal = model.ParticipantInfoStep4ViewModel.MaternalPaternal ?? false,
 					ReceivingEIBenefit = model.ParticipantInfoStep4ViewModel.CurrentReceiveEI ?? false,
@@ -1127,6 +1125,20 @@ namespace CJG.Web.External.Areas.Part.Controllers
 				this.SetAlert(e);
 				throw;
 			}
+		}
+
+		private static DateTime GetDateOfBirth(ParticipantInfoViewModel model)
+		{
+			var dateOfBirth = model.ParticipantInfoStep2ViewModel.DateOfBirth;
+			return DateTime.SpecifyKind(DateTime.Parse($"{dateOfBirth.Year}/{dateOfBirth.Month}/{dateOfBirth.Day}"), DateTimeKind.Local).ToUniversalTime();
+		}
+
+		private static DateTime? GetPreviousEmploymentLastDayOfWork(ParticipantInfoViewModel model)
+		{
+			var lastDayOfWork = model.ParticipantInfoStep4ViewModel.PreviousEmploymentLastDayOfWork;
+			return lastDayOfWork.HasValue
+				? DateTime.SpecifyKind(DateTime.Parse($"{lastDayOfWork.Value.Year}/{lastDayOfWork.Value.Month}/{lastDayOfWork.Value.Day}"), DateTimeKind.Local).ToUniversalTime()
+				: (DateTime?)null;
 		}
 
 		private bool HasEmployedStatus(ParticipantInfoStep4ViewModel model)

@@ -4,7 +4,6 @@ var participantSessionNotification = 5;
 var participantSessionWarning = false;
 
 app.controller('ParticipantInformationView', function ($scope, $controller, $attrs, $timeout, Utils, ngDialog, $http, $sce) {
-
   $scope.section = {
     sessionDuration: $attrs.ngSessionDuration || 0,
     validRecaptcha: false,
@@ -42,6 +41,7 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
   }
 
   function sessionTimeout() {
+
     var message = "Your session will be timeout in "
       + participantSessionNotification + " minute"
       + (participantSessionNotification > 1 ? "s" : "")
@@ -93,7 +93,7 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
           }
         });
       } catch (ex) {
-        return $scope.messageDialog('ReCaptcha', '<p>Google Recaptcha failed to load, please try again later or contact support.</p><p>'  + ex.message + '</p>')
+        return $scope.messageDialog('ReCaptcha', '<p>Google Recaptcha failed to load, please try again later or contact support.</p><p>' + ex.message + '</p>')
           .catch(angular.noop);
       }
     } else {
@@ -145,15 +145,16 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
   }
 
   $scope.getDate = function (year, month, day) {
-    if (year * month * day === 0) return null;
+    if (year * month * day === 0)
+      return null;
+
     return new Date(year + "/" + month + "/" + day);
   }
 
   $scope.resetIndigenous = function () {
     if ($scope.model.ParticipantInfoStep3ViewModel.CanadianStatus != null
       && $scope.model.ParticipantInfoStep3ViewModel.CanadianStatus !== 1
-      && $scope.model.ParticipantInfoStep3ViewModel.CanadianStatus !== 5)
-    {
+      && $scope.model.ParticipantInfoStep3ViewModel.CanadianStatus !== 5) {
       $scope.model.ParticipantInfoStep3ViewModel.PersonAboriginal = 2;
       $scope.model.ParticipantInfoStep3ViewModel.CanadaImmigrant = null;
       $scope.model.ParticipantInfoStep3ViewModel.YearToCanada = 0;
@@ -164,8 +165,7 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
 
     else if ($scope.model.ParticipantInfoStep3ViewModel.CanadianStatus == null
       || $scope.model.ParticipantInfoStep3ViewModel.CanadianStatus === 1
-      || $scope.model.ParticipantInfoStep3ViewModel.CanadianStatus === 5)
-    {
+      || $scope.model.ParticipantInfoStep3ViewModel.CanadianStatus === 5) {
       $scope.model.ParticipantInfoStep3ViewModel.PersonAboriginal = null;
       $scope.model.ParticipantInfoStep3ViewModel.CanadaImmigrant = null;
       $scope.model.ParticipantInfoStep3ViewModel.YearToCanada = 0;
@@ -186,7 +186,7 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
     else if ($scope.model.ParticipantInfoStep3ViewModel.PersonAboriginal == 2 || $scope.model.ParticipantInfoStep3ViewModel.PersonAboriginal == 3) {
       $scope.model.ParticipantInfoStep3ViewModel.LiveOnReserve = null;
       $scope.model.ParticipantInfoStep3ViewModel.AboriginalBand = null;
-      
+
     }
   }
   $scope.resetHiddenControlsforAboriginalBand = function () {
@@ -207,9 +207,18 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
     }
   }
 
-  $scope.showSinWarning = function() {
+  $scope.showSinWarning = function () {
     var sinCheck = ($scope.model.ParticipantInfoStep2ViewModel.SIN1).toString().startsWith("9");
     $scope.displaySinWarning = sinCheck;
+  }
+
+  $scope.initializeDatePickerForLastDayOfWork = function () {
+    // Have to re-populate the date picker on step 4 when the Employment Status changes
+    setTimeout(function () {
+      angular.element('.datefield').each(function () {
+        var df = new DateField(this);
+      });
+    });
   }
 
   $scope.next = function () {
@@ -237,6 +246,8 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
 
           break;
         case 4:
+          model.PreviousEmploymentLastDayOfWork = $scope.getDate(angular.element('#previouslastdayofwork-date-Year').val(), angular.element('#previouslastdayofwork-date-Month').val(), angular.element('#previouslastdayofwork-date-Day').val());
+
           if ($scope.model.ParticipantInfoStep0ViewModel.ReportedByApplicant) {
             endpoint = 'Form';
           }
@@ -253,7 +264,8 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
         set: 'model'
       })
         .then(function (response) {
-          if (response.data.RedirectUrl) window.location = response.data.RedirectUrl;
+          if (response.data.RedirectUrl)
+            window.location = response.data.RedirectUrl;
 
           $scope.goto(1);
           window.scrollTo(0, 0);
@@ -265,8 +277,10 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
   $scope.goto = function (increment) {
     return $timeout(function () {
       var step = $scope.model.ParticipantInfoStep0ViewModel.Step + increment;
+
       if (step == 5)
         $scope.model.ParticipantInfoStep5ViewModel.ParticipantConsentBody = $sce.trustAsHtml($scope.model.ParticipantInfoStep5ViewModel.ParticipantConsentBody);
+
       if (step > 1 && step < 6)
         $scope.model.ParticipantInfoStep0ViewModel.Step = step;
     });

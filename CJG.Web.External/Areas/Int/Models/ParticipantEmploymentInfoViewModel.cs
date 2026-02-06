@@ -7,6 +7,8 @@ namespace CJG.Web.External.Areas.Int.Models
 {
 	public class ParticipantEmploymentInfoViewModel
 	{
+		private const string DATEFORMAT = "yyyy-MM-dd";
+
 		public string EmploymentStatus { get; set; }
 		public string MultipleEmploymentPositions { get; set; }
 		public string CityofWork { get; set; }
@@ -29,6 +31,7 @@ namespace CJG.Web.External.Areas.Int.Models
 		public string MostImportantResult { get; set; }
 		public string TypeOfEmployment { get; set; }
 		public string AverageHourlyWage { get; set; }
+		public string PreviousEmploymentLastDayOfWork { get; set; }
 		public string MaternalParentalBenefits { get; set; }
 		public bool ShowEmploymentFields { get; set; }
 
@@ -64,9 +67,12 @@ namespace CJG.Web.External.Areas.Int.Models
 			OtherProgramDesc = participantForm.OtherProgramDesc;
 			HoursPerWeek = participantForm.AvgHoursPerWeek;
 			HoursPerWeekDuringTraining = participantForm.AvgHoursPerWeekDuringTraining;
+			PreviousEmploymentLastDayOfWork = participantForm.PreviousEmploymentLastDayOfWork.HasValue
+				? participantForm.PreviousEmploymentLastDayOfWork.Value.ToString(DATEFORMAT)
+				: null;
 			MostImportantResult = participantForm.TrainingResult?.Caption;
 			TypeOfEmployment = participantForm.EmploymentType?.Caption;
-			AverageHourlyWage = string.Format("{0:c}", participantForm.HourlyWage);
+			AverageHourlyWage = $"{participantForm.HourlyWage:c}";
 			MaternalParentalBenefits = participantForm.MaternalPaternal ? "Yes" : "No";
 			ShowEmploymentFields = new[] { "Employed", "Self-employed" }.Contains(EmploymentStatus);
 		}
