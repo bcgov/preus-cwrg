@@ -28,6 +28,7 @@ namespace CJG.Web.External.Areas.Int.Models
 		public string OtherProgramDesc { get; set; }
 		public int? HoursPerWeek { get; set; }
 		public int? HoursPerWeekDuringTraining { get; set; }
+		public int? PreviousHoursPerWeek { get; set; }
 		public string MostImportantResult { get; set; }
 		public string TypeOfEmployment { get; set; }
 		public string AverageHourlyWage { get; set; }
@@ -68,6 +69,7 @@ namespace CJG.Web.External.Areas.Int.Models
 			OtherProgramDesc = participantForm.OtherProgramDesc;
 			HoursPerWeek = participantForm.AvgHoursPerWeek;
 			HoursPerWeekDuringTraining = participantForm.AvgHoursPerWeekDuringTraining;
+			PreviousHoursPerWeek = participantForm.PreviousAvgHoursPerWeek;
 			PreviousEmploymentLastDayOfWork = participantForm.PreviousEmploymentLastDayOfWork.HasValue
 				? participantForm.PreviousEmploymentLastDayOfWork.Value.ToString(DATEFORMAT)
 				: null;

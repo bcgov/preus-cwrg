@@ -111,7 +111,7 @@ namespace CJG.Web.External.Areas.Part.Models
 		//	return result;
 		//}
 
-		public static ValidationResult ValidateAvgHoursPerWeekDuringTraining(int? AvgHoursPerWeekDuringTraining, ValidationContext context)
+		public static ValidationResult ValidateAvgHoursPerWeekDuringTraining(int? avgHoursPerWeekDuringTraining, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
 			if (model == null)
@@ -121,11 +121,11 @@ namespace CJG.Web.External.Areas.Part.Models
 
 			if (IsEmployed(model.EmploymentStatus))
 			{
-				if (!AvgHoursPerWeekDuringTraining.HasValue)
+				if (!avgHoursPerWeekDuringTraining.HasValue)
 				{
 					result = new ValidationResult("The Average Hours during Training field is required.");
 				}
-				else if (AvgHoursPerWeekDuringTraining.Value < 0)
+				else if (avgHoursPerWeekDuringTraining.Value < 0)
 				{
 					result = new ValidationResult("The Average Hours during Training field must be greater than or equal to 0.");
 				}
@@ -134,7 +134,26 @@ namespace CJG.Web.External.Areas.Part.Models
 			return result;
 		}
 
-		public static ValidationResult ValidateApprentice(bool? Apprentice, ValidationContext context)
+		public static ValidationResult ValidatePreviousAvgHoursPerWeek(int? previousAverageHoursPerWeek, ValidationContext context)
+		{
+			var model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
+			if (!WasEmployed(model.EmploymentStatus))
+				return ValidationResult.Success;
+
+			if (!previousAverageHoursPerWeek.HasValue)
+				return new ValidationResult("The Previous Average Hour field is required.");
+
+			var averageHoursPerWeek = previousAverageHoursPerWeek.Value;
+			if (averageHoursPerWeek < 0 || averageHoursPerWeek > 168.0m)
+				return new ValidationResult("The previous average hours per week must be within 0 to 168.");
+
+			return ValidationResult.Success;
+		}
+
+		public static ValidationResult ValidateApprentice(bool? apprentice, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
 			if (model == null)
@@ -142,15 +161,13 @@ namespace CJG.Web.External.Areas.Part.Models
 
 			ValidationResult result = ValidationResult.Success;
 
-			if (!Apprentice.HasValue)
-			{
+			if (!apprentice.HasValue)
 				result = new ValidationResult("The Apprentice field is required.");
-			}
 
 			return result;
 		}
 
-		public static ValidationResult ValidateOtherPrograms(bool? OtherPrograms, ValidationContext context)
+		public static ValidationResult ValidateOtherPrograms(bool? otherPrograms, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
 			if (model == null)
@@ -158,10 +175,8 @@ namespace CJG.Web.External.Areas.Part.Models
 
 			ValidationResult result = ValidationResult.Success;
 
-			if (!OtherPrograms.HasValue)
-			{
+			if (!otherPrograms.HasValue)
 				result = new ValidationResult("The Other Funded field is required.");
-			}
 
 			return result;
 		}

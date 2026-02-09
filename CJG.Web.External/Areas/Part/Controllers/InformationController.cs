@@ -1061,6 +1061,7 @@ namespace CJG.Web.External.Areas.Part.Controllers
 					BusinessOwner = model.ParticipantInfoStep4ViewModel.BusinessOwner ?? false,
 					AvgHoursPerWeek = model.ParticipantInfoStep4ViewModel.AvgHoursPerWeek,
 					AvgHoursPerWeekDuringTraining = model.ParticipantInfoStep4ViewModel.AvgHoursPerWeekDuringTraining,
+					PreviousAvgHoursPerWeek = GetPreviousAverageHoursWorked(model),
 					HourlyWage = model.ParticipantInfoStep4ViewModel.HourlyWage,
 					PreviousHourlyWage = GetPreviousHourlyWage(model),
 					PrimaryCity = model.ParticipantInfoStep4ViewModel.PrimaryCity,
@@ -1148,6 +1149,14 @@ namespace CJG.Web.External.Areas.Part.Controllers
 				return (decimal?)null;
 
 			return model.ParticipantInfoStep4ViewModel.PreviousHourlyWage;
+		}
+
+		private int? GetPreviousAverageHoursWorked(ParticipantInfoViewModel model)
+		{
+			if (HasPreviouslyEmployedStatus(model.ParticipantInfoStep4ViewModel))
+				return null;
+
+			return model.ParticipantInfoStep4ViewModel.PreviousAvgHoursPerWeek;
 		}
 
 		private bool HasEmployedStatus(ParticipantInfoStep4ViewModel model)
