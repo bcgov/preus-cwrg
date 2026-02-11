@@ -118,6 +118,9 @@ namespace CJG.Web.External.Areas.Part.Models
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousHourlyWage"), Range(0, 999, ErrorMessage = "The previous hourly wage must be within $0 to $999.")]
 		public decimal? PreviousHourlyWage { get; set; }
 
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmployerFullName")]
+		public string PreviousEmployerFullName { get; set; }
+
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePrimaryCity")]
 		public string PrimaryCity { get; set; }
 

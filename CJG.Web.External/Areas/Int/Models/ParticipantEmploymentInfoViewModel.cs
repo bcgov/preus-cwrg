@@ -34,6 +34,7 @@ namespace CJG.Web.External.Areas.Int.Models
 		public string AverageHourlyWage { get; set; }
 		public string PreviousHourlyWage { get; set; }
 		public string PreviousEmploymentLastDayOfWork { get; set; }
+		public string PreviousEmployerFullName { get; set; }
 		public string MaternalParentalBenefits { get; set; }
 		public bool ShowEmploymentFields { get; set; }
 
@@ -73,6 +74,7 @@ namespace CJG.Web.External.Areas.Int.Models
 			PreviousEmploymentLastDayOfWork = participantForm.PreviousEmploymentLastDayOfWork.HasValue
 				? participantForm.PreviousEmploymentLastDayOfWork.Value.ToString(DATEFORMAT)
 				: null;
+			PreviousEmployerFullName = participantForm.PreviousEmployerFullName;
 			MostImportantResult = participantForm.TrainingResult?.Caption;
 			TypeOfEmployment = participantForm.EmploymentType?.Caption;
 			AverageHourlyWage = $"{participantForm.HourlyWage:c}";

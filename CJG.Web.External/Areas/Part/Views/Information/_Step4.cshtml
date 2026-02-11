@@ -305,6 +305,14 @@
         <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4">
             @Html.TextBoxBlock(new FormControl
             {
+                Label = "WWhat is the business name of your most recent previous employer? <abbr title='Required'>*</abbr>",
+                Model = "model.ParticipantInfoStep4ViewModel.PreviousEmployerFullName",
+                IsInnerModel = true,
+                Size = "input--full"
+            })
+
+            @Html.TextBoxBlock(new FormControl
+            {
                 Label = "How many hours per week did you work on average in your previous position?<abbr title='Required'>*</abbr>",
                 Model = "model.ParticipantInfoStep4ViewModel.PreviousAvgHoursPerWeek",
                 IsInnerModel = true,

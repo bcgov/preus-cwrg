@@ -153,6 +153,21 @@ namespace CJG.Web.External.Areas.Part.Models
 			return ValidationResult.Success;
 		}
 
+		public static ValidationResult ValidatePreviousEmployerFullName(string previousEmployerFullName, ValidationContext context)
+		{
+			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
+			if (!WasEmployed(model.EmploymentStatus))
+				return ValidationResult.Success;
+
+			if (string.IsNullOrWhiteSpace(previousEmployerFullName))
+				return new ValidationResult("The business name of your most recent previous employer is required.");
+
+			return ValidationResult.Success;
+		}
+
 		public static ValidationResult ValidateApprentice(bool? apprentice, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;

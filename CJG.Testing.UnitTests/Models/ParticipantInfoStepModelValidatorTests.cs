@@ -134,6 +134,24 @@ namespace CJG.Testing.UnitTests.Models
 			Assert.AreEqual(showError, results.Any(x => x.ErrorMessage == errorToLookFor));
 		}
 
+		[DataTestMethod]
+		[DataRow(1, true)]
+		[DataRow(2, false)]
+		[DataRow(3, false)]
+		[DataRow(4, true)]
+		[DataRow(5, false)]
+		[DataRow(6, false)]
+		public void LastPreviousEmployerNameShouldBeRequired(int employmentStatus, bool required)
+		{
+			_model.EmploymentStatus = employmentStatus;
+			_model.PreviousEmployerFullName = null;
+
+			var results = ValidateModel(_model);
+			var errorToLookFor = "The business name of your most recent previous employer is required.";
+
+			Assert.AreEqual(required, results.Any(x => x.ErrorMessage == errorToLookFor));
+		}
+
 		public IList<ValidationResult> ValidateModel(object model)
 		{
 			var results = new List<ValidationResult>();

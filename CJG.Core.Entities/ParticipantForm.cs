@@ -458,6 +458,11 @@ namespace CJG.Core.Entities
 		public decimal? PreviousHourlyWage { get; set; }
 
 		/// <summary>
+		/// get/set - The name of the most recent employer someone that was unemployed had
+		/// </summary>
+		public string PreviousEmployerFullName { get; set; }
+
+		/// <summary>
 		/// get/set - The primary city this participant works from.
 		/// </summary>
 		[MaxLength(250)]
@@ -475,7 +480,7 @@ namespace CJG.Core.Entities
 		public string LastHighSchoolName { get; set; }
 
 		/// <summary>
-		/// get/set - The last highs school city attended by this participant.
+		/// get/set - The last high school city attended by this participant.
 		/// </summary>
 		[MaxLength(250)]
 		public string LastHighSchoolCity { get; set; }
