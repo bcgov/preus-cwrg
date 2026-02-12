@@ -1,10 +1,9 @@
-﻿using CJG.Core.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CJG.Core.Entities;
 
 namespace CJG.Core.Interfaces.Service
 {
-    public interface INationalOccupationalClassificationService : IService
+	public interface INationalOccupationalClassificationService : IService
     {
 	    string UseNocVersion { get; set; }
 
