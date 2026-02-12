@@ -2,7 +2,7 @@
 
 <div ng-if="model.ParticipantInfoStep4ViewModel" ng-show="model.ParticipantInfoStep0ViewModel.Step == 4">
     <p class="subheader--step">Step 4 of {{model.ParticipantInfoStep0ViewModel.TotalSteps}}</p>
-<h2 class="subheader">Employment information</h2>
+    <h2 class="subheader">Employment information</h2>
 
     <div class="form__group">
         @Html.DropDownList(new FormControl
@@ -13,7 +13,7 @@
             CssClass = "input--full",
             IsInnerModel = true,
             DefaultOverride = true,
-            OnChange = "initializeDatePickerForLastDayOfWork()"
+            OnChange = "changeEmploymentStatus()"
         })
         <p class="inline-help" ng-show="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4">
             Those who were unable or unwilling to work, but are now seeking to return to the workforce. This includes individuals who believe it would be impossible to rejoin the workforce without the assistance of this project.
@@ -22,8 +22,41 @@
             Your employment is unstable due to circumstances such as: having just cause to leave one’s employment; having received a lay-off notice; self-employment income is below the poverty line; the job is likely to be replaced with automation; an industry shut down is imminent or there have been changes in the marketplace due to such situations as a pandemic.
         </p>
     </div>
-
+  
     <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4">
+        <div class="form__group form__group--radio-inline">
+            <div class="form__label">
+                Have you ever been employed? <abbr title="Required">*</abbr>
+            </div>
+            
+            <div>
+                <div class="form-item">
+                    @Html.RadioButton(new FormControl
+                    {
+                        Label = "Yes",
+                        Id = "HaveYouEverBeenEmployedYes",
+                        Model = "model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed",
+                        Value = "true",
+                        OnChange = "initializeDatePickerForLastDayOfWork()"
+                    })
+                </div>
+
+                <div class="form-item">
+                    @Html.RadioButton(new FormControl
+                    {
+                        Label = "No",
+                        Id = "HaveYouEverBeenEmployedNo",
+                        Model = "model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed",
+                        Value = "false"
+                    })
+                </div>
+
+                @Html.ValidationError("model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed", true)
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed && (model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4)">
         @Html.DatePickerDropDownList(new DatePickerFormControl
         {
             Id = "previouslastdayofwork-date",
@@ -302,10 +335,10 @@
             })
         </div>
 
-        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4">
+        <div ng-if="model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed && (model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4)">
             @Html.TextBoxBlock(new FormControl
             {
-                Label = "WWhat is the business name of your most recent previous employer? <abbr title='Required'>*</abbr>",
+                Label = "What is the business name of your most recent previous employer? <abbr title='Required'>*</abbr>",
                 Model = "model.ParticipantInfoStep4ViewModel.PreviousEmployerFullName",
                 IsInnerModel = true,
                 Size = "input--full"

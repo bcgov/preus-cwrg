@@ -11,9 +11,32 @@ namespace CJG.Web.External.Areas.Part.Models
 			return employmentType == 2 || employmentType == 3 || employmentType == 6;
 		}
 
-		private static bool WasEmployed(int employmentType)
+		private static bool IsUnemployed(int employmentType)
 		{
 			return employmentType == 1 || employmentType == 4;
+		}
+
+		private static bool WasEmployed(int employmentType, bool? haveYouEverBeenEmployed)
+		{
+			var previouslyEmployed = haveYouEverBeenEmployed ?? false;
+			return previouslyEmployed && (employmentType == 1 || employmentType == 4);
+		}
+
+		public static ValidationResult ValidateHaveYouEverBeenEmployed(bool? haveYouEverBeenEmployed, ValidationContext context)
+		{
+			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
+			var result = ValidationResult.Success;
+
+			if (!IsUnemployed(model.EmploymentStatus))
+				return result;
+
+			if (!haveYouEverBeenEmployed.HasValue)
+				result = new ValidationResult("The Have you ever been employed field is required.");
+
+			return result;
 		}
 
 		public static ValidationResult ValidateMultipleEmploymentPositions(bool? multipleEmploymentPositions, ValidationContext context)
@@ -39,14 +62,14 @@ namespace CJG.Web.External.Areas.Part.Models
 			if (model == null)
 				throw new ArgumentNullException();
 
-			if (!WasEmployed(model.EmploymentStatus))
+			if (!WasEmployed(model.EmploymentStatus, model.HaveYouEverBeenEmployed))
 				return ValidationResult.Success;
 
 			if (!lastDateOfWork.HasValue)
-				return new ValidationResult("End date of most recent employment is required.");
+				return new ValidationResult("The End date of most recent employment is required.");
 
 			if (lastDateOfWork.Value.ToUniversalTime() > AppDateTime.UtcNow)
-				return new ValidationResult("End date of most recent employment cannot be greater than today.");
+				return new ValidationResult("The End date of most recent employment cannot be greater than today.");
 
 			return ValidationResult.Success;
 		}
@@ -140,7 +163,7 @@ namespace CJG.Web.External.Areas.Part.Models
 			if (model == null)
 				throw new ArgumentNullException();
 
-			if (!WasEmployed(model.EmploymentStatus))
+			if (!WasEmployed(model.EmploymentStatus, model.HaveYouEverBeenEmployed))
 				return ValidationResult.Success;
 
 			if (!previousAverageHoursPerWeek.HasValue)
@@ -159,7 +182,7 @@ namespace CJG.Web.External.Areas.Part.Models
 			if (model == null)
 				throw new ArgumentNullException();
 
-			if (!WasEmployed(model.EmploymentStatus))
+			if (!WasEmployed(model.EmploymentStatus, model.HaveYouEverBeenEmployed))
 				return ValidationResult.Success;
 
 			if (string.IsNullOrWhiteSpace(previousEmployerFullName))
@@ -370,7 +393,7 @@ namespace CJG.Web.External.Areas.Part.Models
 			if (model == null)
 				throw new ArgumentNullException();
 
-			if (!WasEmployed(model.EmploymentStatus))
+			if (!WasEmployed(model.EmploymentStatus, model.HaveYouEverBeenEmployed))
 				return ValidationResult.Success;
 
 			if (!previousHourlyWage.HasValue)

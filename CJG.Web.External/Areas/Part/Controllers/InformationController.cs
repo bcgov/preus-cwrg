@@ -1045,6 +1045,9 @@ namespace CJG.Web.External.Areas.Part.Controllers
 
 					// Step 4 of 6
 					EmploymentStatusId = model.ParticipantInfoStep4ViewModel.EmploymentStatus,
+					HaveYouEverBeenEmployed = HasUnemployedStatus(model.ParticipantInfoStep4ViewModel)
+						? model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed
+						: null,
 					EmploymentTypeId = model.ParticipantInfoStep4ViewModel.EmploymentType != 0 ? model.ParticipantInfoStep4ViewModel.EmploymentType : null,
 					TrainingResultId = model.ParticipantInfoStep4ViewModel.TrainingResult != 0 ? (int?)model.ParticipantInfoStep4ViewModel.TrainingResult : null,
 					MultipleEmploymentPositions = HasEmployedStatus(model.ParticipantInfoStep4ViewModel)
@@ -1173,9 +1176,17 @@ namespace CJG.Web.External.Areas.Part.Controllers
 			return model.EmploymentStatus == 2 || model.EmploymentStatus == 3 || model.EmploymentStatus == 6;
 		}
 
-		private bool HasPreviouslyEmployedStatus(ParticipantInfoStep4ViewModel model)
+		private bool HasUnemployedStatus(ParticipantInfoStep4ViewModel model)
 		{
 			return model.EmploymentStatus == 1 || model.EmploymentStatus == 4;
+		}
+
+		private bool HasPreviouslyEmployedStatus(ParticipantInfoStep4ViewModel model)
+		{
+			if (model.HaveYouEverBeenEmployed.HasValue && model.HaveYouEverBeenEmployed.Value == false)
+				return false;
+
+			return HasUnemployedStatus(model);
 		}
 
 		private bool HasConsentForm()

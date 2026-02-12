@@ -11,6 +11,8 @@ namespace CJG.Web.External.Areas.Int.Models
 
 		public string EmploymentStatus { get; set; }
 		public string MultipleEmploymentPositions { get; set; }
+		public string HaveYouEverBeenEmployed { get; set; }
+
 		public string CityofWork { get; set; }
 		public string ReceivingEIValue { get; set; }
 
@@ -45,6 +47,8 @@ namespace CJG.Web.External.Areas.Int.Models
 		public ParticipantEmploymentInfoViewModel(ParticipantForm participantForm, INationalOccupationalClassificationService nationalOccupationalClassificationService)
 		{
 			EmploymentStatus = participantForm.EmploymentStatus?.Caption;
+			HaveYouEverBeenEmployed = participantForm.HaveYouEverBeenEmployed.AsYesOrNo();
+
 			CityofWork = participantForm.PrimaryCity;
 			MultipleEmploymentPositions = participantForm.MultipleEmploymentPositions.AsYesOrNo();
 			ReceivingEIValue = participantForm.EIBenefit?.Caption;

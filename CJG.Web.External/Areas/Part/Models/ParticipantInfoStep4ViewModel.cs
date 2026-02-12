@@ -12,7 +12,10 @@ namespace CJG.Web.External.Areas.Part.Models
 		[Range(1, 6, ErrorMessage = "The Employment Status field is required.")]
 		public int EmploymentStatus { get; set; }
 		public List<KeyValuePair<int, string>> EmploymentStatuses { get; set; } = new List<KeyValuePair<int, string>>();
-		
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateHaveYouEverBeenEmployed")]
+		public bool? HaveYouEverBeenEmployed { get; set; }
+
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateEmploymentType")]
 		public int? EmploymentType { get; set; }
 		public List<KeyValuePair<int, string>> EmploymentTypes { get; set; } = new List<KeyValuePair<int, string>>();

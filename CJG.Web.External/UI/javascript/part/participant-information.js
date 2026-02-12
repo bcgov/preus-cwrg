@@ -212,6 +212,10 @@ app.controller('ParticipantInformationView', function ($scope, $controller, $att
     $scope.displaySinWarning = sinCheck;
   }
 
+  $scope.changeEmploymentStatus = function () {
+    $scope.model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed = null;
+  }
+
   $scope.initializeDatePickerForLastDayOfWork = function () {
     // Have to re-populate the date picker on step 4 when the Employment Status changes
     setTimeout(function () {
