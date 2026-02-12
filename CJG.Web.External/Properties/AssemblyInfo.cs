@@ -31,6 +31,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("2.4.1.18")]
-[assembly: AssemblyFileVersion("2.4.1.18")]
+[assembly: AssemblyVersion("2.4.1.22")]
+[assembly: AssemblyFileVersion("2.4.1.22")]
 [assembly: InternalsVisibleTo("CJG.Testing.UnitTests")]

@@ -632,6 +632,34 @@
     <Compile Include="Migrations\202506131702489_v02.18.03.Designer.cs">
       <DependentUpon>202506131702489_v02.18.03.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202602051853363_v02.19.00.cs" />
+    <Compile Include="Migrations\202602051853363_v02.19.00.Designer.cs">
+      <DependentUpon>202602051853363_v02.19.00.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202602051914597_v02.19.01.cs" />
+    <Compile Include="Migrations\202602051914597_v02.19.01.Designer.cs">
+      <DependentUpon>202602051914597_v02.19.01.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202602060000483_v02.19.02.cs" />
+    <Compile Include="Migrations\202602060000483_v02.19.02.Designer.cs">
+      <DependentUpon>202602060000483_v02.19.02.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202602062247569_v02.19.03.cs" />
+    <Compile Include="Migrations\202602062247569_v02.19.03.Designer.cs">
+      <DependentUpon>202602062247569_v02.19.03.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202602091922236_v02.19.04.cs" />
+    <Compile Include="Migrations\202602091922236_v02.19.04.Designer.cs">
+      <DependentUpon>202602091922236_v02.19.04.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202602092148384_v02.19.05.cs" />
+    <Compile Include="Migrations\202602092148384_v02.19.05.Designer.cs">
+      <DependentUpon>202602092148384_v02.19.05.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202602112204023_v02.19.06.cs" />
+    <Compile Include="Migrations\202602112204023_v02.19.06.Designer.cs">
+      <DependentUpon>202602112204023_v02.19.06.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Content Include="Migrations\v02.02.03\PostDeploy\Seed\03 GrantOpenings.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1241,6 +1269,9 @@
     <Content Include="Migrations\v02.16.00\PostDeploy\Seed\01_DeactivateAndAddNewExitSurveyQuestionsAndOptions.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Migrations\v02.19.00\PostDeploy\Seed\01_AddEmploymentStatus.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Migrations\v02.18.01\PostDeploy\Seed\01_UpdateCourseOutline.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1727,6 +1758,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202506131702489_v02.18.03.resx">
       <DependentUpon>202506131702489_v02.18.03.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602051853363_v02.19.00.resx">
+      <DependentUpon>202602051853363_v02.19.00.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602051914597_v02.19.01.resx">
+      <DependentUpon>202602051914597_v02.19.01.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602060000483_v02.19.02.resx">
+      <DependentUpon>202602060000483_v02.19.02.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602062247569_v02.19.03.resx">
+      <DependentUpon>202602062247569_v02.19.03.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602091922236_v02.19.04.resx">
+      <DependentUpon>202602091922236_v02.19.04.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602092148384_v02.19.05.resx">
+      <DependentUpon>202602092148384_v02.19.05.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602112204023_v02.19.06.resx">
+      <DependentUpon>202602112204023_v02.19.06.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

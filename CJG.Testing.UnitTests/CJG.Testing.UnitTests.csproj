@@ -307,6 +307,7 @@
     <Compile Include="JsonResultTestHelper.cs" />
     <Compile Include="Models\GrantApplicationViewModelTests.cs" />
     <Compile Include="Models\ParticipantContactInfoViewModelTests.cs" />
+    <Compile Include="Models\ParticipantInfoStepModelValidatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
