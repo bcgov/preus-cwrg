@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using CJG.Core.Entities;
 
@@ -51,7 +51,7 @@ namespace CJG.Web.External.Areas.Part.Models
 				return result;
 
 			if (!multipleEmploymentPositions.HasValue)
-				result = new ValidationResult("The Multiple Employment Positions field is required.");
+				result = new ValidationResult("The more than one Employer field is required.");
 
 			return result;
 		}

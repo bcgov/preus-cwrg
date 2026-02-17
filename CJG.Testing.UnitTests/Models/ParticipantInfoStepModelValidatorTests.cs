@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CJG.Core.Entities;
@@ -47,7 +47,7 @@ namespace CJG.Testing.UnitTests.Models
 			_model.EmploymentStatus = employmentStatus;
 
 			var results = ValidateModel(_model);
-			var errorToLookFor = "The Multiple Employment Positions field is required.";
+			var errorToLookFor = "The more than one Employer field is required.";
 
 			Assert.AreEqual(required, results.Any(x => x.ErrorMessage == errorToLookFor));
 		}
