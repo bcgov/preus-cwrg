@@ -51,7 +51,7 @@ namespace CJG.Web.External.Areas.Part.Models
 				return result;
 
 			if (!multipleEmploymentPositions.HasValue)
-				result = new ValidationResult("The Multiple Employment Positions field is required.");
+				result = new ValidationResult("The more than one Employer field is required.");
 
 			return result;
 		}
@@ -472,6 +472,36 @@ namespace CJG.Web.External.Areas.Part.Models
 				result = new ValidationResult("Your National Occupation Classification (NOC) after training is required.");
 			}
 			return result;
+		}
+
+		public static ValidationResult ValidatePreviousEmploymentNoc(int? nocCode, ValidationContext context)
+		{
+			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
+			if (!WasEmployed(model.EmploymentStatus, model.HaveYouEverBeenEmployed))
+				return ValidationResult.Success;
+
+			if (!nocCode.HasValue || nocCode <= 0)
+				return new ValidationResult("Your National Occupation Classification (NOC) for previous employment is required.");
+
+			return ValidationResult.Success;
+		}
+
+		public static ValidationResult ValidatePreviousEmploymentNaics(int? naicsCode, ValidationContext context)
+		{
+			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
+			if (!WasEmployed(model.EmploymentStatus, model.HaveYouEverBeenEmployed))
+				return ValidationResult.Success;
+
+			if (!naicsCode.HasValue || naicsCode <= 0)
+				return new ValidationResult("Your North American Industry Classification System (NAICS) for previous employment is required.");
+
+			return ValidationResult.Success;
 		}
 
 		public static ValidationResult ValidateOtherProgramDesc(string otherProgramDesc, ValidationContext context)

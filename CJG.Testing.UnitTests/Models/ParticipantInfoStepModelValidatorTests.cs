@@ -47,7 +47,7 @@ namespace CJG.Testing.UnitTests.Models
 			_model.EmploymentStatus = employmentStatus;
 
 			var results = ValidateModel(_model);
-			var errorToLookFor = "The Multiple Employment Positions field is required.";
+			var errorToLookFor = "The more than one Employer field is required.";
 
 			Assert.AreEqual(required, results.Any(x => x.ErrorMessage == errorToLookFor));
 		}
@@ -174,6 +174,118 @@ namespace CJG.Testing.UnitTests.Models
 			var errorToLookFor = "The business name of your most recent previous employer is required.";
 
 			Assert.AreEqual(required, results.Any(x => x.ErrorMessage == errorToLookFor));
+		}
+
+		[DataTestMethod]
+		[DataRow(1, true)]
+		[DataRow(2, false)]
+		[DataRow(3, false)]
+		[DataRow(4, true)]
+		[DataRow(5, false)]
+		[DataRow(6, false)]
+		public void PreviousEmploymentNocShouldBeRequired(int employmentStatus, bool required)
+		{
+			_model.EmploymentStatus = employmentStatus;
+			_model.HaveYouEverBeenEmployed = true;
+			_model.PreviousEmploymentNoc1Id = null;
+			_model.PreviousEmploymentNoc2Id = null;
+			_model.PreviousEmploymentNoc3Id = null;
+			_model.PreviousEmploymentNoc4Id = null;
+			_model.PreviousEmploymentNoc5Id = null;
+
+			var results = ValidateModel(_model);
+			var errorToLookFor = "Your National Occupation Classification (NOC) for previous employment is required.";
+
+			Assert.AreEqual(required, results.Any(x => x.ErrorMessage == errorToLookFor));
+		}
+
+		[TestMethod]
+		public void PreviousEmploymentNocIsSatisfied()
+		{
+			_model.EmploymentStatus = 1;
+			_model.HaveYouEverBeenEmployed = true;
+			_model.PreviousEmploymentNoc1Id = 1;
+			_model.PreviousEmploymentNoc2Id = 2;
+			_model.PreviousEmploymentNoc3Id = 3;
+			_model.PreviousEmploymentNoc4Id = 4;
+			_model.PreviousEmploymentNoc5Id = 5;
+
+			var results = ValidateModel(_model);
+			var errorToLookFor = "Your National Occupation Classification (NOC) for previous employment is required.";
+
+			Assert.AreEqual(false, results.Any(x => x.ErrorMessage == errorToLookFor));
+		}
+
+		[DataTestMethod]
+		[DataRow(1, true)]
+		[DataRow(2, false)]
+		[DataRow(3, false)]
+		[DataRow(4, true)]
+		[DataRow(5, false)]
+		[DataRow(6, false)]
+		public void PreviousEmploymentNaicsShouldBeRequired(int employmentStatus, bool required)
+		{
+			_model.EmploymentStatus = employmentStatus;
+			_model.HaveYouEverBeenEmployed = true;
+			_model.PreviousEmploymentNaics1Id = null;
+			_model.PreviousEmploymentNaics2Id = null;
+			_model.PreviousEmploymentNaics3Id = null;
+			_model.PreviousEmploymentNaics4Id = null;
+			_model.PreviousEmploymentNaics5Id = null;
+
+			var results = ValidateModel(_model);
+			var errorToLookFor = "Your North American Industry Classification System (NAICS) for previous employment is required.";
+
+			Assert.AreEqual(required, results.Any(x => x.ErrorMessage == errorToLookFor));
+		}
+
+		[DataTestMethod]
+		[DataRow(1, false)]
+		[DataRow(2, false)]
+		[DataRow(3, false)]
+		[DataRow(4, false)]
+		[DataRow(5, false)]
+		[DataRow(6, false)]
+		public void PreviousEmploymentNocAndNaicsNotRequiredWithNoPastEmployment(int employmentStatus, bool required)
+		{
+			_model.EmploymentStatus = employmentStatus;
+			_model.HaveYouEverBeenEmployed = null;
+
+			_model.PreviousEmploymentNoc1Id = null;
+			_model.PreviousEmploymentNoc2Id = null;
+			_model.PreviousEmploymentNoc3Id = null;
+			_model.PreviousEmploymentNoc4Id = null;
+			_model.PreviousEmploymentNoc5Id = null;
+
+			_model.PreviousEmploymentNaics1Id = null;
+			_model.PreviousEmploymentNaics2Id = null;
+			_model.PreviousEmploymentNaics3Id = null;
+			_model.PreviousEmploymentNaics4Id = null;
+			_model.PreviousEmploymentNaics5Id = null;
+
+			var results = ValidateModel(_model);
+			var nocErrorToNotFind = "Your National Occupation Classification (NOC) for previous employment is required.";
+			var naicsErrorToNotFind = "Your North American Industry Classification System (NAICS) for previous employment is required.";
+
+			Assert.AreEqual(required, results.Any(x => x.ErrorMessage == nocErrorToNotFind));
+			Assert.AreEqual(required, results.Any(x => x.ErrorMessage == naicsErrorToNotFind));
+		}
+
+		[TestMethod]
+		public void PreviousEmploymentNaicsIsSatisfied()
+		{
+			_model.EmploymentStatus = 1;
+			_model.HaveYouEverBeenEmployed = true;
+			_model.PreviousEmploymentNaics1Id = 1;
+			_model.PreviousEmploymentNaics2Id = 2;
+			_model.PreviousEmploymentNaics3Id = 3;
+			_model.PreviousEmploymentNaics4Id = 4;
+			_model.PreviousEmploymentNaics5Id = 5;
+
+			var results = ValidateModel(_model);
+			var errorToLookFor = "Your North American Industry Classification System (NAICS) for previous employment is required.";
+
+			Assert.AreEqual(false, results.Any(x => x.ErrorMessage == errorToLookFor));
 		}
 
 		public IList<ValidationResult> ValidateModel(object model)

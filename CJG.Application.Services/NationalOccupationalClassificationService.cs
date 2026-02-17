@@ -20,10 +20,7 @@ namespace CJG.Application.Services
 		/// <param name="dbContext"></param>
 		/// <param name="httpContext"></param>
 		/// <param name="logger"></param>
-		public NationalOccupationalClassificationService(
-			IDataContext dbContext,
-			HttpContextBase httpContext,
-			ILogger logger) : base(dbContext, httpContext, logger)
+		public NationalOccupationalClassificationService(IDataContext dbContext, HttpContextBase httpContext, ILogger logger) : base(dbContext, httpContext, logger)
 		{
 			var configNocSetting = ConfigurationManager.AppSettings["NocVersion"];
 
