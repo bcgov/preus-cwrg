@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using CJG.Core.Entities;
 
@@ -474,7 +474,6 @@ namespace CJG.Web.External.Areas.Part.Models
 			return result;
 		}
 
-
 		public static ValidationResult ValidatePreviousEmploymentNoc(int? nocCode, ValidationContext context)
 		{
 			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
@@ -486,6 +485,21 @@ namespace CJG.Web.External.Areas.Part.Models
 
 			if (!nocCode.HasValue || nocCode <= 0)
 				return new ValidationResult("Your National Occupation Classification (NOC) for previous employment is required.");
+
+			return ValidationResult.Success;
+		}
+
+		public static ValidationResult ValidatePreviousEmploymentNaics(int? naicsCode, ValidationContext context)
+		{
+			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
+			if (!WasEmployed(model.EmploymentStatus, model.HaveYouEverBeenEmployed))
+				return ValidationResult.Success;
+
+			if (!naicsCode.HasValue || naicsCode <= 0)
+				return new ValidationResult("Your North American Industry Classification System (NAICS) for previous employment is required.");
 
 			return ValidationResult.Success;
 		}

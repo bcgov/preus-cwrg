@@ -36,7 +36,5 @@ namespace CJG.Core.Interfaces.Service
         /// <param name="id"></param>
         /// <returns></returns>
         NationalOccupationalClassification GetNationalOccupationalClassification(int? id);
-
-
     }
 }

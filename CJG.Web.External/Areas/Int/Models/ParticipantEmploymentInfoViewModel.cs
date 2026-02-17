@@ -19,6 +19,7 @@ namespace CJG.Web.External.Areas.Int.Models
 		public string CurrentNocLevel5 { get; set; }
 		public string FutureNocLevel5 { get; set; }
 		public string PreviousEmploymentNocLevel5 { get; set; }
+		public string PreviousEmploymentNaicsLevel5 { get; set; }
 
 		public string ReceivingIA { get; set; }
 		public string Apprentice { get; set; }
@@ -64,6 +65,9 @@ namespace CJG.Web.External.Areas.Int.Models
 
 			if (participantForm.PreviousEmploymentNoc != null && participantForm.PreviousEmploymentNoc.Id != 0 && !string.IsNullOrWhiteSpace(participantForm.PreviousEmploymentNoc.Code))
 				PreviousEmploymentNocLevel5 = participantForm.PreviousEmploymentNoc.ToString();
+
+			if (participantForm.PreviousEmploymentNaics != null && participantForm.PreviousEmploymentNaics.Id != 0 && !string.IsNullOrWhiteSpace(participantForm.PreviousEmploymentNaics.Code))
+				PreviousEmploymentNaicsLevel5 = participantForm.PreviousEmploymentNaics.ToString();
 
 			ReceivingIA = participantForm.BceaClient ? "Yes" : "No";
 			Apprentice = participantForm.Apprentice ? "Yes" : "No";

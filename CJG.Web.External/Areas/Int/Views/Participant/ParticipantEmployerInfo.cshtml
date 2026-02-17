@@ -161,8 +161,8 @@
         <div class="infotable-tr">
             <div class="infotable-td">
                 <div class="infoTable--cell-wrap">
-                    <div class="infoTable--label"></div>
-                    <div class="infoTable--data"></div>
+                    <div class="infoTable--label">Previous Employer Name:</div>
+                    <div class="infoTable--data">@Model.PreviousEmployerFullName</div>
                 </div>
             </div>
             <div class="infotable-td">
@@ -187,14 +187,8 @@
                 </div>
             </div>
         </div>
-
+            
         <div class="infotable-tr">
-            <div class="infotable-td">
-                <div class="infoTable--cell-wrap">
-                    <div class="infoTable--label">Previous Employer Name:</div>
-                    <div class="infoTable--data">@Model.PreviousEmployerFullName</div>
-                </div>
-            </div>
             <div class="infotable-td">
                 <div class="infoTable--cell-wrap">
                     <div class="infoTable--label">Previous Employment National Occupation Code:</div>
@@ -206,8 +200,19 @@
                     </div>
                 </div>
             </div>
+            <div class="infotable-td">
+                <div class="infoTable--cell-wrap">
+                    <div class="infoTable--label">Previous Employment NAICS Code:</div>
+                    <div class="infoTable--data">
+                        @if (Model.PreviousEmploymentNaicsLevel5 != null)
+                        {
+                            <span class="participant-noc">@Model.PreviousEmploymentNaicsLevel5</span>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
-    
+
         <div class="infotable-tr">
             <div class="infotable-td">
                 <div class="infoTable--cell-wrap">
