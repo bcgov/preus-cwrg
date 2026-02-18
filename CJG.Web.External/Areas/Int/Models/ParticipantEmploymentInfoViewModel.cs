@@ -13,6 +13,9 @@ namespace CJG.Web.External.Areas.Int.Models
 		public string MultipleEmploymentPositions { get; set; }
 		public string HaveYouEverBeenEmployed { get; set; }
 
+		public string ParticipantAffectedByTariffs { get; set; }
+		public string ParticipantFundingStream { get; set; }
+
 		public string CityofWork { get; set; }
 		public string ReceivingEIValue { get; set; }
 
@@ -50,6 +53,11 @@ namespace CJG.Web.External.Areas.Int.Models
 		{
 			EmploymentStatus = participantForm.EmploymentStatus?.Caption;
 			HaveYouEverBeenEmployed = participantForm.HaveYouEverBeenEmployed.AsYesOrNo();
+
+			ParticipantAffectedByTariffs = participantForm.AffectedByTariffs.AsYesOrNo();
+			ParticipantFundingStream = participantForm.ParticipantFundingStream != null
+				? participantForm.ParticipantFundingStream.Caption
+				: "---";
 
 			CityofWork = participantForm.PrimaryCity;
 			MultipleEmploymentPositions = participantForm.MultipleEmploymentPositions.AsYesOrNo();

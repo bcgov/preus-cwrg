@@ -356,6 +356,19 @@ namespace CJG.Core.Entities
 		public bool? MultipleEmploymentPositions { get; set; }
 
 		/// <summary>
+		/// get/set - Was the Participant's employment affected by Tariffs
+		/// </summary>
+		public bool? AffectedByTariffs { get; set; }
+
+		public int? ParticipantFundingStreamId { get; set; }
+
+		/// <summary>
+		/// get/set - If the participant was affected by tariffs, what stream/industry was the participant in
+		/// </summary>
+		[ForeignKey(nameof(ParticipantFundingStreamId))]
+		public virtual ParticipantFundingStream ParticipantFundingStream { get; set; }
+
+		/// <summary>
 		/// get/set - The last day of employment before the participant was unemployed
 		/// </summary>
 		public DateTime? PreviousEmploymentLastDayOfWork { get; set; }

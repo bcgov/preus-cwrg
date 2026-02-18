@@ -70,6 +70,9 @@ namespace CJG.Core.Interfaces.Service
 		IEnumerable<EmploymentType> GetEmploymentTypes();
 		EmploymentType GetEmploymentType(int id);
 
+		IEnumerable<ParticipantFundingStream> GetParticipantFundingStreams();
+		ParticipantFundingStream GetParticipantFundingStream(int id);
+
 		IEnumerable<EmploymentStatus> GetEmploymentStatuses();
 		EmploymentStatus GetEmploymentStatus(int id);
 

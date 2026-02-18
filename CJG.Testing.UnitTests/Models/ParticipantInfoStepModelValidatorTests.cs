@@ -36,6 +36,37 @@ namespace CJG.Testing.UnitTests.Models
 		}
 
 		[DataTestMethod]
+		[DataRow(null, true)]
+		[DataRow(true, false)]
+		[DataRow(false, false)]
+		public void AffectedByTariffsShouldBeRequired(bool? affectedByTariffs, bool hasError)
+		{
+			_model.ParticipantAffectedByTariffs = affectedByTariffs;
+
+			var results = ValidateModel(_model);
+			var errorToLookFor = "The Affected by Tariffs field is required.";
+
+			Assert.AreEqual(hasError, results.Any(x => x.ErrorMessage == errorToLookFor));
+		}
+
+		[DataTestMethod]
+		[DataRow(null, null, false)]
+		[DataRow(null, 1, false)]
+		[DataRow(false, 1, false)]
+		[DataRow(true, null, true)]
+		[DataRow(true, 2, false)]
+		public void ParticipantFundingStreamShouldBeRequired(bool? affectedByTariffs, int? participantFundingStream, bool isRequired)
+		{
+			_model.ParticipantAffectedByTariffs = affectedByTariffs;
+			_model.ParticipantFundingStream = participantFundingStream;
+
+			var results = ValidateModel(_model);
+			var errorToLookFor = "The Industry you worked in when affected by Tariffs field is required.";
+
+			Assert.AreEqual(isRequired, results.Any(x => x.ErrorMessage == errorToLookFor));
+		}
+
+		[DataTestMethod]
 		[DataRow(1, false)]
 		[DataRow(2, true)]
 		[DataRow(3, true)]

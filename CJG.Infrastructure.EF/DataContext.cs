@@ -164,6 +164,7 @@ namespace CJG.Infrastructure.EF
 		public DbSet<EIBenefit> EIBenefits => _context.EIBenefits;
 		public DbSet<MaritalStatus> MaritalStatuses => _context.MaritalStatuses;
 		public DbSet<FederalOfficialLanguage> FederalOfficialLanguages => _context.FederalOfficialLanguages;
+		public DbSet<ParticipantFundingStream> ParticipantFundingStreams => _context.ParticipantFundingStreams;
 		#endregion
 
 		#region Claims

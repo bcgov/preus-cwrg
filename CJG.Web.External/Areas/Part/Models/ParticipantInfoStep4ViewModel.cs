@@ -20,6 +20,13 @@ namespace CJG.Web.External.Areas.Part.Models
 		public int? EmploymentType { get; set; }
 		public List<KeyValuePair<int, string>> EmploymentTypes { get; set; } = new List<KeyValuePair<int, string>>();
 
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateParticipantAffectedByTariffs")]
+		public bool? ParticipantAffectedByTariffs { get; set; }
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateParticipantFundingStream")]
+		public int? ParticipantFundingStream { get; set; }
+		public List<KeyValuePair<int, string>> ParticipantFundingStreams { get; set; } = new List<KeyValuePair<int, string>>();
+
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateMultipleEmploymentPositions")]
 		public bool? MultipleEmploymentPositions { get; set; }
 

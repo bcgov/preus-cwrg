@@ -157,6 +157,7 @@ namespace CJG.Infrastructure.Entities
 		DbSet<EIBenefit> EIBenefits { get; }
 		DbSet<MaritalStatus> MaritalStatuses { get; }
 		DbSet<FederalOfficialLanguage> FederalOfficialLanguages { get; }
+		DbSet<ParticipantFundingStream> ParticipantFundingStreams { get; }
 		#endregion
 
 		#region Claims

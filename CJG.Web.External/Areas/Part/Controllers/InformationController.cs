@@ -869,6 +869,12 @@ namespace CJG.Web.External.Areas.Part.Controllers
 			var kvpEmploymentTypes = _staticDataService.GetEmploymentTypes().Select(x => new KeyValuePair<int, string>(x.Id, x.Caption)).ToList();
 			model.ParticipantInfoStep4ViewModel.EmploymentTypes = kvpEmploymentTypes.ToList();
 
+			var kvpParticipantFundingStreams = _staticDataService.GetParticipantFundingStreams()
+				.Where(pfs => pfs.Id != (int)ParticipantFundingStreams.NotApplicable)
+				.Select(x => new KeyValuePair<int, string>(x.Id, x.Caption))
+				.ToList();
+			model.ParticipantInfoStep4ViewModel.ParticipantFundingStreams = kvpParticipantFundingStreams.ToList();
+
 			var kvpTrainingResults = _staticDataService.GetTrainingResults().Select(x => new KeyValuePair<int, string>(x.Id, x.Caption)).ToList();
 			model.ParticipantInfoStep4ViewModel.TrainingResults = kvpTrainingResults.ToList();
 
@@ -1081,6 +1087,10 @@ namespace CJG.Web.External.Areas.Part.Controllers
 					MultipleEmploymentPositions = HasEmployedStatus(model.ParticipantInfoStep4ViewModel)
 						? model.ParticipantInfoStep4ViewModel.MultipleEmploymentPositions
 						: null,
+					AffectedByTariffs = model.ParticipantInfoStep4ViewModel.ParticipantAffectedByTariffs,
+					ParticipantFundingStreamId = model.ParticipantInfoStep4ViewModel.ParticipantAffectedByTariffs == true
+						? model.ParticipantInfoStep4ViewModel.ParticipantFundingStream
+						: (int)ParticipantFundingStreams.NotApplicable,
 					PreviousEmploymentLastDayOfWork = GetPreviousEmploymentLastDayOfWork(model),
 					EIBenefitId = model.ParticipantInfoStep4ViewModel.EIBenefit != 0 ? model.ParticipantInfoStep4ViewModel.EIBenefit : EI_BENEFIT_NONE_OF_THE_ABOVE,
 					MaternalPaternal = model.ParticipantInfoStep4ViewModel.MaternalPaternal ?? false,

@@ -189,6 +189,8 @@ namespace CJG.Infrastructure.EF
 		public virtual DbSet<EIBenefit> EIBenefits { get; set; }
 		public virtual DbSet<MaritalStatus> MaritalStatuses { get; set; }
 		public virtual DbSet<FederalOfficialLanguage> FederalOfficialLanguages { get; set; }
+		public virtual DbSet<ParticipantFundingStream> ParticipantFundingStreams { get; set; }
+
 		#endregion
 
 		#region Claims

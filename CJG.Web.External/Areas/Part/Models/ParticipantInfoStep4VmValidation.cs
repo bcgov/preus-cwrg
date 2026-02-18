@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Http.Validation;
 using CJG.Core.Entities;
 
 namespace CJG.Web.External.Areas.Part.Models
@@ -35,6 +36,37 @@ namespace CJG.Web.External.Areas.Part.Models
 
 			if (!haveYouEverBeenEmployed.HasValue)
 				result = new ValidationResult("The Have you ever been employed field is required.");
+
+			return result;
+		}
+
+		public static ValidationResult ValidateParticipantAffectedByTariffs(bool? affectedByTariffs, ValidationContext context)
+		{
+			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
+			var result = ValidationResult.Success;
+
+			if (!affectedByTariffs.HasValue)
+				result = new ValidationResult("The Affected by Tariffs field is required.");
+
+			return result;
+		}
+
+		public static ValidationResult ValidateParticipantFundingStream(int? participantFundingStream, ValidationContext context)
+		{
+			ParticipantInfoStep4ViewModel model = context.ObjectInstance as ParticipantInfoStep4ViewModel;
+			if (model == null)
+				throw new ArgumentNullException();
+
+			var result = ValidationResult.Success;
+
+			if (model.ParticipantAffectedByTariffs != true)
+				return result;
+
+			if (!participantFundingStream.HasValue)
+				result = new ValidationResult("The Industry you worked in when affected by Tariffs field is required.");
 
 			return result;
 		}
