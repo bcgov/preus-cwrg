@@ -73,7 +73,7 @@
                                 {{ cost.CostCategoryName }}:
                                 <span ng-if="cost.RequireOther">
                                     <br />
-                                    <input type="text" class="input-inline-align input--medium" ng-model="cost.CostCategoryOther" ng-editing="section.editing && cost.RequireOther" placeholder="Please define 'Other'." />
+                                    <input type="text" class="input-inline-align input--medium" maxlength="150" ng-model="cost.CostCategoryOther" ng-editing="section.editing && cost.RequireOther" placeholder="Please define 'Other'." />
                                 </span>
                             </td>
                             <td><input type="text" class="input-inline-align input-right-align input--small" ng-model="cost.TotalSpent" ng-currency ng-editing ng-change="recalculateParticipantPfsCosts(participant)"></td>
