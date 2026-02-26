@@ -25,8 +25,9 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
           attestationNotApplicable: $scope.model.AttestationNotApplicable,
           allocatedCosts: $scope.model.AllocatedCosts,
           files: files,
-          attachments: JSON.stringify(attachments)
-        };
+          attachments: JSON.stringify(attachments),
+          costModel: JSON.stringify($scope.model.AttestationParticipants)
+      };
 
         return model;
       },
@@ -70,6 +71,15 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     });
   }
 
+  function calculateAttestations() {
+    for (var i = 0; i < $scope.model.AttestationParticipants.length; i++) {
+      $scope.recalculateParticipantPfsCosts($scope.model.AttestationParticipants[i]);
+    }
+  //  $scope.model.AttestationParticipants.forEach(function (participant) {
+  //    $scope.recalculateParticipantPfsCosts(participant);
+  //  });
+  }
+
   /**
    * Initialize form data.
    * @function init
@@ -77,8 +87,14 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
    **/
   function init() {
     return Promise.all([
-      loadAttestation()
-    ]).catch(angular.noop);
+        loadAttestation()
+      ])
+      .then(function () {
+        setTimeout(function() {
+          calculateAttestations();
+        });
+      })
+      .catch(angular.noop);
   }
 
   $scope.recalculateAttestation = function () {
@@ -92,6 +108,22 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
 
     $scope.model.UnusedFunds = newFunds;
   };
+
+  $scope.recalculateParticipantPfsCosts = function (participant) {
+    console.log("Recalculating PFS for: ", participant.ParticipantName);
+    var totalSpent = 0;
+    participant.Costs.forEach(function(cost) {
+      let singleCost = parseFloat(cost.TotalSpent);
+      totalSpent += singleCost;
+    });
+
+    participant.TotalAmountSpent = totalSpent;
+    participant.UnusedFunds = participant.TotalApprovedCost - participant.TotalAmountSpent;
+    console.log("App: ", participant.TotalApprovedCost, "Unused: ", participant.UnusedFunds, "TotalSpent: ", participant.TotalAmountSpent);
+
+  //  console.log(participant);
+  //  console.log(participant.Costs);
+  }
 
   $scope.cancel = function () {
     window.location = $scope.section.redirectUrl;

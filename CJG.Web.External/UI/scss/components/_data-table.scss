@@ -319,3 +319,38 @@ table.dataTable {
     vertical-align: middle;
   }
 }
+
+.attestation-participant-section {
+    margin-top: 1.5em;
+}
+
+.table.table--attestation-participants {
+  margin-bottom: 1em;
+
+  .participant-name {
+    vertical-align: top;
+    font-weight: bold;
+  }
+
+  .participant-cost {
+    vertical-align: top;
+  }
+
+  .participant-initiative {
+    vertical-align: top;
+    text-align: center !important;
+    width: 320px;
+  }
+
+  .participant-cost-line {
+    vertical-align: top;
+    text-align: left !important;
+    padding: 15px 10px;
+  }
+
+  .unused-funds td {
+    border-bottom: 0;
+  }
+}
+
+

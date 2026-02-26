@@ -585,6 +585,25 @@ namespace CJG.Application.Services
 		}
 
 		/// <summary>
+		/// Get all the participant funding streams that are active.
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerable<ParticipantFundingStream> GetParticipantFundingStreams()
+		{
+			return Get<ParticipantFundingStream, int>().Where(e => e.IsActive);
+		}
+
+		/// <summary>
+		/// Get the specified participant funding stream
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public ParticipantFundingStream GetParticipantFundingStream(int id)
+		{
+			return _dbContext.ParticipantFundingStreams.Find(id);
+		}
+
+		/// <summary>
 		/// Get all the employment statuses that are active.
 		/// </summary>
 		/// <returns></returns>

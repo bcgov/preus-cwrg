@@ -114,6 +114,10 @@ namespace CJG.Infrastructure.Entities
 		DbSet<EligibleExpenseType> EligibleExpenseTypes { get; }
 		DbSet<EligibleExpenseBreakdown> EligibleExpenseBreakdowns { get; }
 		DbSet<DenialReason> DenialReasons { get; }
+		DbSet<Attestation> Attestations { get; }
+		DbSet<AttestationParticipant> AttestationParticipants { get; }
+		DbSet<AttestationParticipantCost> AttestationParticipantCosts { get; }
+
 		DbSet<GrantApplicationTask> GrantApplicationTasks { get; }
 		DbSet<GrantApplicationEvaluation> GrantApplicationEvaluations { get; }
 		DbSet<GrantApplicationEvaluationAnswer> GrantApplicationEvaluationAnswers { get; }
@@ -157,6 +161,7 @@ namespace CJG.Infrastructure.Entities
 		DbSet<EIBenefit> EIBenefits { get; }
 		DbSet<MaritalStatus> MaritalStatuses { get; }
 		DbSet<FederalOfficialLanguage> FederalOfficialLanguages { get; }
+		DbSet<ParticipantFundingStream> ParticipantFundingStreams { get; }
 		#endregion
 
 		#region Claims

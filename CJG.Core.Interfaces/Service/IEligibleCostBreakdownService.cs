@@ -1,11 +1,8 @@
-﻿using CJG.Application.Business.Models;
-using CJG.Core.Entities;
-using System.Collections.Generic;
+﻿using CJG.Core.Entities;
 
 namespace CJG.Core.Interfaces.Service
 {
-   
-    public interface IEligibleCostBreakdownService : IService
+	public interface IEligibleCostBreakdownService : IService
     {
         EligibleCostBreakdown Get(int id);
         EligibleCostBreakdown Add(EligibleCostBreakdown eligibleCostBreakdown);
