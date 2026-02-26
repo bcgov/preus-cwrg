@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Web;
 using System.Web.Mvc;
@@ -9,10 +10,12 @@ using CJG.Core.Interfaces.Service;
 using CJG.Web.External.Areas.Ext.Models.Attachments;
 using CJG.Web.External.Areas.Int.Models;
 using CJG.Web.External.Areas.Int.Models.Attestation;
+using CJG.Web.External.Areas.Int.Models.ProgramInitiatives;
 using CJG.Web.External.Controllers;
 using CJG.Web.External.Helpers;
 using CJG.Web.External.Helpers.Filters;
 using CJG.Web.External.Models.Shared;
+using Newtonsoft.Json;
 
 namespace CJG.Web.External.Areas.Int.Controllers
 {
@@ -23,6 +26,9 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		private readonly IGrantApplicationService _grantApplicationService;
 		private readonly IAttachmentService _attachmentService;
 		private readonly ISuccessStoryService _successStoryService;
+		private readonly IEligibleExpenseBreakdownService _eligibleExpenseBreakdownService;
+		private readonly IProgramInitiativeService _programInitiativeService;
+
 		private readonly INoteService _noteService;
 
 		public AttestationController(
@@ -30,12 +36,16 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			IGrantApplicationService grantApplicationService,
 			IAttachmentService attachmentService,
 			ISuccessStoryService successStoryService,
+			IEligibleExpenseBreakdownService eligibleExpenseBreakdownService,
+			IProgramInitiativeService programInitiativeService,
 			INoteService noteService
 		   ) : base(controllerService.Logger)
 		{
 			_grantApplicationService = grantApplicationService;
 			_attachmentService = attachmentService;
 			_successStoryService = successStoryService;
+			_eligibleExpenseBreakdownService = eligibleExpenseBreakdownService;
+			_programInitiativeService = programInitiativeService;
 			_noteService = noteService;
 		}
 
@@ -82,7 +92,9 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			try
 			{
 				var grantApplication = _grantApplicationService.Get(grantApplicationId);
-				model = new AttestationViewModel(grantApplication);
+				var breakdowns = _eligibleExpenseBreakdownService.GetPfsCostsForGrantApplication(grantApplicationId);
+
+				model = new AttestationViewModel(grantApplication, breakdowns);
 			}
 			catch (Exception ex)
 			{
@@ -100,12 +112,13 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		/// <param name="completeAttestation"></param>
 		/// <param name="files"></param>
 		/// <param name="documents"></param>
+		/// <param name="costModel"></param>
 		/// <returns></returns>
 		[HttpPut]
 		[PreventSpam]
 		[ValidateRequestHeader]
 		[Route("Application/Attestation/")]
-		public JsonResult SaveAttestation(int grantApplicationId, decimal allocatedCosts, bool? attestationNotApplicable, bool? completeAttestation, HttpPostedFileBase[] files, string documents)
+		public JsonResult SaveAttestation(int grantApplicationId, decimal allocatedCosts, bool? attestationNotApplicable, bool? completeAttestation, HttpPostedFileBase[] files, string documents, string costModel)
 		{
 			var model = new AttestationViewModel();
 			try
@@ -120,7 +133,9 @@ namespace CJG.Web.External.Areas.Int.Controllers
 				};
 
 				// Deserialize model.  This is required because it isn't easy to deserialize an array when including files in a multipart data form.
-				var data = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Models.Attachments.UpdateAttachmentViewModel>>(documents);
+				var data = JsonConvert.DeserializeObject<IEnumerable<Models.Attachments.UpdateAttachmentViewModel>>(documents);
+
+				var participantData = JsonConvert.DeserializeObject<List<AttestationParticipantModel>>(costModel);
 
 				if (grantApplication.Attestation == null)
 				{
@@ -149,45 +164,69 @@ namespace CJG.Web.External.Areas.Int.Controllers
 				if (model.CompleteAttestation.HasValue && model.CompleteAttestation.Value)
 					grantApplication.Attestation.State = AttestationState.Complete;
 
-				_grantApplicationService.UpdateAttestation(grantApplication);
+				var attestationParticipants = grantApplication.Attestation.Participants;
 
-				foreach (var attachment in data)
+				foreach (var participantModel in participantData)
 				{
-					if (attachment.Delete) // Delete
+					var participant = attestationParticipants.FirstOrDefault(p => p.Id == participantModel.Id);
+					if (participant == null)
+						continue;
+
+					participant.DateUpdated = AppDateTime.UtcNow;
+					participant.ProgramInitiativeId = participantModel.ProgramInitiativeId;
+
+					foreach(var cost in participantModel.Costs)
 					{
-						var existing = _attachmentService.Get(attachment.Id);
-						existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);
-						grantApplication.Attestation.Documents.Remove(existing);
-						_noteService.AddSystemNote(grantApplication, $"Attestation document \'{existing.FileName}\' deleted.");
-						_attachmentService.Delete(existing);
-					}
-					else if (attachment.Index.HasValue == false) // Update data only
-					{
-						var existing = _attachmentService.Get(attachment.Id);
-						existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);
-						attachment.MapToEntity(existing);
-						_attachmentService.Update(existing, true);
-					}
-					else if (files.Length > attachment.Index.Value && files[attachment.Index.Value] != null && attachment.Id == 0) // Add
-					{
-						var file = files[attachment.Index.Value].UploadFile(attachment.Description, attachment.FileName);
-						grantApplication.Attestation.Documents.Add(file);
-						_noteService.AddSystemNote(grantApplication, $"Attestation document \'{file.FileName}\' uploaded.");
-						_attachmentService.Add(file, true);
-					}
-					else if (files.Length > attachment.Index.Value && files[attachment.Index.Value] != null && attachment.Id != 0) // Update with file
-					{
-						var file = files[attachment.Index.Value].UploadFile(attachment.Description, attachment.FileName);
-						var existing = _attachmentService.Get(attachment.Id);
-						existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);
-						_noteService.AddSystemNote(grantApplication, $"Attestation document \'{existing.FileName}\' replaced with \'{file.FileName}\'.");
-						attachment.MapToEntity(existing);
-						existing.AttachmentData = file.AttachmentData;
-						_attachmentService.Update(existing, true);
+						var costRow = participant.Costs.FirstOrDefault(pc => pc.Id == cost.Id);
+						if (costRow == null)
+							continue;
+
+						costRow.DateUpdated = AppDateTime.UtcNow;
+						costRow.ApprovedTotalSpent = cost.TotalSpent;
+						costRow.ApprovedOtherDefinition = cost.CostCategoryOther;
 					}
 				}
 
-				model = new AttestationViewModel(grantApplication);
+				_grantApplicationService.UpdateAttestation(grantApplication);
+
+				//foreach (var attachment in data)
+				//{
+				//	if (attachment.Delete) // Delete
+				//	{
+				//		var existing = _attachmentService.Get(attachment.Id);
+				//		existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);
+				//		grantApplication.Attestation.Documents.Remove(existing);
+				//		_noteService.AddSystemNote(grantApplication, $"Attestation document \'{existing.FileName}\' deleted.");
+				//		_attachmentService.Delete(existing);
+				//	}
+				//	else if (attachment.Index.HasValue == false) // Update data only
+				//	{
+				//		var existing = _attachmentService.Get(attachment.Id);
+				//		existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);
+				//		attachment.MapToEntity(existing);
+				//		_attachmentService.Update(existing, true);
+				//	}
+				//	else if (files.Length > attachment.Index.Value && files[attachment.Index.Value] != null && attachment.Id == 0) // Add
+				//	{
+				//		var file = files[attachment.Index.Value].UploadFile(attachment.Description, attachment.FileName);
+				//		grantApplication.Attestation.Documents.Add(file);
+				//		_noteService.AddSystemNote(grantApplication, $"Attestation document \'{file.FileName}\' uploaded.");
+				//		_attachmentService.Add(file, true);
+				//	}
+				//	else if (files.Length > attachment.Index.Value && files[attachment.Index.Value] != null && attachment.Id != 0) // Update with file
+				//	{
+				//		var file = files[attachment.Index.Value].UploadFile(attachment.Description, attachment.FileName);
+				//		var existing = _attachmentService.Get(attachment.Id);
+				//		existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);
+				//		_noteService.AddSystemNote(grantApplication, $"Attestation document \'{existing.FileName}\' replaced with \'{file.FileName}\'.");
+				//		attachment.MapToEntity(existing);
+				//		existing.AttachmentData = file.AttachmentData;
+				//		_attachmentService.Update(existing, true);
+				//	}
+				//}
+
+				var breakdowns = _eligibleExpenseBreakdownService.GetPfsCostsForGrantApplication(grantApplicationId);
+				model = new AttestationViewModel(grantApplication, breakdowns);
 			}
 			catch (Exception ex)
 			{
@@ -242,6 +281,26 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			catch (Exception ex)
 			{
 				HandleAngularException(ex, model);
+			}
+			return Json(model, JsonRequestBehavior.AllowGet);
+		}
+
+		[HttpGet]
+		[Route("Application/Attestation/Initiatives")]
+		public JsonResult GetInitiatives()
+		{
+			var model = new ProgramInitiativesModel();
+			try
+			{
+				model.Initiatives = _programInitiativeService
+					.GetAll()
+					.Where(i => i.IsActive)
+					.Select(i => new ProgramInitiativeModel(i))
+					.ToList();
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex);
 			}
 			return Json(model, JsonRequestBehavior.AllowGet);
 		}

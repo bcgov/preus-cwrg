@@ -114,6 +114,10 @@ namespace CJG.Infrastructure.Entities
 		DbSet<EligibleExpenseType> EligibleExpenseTypes { get; }
 		DbSet<EligibleExpenseBreakdown> EligibleExpenseBreakdowns { get; }
 		DbSet<DenialReason> DenialReasons { get; }
+		DbSet<Attestation> Attestations { get; }
+		DbSet<AttestationParticipant> AttestationParticipants { get; }
+		DbSet<AttestationParticipantCost> AttestationParticipantCosts { get; }
+
 		DbSet<GrantApplicationTask> GrantApplicationTasks { get; }
 		DbSet<GrantApplicationEvaluation> GrantApplicationEvaluations { get; }
 		DbSet<GrantApplicationEvaluationAnswer> GrantApplicationEvaluationAnswers { get; }

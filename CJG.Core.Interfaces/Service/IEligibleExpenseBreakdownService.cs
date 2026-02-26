@@ -13,5 +13,7 @@ namespace CJG.Core.Interfaces.Service
 		void Delete(EligibleExpenseBreakdown breakdown);
 		EligibleExpenseBreakdown GetForServiceLine(int serviceLineId);
 		EligibleExpenseBreakdown GetForOccupationalSkillsTraining(int eligibleExpenseTypeId);
+
+		IEnumerable<EligibleExpenseBreakdown> GetPfsCostsForGrantApplication(int grantApplicationId);
 	}
 }

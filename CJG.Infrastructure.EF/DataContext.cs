@@ -123,6 +123,9 @@ namespace CJG.Infrastructure.EF
 		public DbSet<EligibleExpenseType> EligibleExpenseTypes => _context.EligibleExpenseTypes;
 		public DbSet<EligibleExpenseBreakdown> EligibleExpenseBreakdowns => _context.EligibleExpenseBreakdowns;
 		public DbSet<DenialReason> DenialReasons => _context.DenialReasons;
+		public DbSet<Attestation> Attestations => _context.Attestations;
+		public DbSet<AttestationParticipant> AttestationParticipants => _context.AttestationParticipants;
+		public DbSet<AttestationParticipantCost> AttestationParticipantCosts => _context.AttestationParticipantCosts;
 		public DbSet<GrantApplicationTask> GrantApplicationTasks => _context.GrantApplicationTasks;
 		public DbSet<GrantApplicationEvaluation> GrantApplicationEvaluations => _context.GrantApplicationEvaluations;
 		public DbSet<GrantApplicationEvaluationAnswer> GrantApplicationEvaluationAnswers => _context.GrantApplicationEvaluationAnswers;

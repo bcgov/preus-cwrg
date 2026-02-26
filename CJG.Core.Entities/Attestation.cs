@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CJG.Core.Entities
 {
-	public class Attestation: EntityBase
+	public class Attestation : EntityBase
 	{
 		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
@@ -31,5 +31,6 @@ namespace CJG.Core.Entities
 		public bool? AttestationNotApplicable { get; set; }
 
 		public virtual ICollection<Attachment> Documents { get; set; } = new List<Attachment>();
+		public virtual ICollection<AttestationParticipant> Participants { get; set; } = new List<AttestationParticipant>();
 	}
 }

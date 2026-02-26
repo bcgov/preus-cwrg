@@ -1302,6 +1302,8 @@
     <Compile Include="Areas\Ext\Models\ParticipantReporting\ParticipantViewModel.cs" />
     <Compile Include="Areas\Ext\Models\ParticipantReporting\ParticipantWithdrawalModel.cs" />
     <Compile Include="Areas\Ext\Models\ProofOfPaymentStatusViewModel.cs" />
+    <Compile Include="Areas\Ext\Models\Reporting\AttestationParticipantCostModel.cs" />
+    <Compile Include="Areas\Ext\Models\Reporting\AttestationParticipantModel.cs" />
     <Compile Include="Areas\Ext\Models\Reporting\AttestationViewModel.cs" />
     <Compile Include="Areas\Ext\Models\Reporting\ProofOfPaymentsDocumentsViewModel.cs" />
     <Compile Include="Areas\Ext\Models\Reporting\SuccessStoryViewModel.cs" />

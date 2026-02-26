@@ -62,7 +62,7 @@ namespace CJG.Application.Business.Models
 			if (claim.GrantApplication.RequireAllParticipantsBeforeSubmission)
 			{
 				this.Participants = claim.GrantApplication.ParticipantForms
-					.Where(c => c.Approved.HasValue && c.Approved.Value)
+					.Where(c => c.Approved == null || c.Approved == true)
 					.Select(s=> new ParticipantFormModel(s))
 					.OrderBy(o=>o.Name)
 					.ToList();
