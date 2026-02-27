@@ -57,6 +57,8 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     Id: $attrs.grantApplicationId
   };
 
+  $scope.hasValidationIssue = false;
+
   angular.extend(this, $controller('Section', { $scope: $scope, $attrs: $attrs }));
 
   /**
@@ -110,19 +112,41 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
   };
 
   $scope.recalculateParticipantPfsCosts = function (participant) {
-    console.log("Recalculating PFS for: ", participant.ParticipantName);
     var totalSpent = 0;
+    var elementIndex = 0;
+
     participant.Costs.forEach(function(cost) {
       let singleCost = parseFloat(cost.TotalSpent);
+      if (isNaN(singleCost)) {
+        singleCost = 0;
+        participant.Costs[elementIndex].TotalSpent = 0;
+      }
       totalSpent += singleCost;
     });
 
     participant.TotalAmountSpent = totalSpent;
     participant.UnusedFunds = participant.TotalApprovedCost - participant.TotalAmountSpent;
-    console.log("App: ", participant.TotalApprovedCost, "Unused: ", participant.UnusedFunds, "TotalSpent: ", participant.TotalAmountSpent);
+  }
 
-  //  console.log(participant);
-  //  console.log(participant.Costs);
+  $scope.validateOther = function (cost) {
+    if (!cost.RequireOther)
+      return false;
+
+    var totalSpent = parseFloat(cost.TotalSpent);
+    var costCategory = cost.CostCategoryOther;
+    if (costCategory === undefined || costCategory == null)
+      costCategory = '';
+
+    if (isNaN(totalSpent))
+      totalSpent = 0;
+
+    if (totalSpent === 0)
+      return false;
+
+    if (costCategory.length !== 0)
+      return false;
+
+    return true;
   }
 
   $scope.cancel = function () {

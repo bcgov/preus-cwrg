@@ -869,11 +869,20 @@ namespace CJG.Web.External.Areas.Part.Controllers
 			var kvpEmploymentTypes = _staticDataService.GetEmploymentTypes().Select(x => new KeyValuePair<int, string>(x.Id, x.Caption)).ToList();
 			model.ParticipantInfoStep4ViewModel.EmploymentTypes = kvpEmploymentTypes.ToList();
 
-			var kvpParticipantFundingStreams = _staticDataService.GetParticipantFundingStreams()
+			var participantFundingStreams = _staticDataService.GetParticipantFundingStreams()
 				.Where(pfs => pfs.Id != (int)ParticipantFundingStreams.NotApplicable)
+				.ToList();
+
+			foreach (var fundingStream in participantFundingStreams)
+			{
+				if (fundingStream.Id == (int)ParticipantFundingStreams.ComprehensiveTariffs)
+					fundingStream.Caption = "Other";
+			}
+
+			var kvpParticipantFundingStreams = participantFundingStreams
 				.Select(x => new KeyValuePair<int, string>(x.Id, x.Caption))
 				.ToList();
-			model.ParticipantInfoStep4ViewModel.ParticipantFundingStreams = kvpParticipantFundingStreams.ToList();
+			model.ParticipantInfoStep4ViewModel.ParticipantFundingStreams = kvpParticipantFundingStreams;
 
 			var kvpTrainingResults = _staticDataService.GetTrainingResults().Select(x => new KeyValuePair<int, string>(x.Id, x.Caption)).ToList();
 			model.ParticipantInfoStep4ViewModel.TrainingResults = kvpTrainingResults.ToList();

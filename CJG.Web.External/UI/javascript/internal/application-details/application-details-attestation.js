@@ -113,10 +113,32 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
     $scope.model.UnusedFunds = newFunds;
   };
 
+  $scope.validateOther = function (cost, event) {
+    event.preventDefault();
+    if (!cost.RequireOther)
+      return false;
+
+    var totalSpent = parseFloat(cost.TotalSpent);
+    var costCategory = cost.CostCategoryOther;
+    if (costCategory === undefined || costCategory == null)
+      costCategory = '';
+
+    if (isNaN(totalSpent))
+      totalSpent = 0;
+
+    if (totalSpent === 0)
+      return false;
+
+    if (costCategory.length !== 0)
+      return false;
+
+    return "Please enter a value for 'Other'";
+  }
+
   $scope.recalculateParticipantPfsCosts = function (participant) {
-    console.log("Recalculating PFS for: ", participant.ParticipantName);
     var totalSpent = 0;
     var elementIndex = 0;
+
     participant.Costs.forEach(function (cost) {
       let singleCost = parseFloat(cost.TotalSpent);
       if (isNaN(singleCost)) {
