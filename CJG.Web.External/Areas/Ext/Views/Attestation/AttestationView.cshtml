@@ -100,8 +100,14 @@
                             </tr>
                             <tr ng-repeat="cost in participant.Costs" class="participant-costs">
                                 <td>{{ cost.CostCategoryName }}:</td>
-                                <td><input type="text" class="input-inline-align input-right-align input--small" ng-model="cost.TotalSpent" ng-currency="13" ng-change="recalculateParticipantPfsCosts(participant)"></td>
-                                <td><input type="text" class="input-inline-align input--medium" ng-if="cost.RequireOther" ng-model="cost.CostCategoryOther" maxlength="150" placeholder="Please define 'Other'." /></td>
+                                <td><input type="text" class="input-inline-align input-right-align input--small" ng-disabled="model.IsComplete" ng-model="cost.TotalSpent" ng-currency="13" ng-change="recalculateParticipantPfsCosts(participant)"></td>
+                                <td>
+                                    <span ng-if="cost.RequireOther">
+                                        <input type="text" class="input-inline-align input--medium" ng-disabled="model.IsComplete" ng-model="cost.CostCategoryOther" maxlength="150" placeholder="Please define 'Other'." />
+                                        <br/>
+                                        <ng-validation ng-if="validateOther(cost)" class="error">Please enter a cost description</ng-validation>
+                                    </span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Total Amount Spent:</td>
