@@ -2,7 +2,10 @@
 {
 	public enum ParticipantFundingStreams
 	{
-		// Only care about N/A
+		// When we need to change the name to 'Other'
+		ComprehensiveTariffs = 3,
+
+		// When we only care about N/A
 		NotApplicable = 8
 	}
 
