@@ -34,37 +34,37 @@
 
                     <table class="table--attestations">
                         <tbody>
-                        <tr>
-                            <td>
-                                Reimbursed PFS Costs
-                            </td>
-                            <td>
-                                {{ model.ClaimedCosts | currency : '$' : 2 }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Total PFS allocated to participants<br/>
-                                (as can be supported by receipts in your records)
-                            </td>
-                            <td>
-                                <input type="text" class="input-inline-align input-right-align input--small" ng-model="model.AllocatedCosts" ng-disabled="model.IsComplete" ng-validation ng-currency="13" ng-change="recalculateAttestation()">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Unused PFS funds to be returned to Province
-                            </td>
-                            <td>
-                                {{ model.UnusedFunds | currency : '$' : 2 }}
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    Reimbursed PFS Costs
+                                </td>
+                                <td>
+                                    {{ model.ClaimedCosts | currency : '$' : 2 }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Total PFS allocated to participants<br />
+                                    (as can be supported by receipts in your records)
+                                </td>
+                                <td>
+                                    <input type="text" class="input-inline-align input-right-align input--small" ng-model="model.AllocatedCosts" ng-disabled="model.IsComplete" ng-validation ng-currency="13" ng-change="recalculateAttestation()">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Unused PFS funds to be returned to Province
+                                </td>
+                                <td>
+                                    {{ model.UnusedFunds | currency : '$' : 2 }}
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </li>
                 <li>
                     <p>
-                        If you have unused funds to be returned, you <strong>MUST</strong> email <a href="mailto:CWRG@gov.bc.ca">CWRG@gov.bc.ca</a> and cc your Program Manager.<br/>
+                        If you have unused funds to be returned, you <strong>MUST</strong> email <a href="mailto:CWRG@gov.bc.ca">CWRG@gov.bc.ca</a> and cc your Program Manager.<br />
                         Please include the following information in your email:
                     </p>
                     <ul>
@@ -76,7 +76,52 @@
                 </li>
                 <li>
                     <p><strong>Please submit your Participant Financial Supports Tracker here</strong></p>
-                    <p>Accepted file types: PDF, JPG, JPEG, PNG, GIF. Maximum file size is 5 MB.</p>
+                    
+                    <style>
+                        .attestation-participant {
+                            margin: 2em 0;
+                            border-bottom: 1px solid #ccc;
+                        }
+                        .participant-costs td {
+                            border-top: 0 !important;
+                            border-bottom: 0 !important;
+                            padding: 4px 10px;
+                        }
+                    </style>
+                    <div ng-repeat="participant in model.AttestationParticipants" class="attestation-participant">
+                        <h4>{{ participant.ParticipantName }}</h4>
+                        <strong>Approved Cost:</strong> {{ participant.TotalApprovedCost | currency : '$' : 2 }}<br />
+
+                        <table class="table table--expenses">
+                            <tr>
+                                <th>Cost Type</th>
+                                <th>Amount Spent ($)</th>
+                                <th>Cost Description</th>
+                            </tr>
+                            <tr ng-repeat="cost in participant.Costs" class="participant-costs">
+                                <td>{{ cost.CostCategoryName }}:</td>
+                                <td><input type="text" class="input-inline-align input-right-align input--small" ng-disabled="model.IsComplete" ng-model="cost.TotalSpent" ng-currency="13" ng-change="recalculateParticipantPfsCosts(participant)"></td>
+                                <td>
+                                    <span ng-if="cost.RequireOther">
+                                        <input type="text" class="input-inline-align input--medium" ng-disabled="model.IsComplete" ng-model="cost.CostCategoryOther" maxlength="150" placeholder="Please define 'Other'." />
+                                        <br/>
+                                        <ng-validation ng-if="validateOther(cost)" class="error">Please enter a cost description</ng-validation>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Total Amount Spent:</td>
+                                <td>{{ participant.TotalAmountSpent | currency : '$' : 2 }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Unused PFS:</td>
+                                <td>{{ participant.UnusedFunds | currency : '$' : 2 }}</td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                    @*<p>Accepted file types: PDF, JPG, JPEG, PNG, GIF. Maximum file size is 5 MB.</p>
 
                     <div class="form__group" ng-if="model.Attachments">
                         <table style="width: 100%;">
@@ -85,9 +130,9 @@
                                 <td style="width: 60%; vertical-align: top; word-wrap: break-word; word-break: break-all;">
                                     <a ng-if="attachment.Id" target="_blank" href="/Ext/Application/Attestation/Download/{{model.Id}}/{{attachment.Id}}">{{attachment.FileName}}</a>
                                     <span ng-if="!attachment.Id">{{attachment.FileName}}</span>
-                                    <br/>{{attachment.Description}}
+                                    <br />{{attachment.Description}}
                                 </td>
-                                <td style="vertical-align: top" ng-if="!model.IsComplete" >
+                                <td style="vertical-align: top" ng-if="!model.IsComplete">
                                     <button class="btn btn--secondary pull-right margin-left-10" ng-click="removeAttachment($index)">Remove</button>
                                     <button class="btn btn--secondary pull-right margin-left-10" ng-click="changeAttachment(attachment)">Change</button>
                                 </td>
@@ -96,12 +141,11 @@
                     </div>
                     <div class="form__group" ng-if="!model.IsComplete">
                         <button ng-if="model.AttachmentsMaximum > model.Attachments.length" class="btn btn--secondary" ng-click="addAttachment()" data-disableonsubmit="false">Add Attachment</button>
-                    </div>
+                    </div>*@
                 </li>
             </ol>
         </div>
-        <br/>
-
+        <br />
         <div class="form__group">
             <div class="proof-not-applicable-block">
                 <input type="checkbox" class="check-box" id="proof-not-applicable" ng-model="model.AttestationNotApplicable" ng-disabled="model.IsComplete" />
@@ -118,7 +162,7 @@
 
         <div class="button-group">
             <button class="btn btn--secondary" ng-click="cancel()">Cancel</button>
-            <button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="model.IsComplete || !model.CompleteAttestation || model.Attachments.length == 0 ">Save</button>
+            <button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="model.IsComplete || !model.CompleteAttestation">Save</button>
         </div>
     </div>
 </div>

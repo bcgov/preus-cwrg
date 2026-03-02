@@ -351,6 +351,29 @@ namespace CJG.Core.Entities
 		public string FromCountry { get; set; }
 
 		/// <summary>
+		/// get/set - Does the participant have multiple employment positions? "Do you have multiple employment positions?"
+		/// </summary>
+		public bool? MultipleEmploymentPositions { get; set; }
+
+		/// <summary>
+		/// get/set - Was the Participant's employment affected by Tariffs
+		/// </summary>
+		public bool? AffectedByTariffs { get; set; }
+
+		public int? ParticipantFundingStreamId { get; set; }
+
+		/// <summary>
+		/// get/set - If the participant was affected by tariffs, what stream/industry was the participant in
+		/// </summary>
+		[ForeignKey(nameof(ParticipantFundingStreamId))]
+		public virtual ParticipantFundingStream ParticipantFundingStream { get; set; }
+
+		/// <summary>
+		/// get/set - The last day of employment before the participant was unemployed
+		/// </summary>
+		public DateTime? PreviousEmploymentLastDayOfWork { get; set; }
+
+		/// <summary>
 		/// get/set - The foreign key to the EI benefits for this participant.
 		/// </summary>
 		public int EIBenefitId { get; set; }
@@ -387,6 +410,11 @@ namespace CJG.Core.Entities
 		/// </summary>
 		[Obsolete("This has been deprecated")]
 		public bool BusinessOwner { get; set; }
+
+		/// <summary>
+		/// Has the Participant ever been employed? Knockout question for other employment questions. 
+		/// </summary>
+		public bool? HaveYouEverBeenEmployed { get; set; }
 
 		/// <summary>
 		/// get/set - Whether this participant is an apprentice.
@@ -431,10 +459,26 @@ namespace CJG.Core.Entities
 		public int? AvgHoursPerWeekDuringTraining { get; set; }
 
 		/// <summary>
+		/// get/set - The average hours per week this participant worked in their previous job.
+		/// </summary>
+		[Range(0, 168, ErrorMessage = "The average hours per week must be within 0 to 168.")]
+		public int? PreviousAvgHoursPerWeek { get; set; }
+
+		/// <summary>
 		/// get/set - The hourly rate this participant makes.
 		/// </summary>
 		[Range(0, 99999, ErrorMessage = "The hourly rate must be within $0 to $99,999.")]
 		public decimal? HourlyWage { get; set; }
+
+		/// <summary>
+		/// get/set - The hourly rate this participant used to make.
+		/// </summary>
+		public decimal? PreviousHourlyWage { get; set; }
+
+		/// <summary>
+		/// get/set - The name of the most recent employer someone that was unemployed had
+		/// </summary>
+		public string PreviousEmployerFullName { get; set; }
 
 		/// <summary>
 		/// get/set - The primary city this participant works from.
@@ -454,7 +498,7 @@ namespace CJG.Core.Entities
 		public string LastHighSchoolName { get; set; }
 
 		/// <summary>
-		/// get/set - The last highs school city attended by this participant.
+		/// get/set - The last high school city attended by this participant.
 		/// </summary>
 		[MaxLength(250)]
 		public string LastHighSchoolCity { get; set; }
@@ -493,6 +537,17 @@ namespace CJG.Core.Entities
 		public virtual NationalOccupationalClassification Noc { get; set; }
 
 		/// <summary>
+		/// get/set - The foreign key to the Previous Employment NOC for this participant.
+		/// </summary>
+		public int? PreviousEmploymentNocId { get; set; }
+
+		/// <summary>
+		/// get/set - The Previous Employment NOC for this participant.
+		/// </summary>
+		[ForeignKey(nameof(PreviousEmploymentNocId))]
+		public virtual NationalOccupationalClassification PreviousEmploymentNoc { get; set; }
+
+		/// <summary>
 		/// get/set - The foreign key to the NAICS for this participant.
 		/// </summary>
 		public int? NaicsId { get; set; }
@@ -502,6 +557,17 @@ namespace CJG.Core.Entities
 		/// </summary>
 		[ForeignKey(nameof(NaicsId))]
 		public virtual NaIndustryClassificationSystem Naics { get; set; }
+
+		/// <summary>
+		/// get/set - The foreign key to the Previous Employment NAICS for this participant.
+		/// </summary>
+		public int? PreviousEmploymentNaicsId { get; set; }
+
+		/// <summary>
+		/// get/set - The Previous Employment NAICS for this participant.
+		/// </summary>
+		[ForeignKey(nameof(PreviousEmploymentNaicsId))]
+		public virtual NaIndustryClassificationSystem PreviousEmploymentNaics { get; set; }
 
 		/// <summary>
 		/// get/set - The employer name of the participant.

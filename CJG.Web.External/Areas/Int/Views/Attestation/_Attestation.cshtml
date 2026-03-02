@@ -52,9 +52,65 @@
                     </table>
                 </div>
             </div>
-            
+            <div class="clearfix"></div>
+ 
+            <div class="attestation-participant-section">
+                <div class="attestation-participant">
+                    <table class="table table--expenses table--attestation-participants" ng-repeat="participant in model.AttestationParticipants">
+                        <tr>
+                            <th>Participant Name</th>
+                            <th>Approved Cost</th>
+                            <th>Cost Type</th>
+                            <th>Amount Spent ($)</th>
+                            <th>Initiative</th>
+                        </tr>
+                        <tr ng-repeat="cost in participant.Costs" @*class="participant-costs"*@>
+                            <td ng-if="$index == 0" rowspan="{{ participant.Costs.length }}" class="participant-name">
+                                {{ participant.ParticipantName }}<br/>
+                            </td>
+                            <td ng-if="$index == 0" rowspan="{{ participant.Costs.length }}" class="participant-cost">{{ participant.TotalApprovedCost | currency : '$' : 2 }}</td>
+                            <td class="participant-cost-line">
+                                {{ cost.CostCategoryName }}:
+                                <span ng-if="cost.RequireOther">
+                                    <br />
+                                    <input type="text" ng-validation="validateOther(cost)" ng-show="cost.RequireOther" class="input-inline-align input--medium" maxlength="150" ng-model="cost.CostCategoryOther" ng-editing="section.editing && cost.RequireOther" placeholder="Please define 'Other'." />
+                                </span>
+                            </td>
+                            <td><input type="text" class="input-inline-align input-right-align input--small" ng-model="cost.TotalSpent" ng-currency ng-editing ng-change="recalculateParticipantPfsCosts(participant)"></td>
+                            <td ng-if="$index == 0" rowspan="{{ participant.Costs.length }}" class="participant-initiative">
+                                <div class="form__control">
+                                    <div class="control-wrapper">
+                                        <div class="wrapper--dropdown selectmenu input--medium">
+                                            <select ng-model="participant.ProgramInitiativeId" ng-options="item.Key as item.Value for item in programInitiatives" class="input--medium" ng-editing></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+                                <strong>Affected by Tariffs:</strong> <span>{{ participant.TariffAffected ? 'Yes' : 'No' }}</span><br/>
+                                <span ng-if="participant.TariffAffected">
+                                    <strong>Category:</strong> <span>{{ participant.TariffCategory }}</span>
+                                    <br/>
+                                </span>
+                                <a href="/Int/Application/Participant/Info/View/{{ participant.ParticipantFormId }}" target="_blank">View PIF</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Total Amount Spent:</td>
+                            <td colspan="2"></td>
+                            <td>{{ participant.TotalAmountSpent | currency : '$' : 2 }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr class="unused-funds">
+                            <td>Unused PFS:</td>
+                            <td colspan="2"></td>
+                            <td>{{ participant.UnusedFunds | currency : '$' : 2 }}</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             <div>
-                <div class="form__label"><strong>Participant Financial Supports Tracker</strong></div>
+                <div class="form__label"><strong>Participant Financial Supports Tracker Attachment (deprecated)</strong></div>
                 <div class="form__group" ng-if="model.Documents">
                     <table style="width: 100%;">
                         <tr ng-show="model.Documents.length === 0">

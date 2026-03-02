@@ -132,6 +132,8 @@ namespace CJG.Infrastructure.EF
 		public virtual DbSet<DenialReason> DenialReasons { get; set; }
 		public virtual DbSet<ProofOfPayment> ProofOfPayments { get; set; }
 		public virtual DbSet<Attestation> Attestations { get; set; }
+		public virtual DbSet<AttestationParticipant> AttestationParticipants { get; set; }
+		public virtual DbSet<AttestationParticipantCost> AttestationParticipantCosts { get; set; }
 		public virtual DbSet<GrantApplicationTask> GrantApplicationTasks { get; set; }
 		public virtual DbSet<GrantApplicationEvaluation> GrantApplicationEvaluations { get; set; }
 		public virtual DbSet<GrantApplicationEvaluationAnswer> GrantApplicationEvaluationAnswers { get; set; }
@@ -189,6 +191,8 @@ namespace CJG.Infrastructure.EF
 		public virtual DbSet<EIBenefit> EIBenefits { get; set; }
 		public virtual DbSet<MaritalStatus> MaritalStatuses { get; set; }
 		public virtual DbSet<FederalOfficialLanguage> FederalOfficialLanguages { get; set; }
+		public virtual DbSet<ParticipantFundingStream> ParticipantFundingStreams { get; set; }
+
 		#endregion
 
 		#region Claims

@@ -25,8 +25,9 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
           attestationNotApplicable: $scope.model.AttestationNotApplicable,
           allocatedCosts: $scope.model.AllocatedCosts,
           files: files,
-          attachments: JSON.stringify(attachments)
-        };
+          attachments: JSON.stringify(attachments),
+          costModel: JSON.stringify($scope.model.AttestationParticipants)
+      };
 
         return model;
       },
@@ -56,6 +57,8 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     Id: $attrs.grantApplicationId
   };
 
+  $scope.hasValidationIssue = false;
+
   angular.extend(this, $controller('Section', { $scope: $scope, $attrs: $attrs }));
 
   /**
@@ -70,6 +73,15 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     });
   }
 
+  function calculateAttestations() {
+    for (var i = 0; i < $scope.model.AttestationParticipants.length; i++) {
+      $scope.recalculateParticipantPfsCosts($scope.model.AttestationParticipants[i]);
+    }
+  //  $scope.model.AttestationParticipants.forEach(function (participant) {
+  //    $scope.recalculateParticipantPfsCosts(participant);
+  //  });
+  }
+
   /**
    * Initialize form data.
    * @function init
@@ -77,8 +89,14 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
    **/
   function init() {
     return Promise.all([
-      loadAttestation()
-    ]).catch(angular.noop);
+        loadAttestation()
+      ])
+      .then(function () {
+        setTimeout(function() {
+          calculateAttestations();
+        });
+      })
+      .catch(angular.noop);
   }
 
   $scope.recalculateAttestation = function () {
@@ -92,6 +110,44 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
 
     $scope.model.UnusedFunds = newFunds;
   };
+
+  $scope.recalculateParticipantPfsCosts = function (participant) {
+    var totalSpent = 0;
+    var elementIndex = 0;
+
+    participant.Costs.forEach(function(cost) {
+      let singleCost = parseFloat(cost.TotalSpent);
+      if (isNaN(singleCost)) {
+        singleCost = 0;
+        participant.Costs[elementIndex].TotalSpent = 0;
+      }
+      totalSpent += singleCost;
+    });
+
+    participant.TotalAmountSpent = totalSpent;
+    participant.UnusedFunds = participant.TotalApprovedCost - participant.TotalAmountSpent;
+  }
+
+  $scope.validateOther = function (cost) {
+    if (!cost.RequireOther)
+      return false;
+
+    var totalSpent = parseFloat(cost.TotalSpent);
+    var costCategory = cost.CostCategoryOther;
+    if (costCategory === undefined || costCategory == null)
+      costCategory = '';
+
+    if (isNaN(totalSpent))
+      totalSpent = 0;
+
+    if (totalSpent === 0)
+      return false;
+
+    if (costCategory.length !== 0)
+      return false;
+
+    return true;
+  }
 
   $scope.cancel = function () {
     window.location = $scope.section.redirectUrl;

@@ -7,14 +7,22 @@ namespace CJG.Web.External.Areas.Int.Models
 {
 	public class ParticipantEmploymentInfoViewModel
 	{
+		private const string DATEFORMAT = "yyyy-MM-dd";
+
 		public string EmploymentStatus { get; set; }
+		public string MultipleEmploymentPositions { get; set; }
+		public string HaveYouEverBeenEmployed { get; set; }
+
+		public string ParticipantAffectedByTariffs { get; set; }
+		public string ParticipantFundingStream { get; set; }
+
 		public string CityofWork { get; set; }
 		public string ReceivingEIValue { get; set; }
 
-		#region NOC
-		public string CurrentNocLevel4 { get; set; }
-		public string FutureNocLevel4 { get; set; }
-		#endregion
+		public string CurrentNocLevel5 { get; set; }
+		public string FutureNocLevel5 { get; set; }
+		public string PreviousEmploymentNocLevel5 { get; set; }
+		public string PreviousEmploymentNaicsLevel5 { get; set; }
 
 		public string ReceivingIA { get; set; }
 		public string Apprentice { get; set; }
@@ -27,30 +35,47 @@ namespace CJG.Web.External.Areas.Int.Models
 		public string OtherProgramDesc { get; set; }
 		public int? HoursPerWeek { get; set; }
 		public int? HoursPerWeekDuringTraining { get; set; }
+		public int? PreviousHoursPerWeek { get; set; }
 		public string MostImportantResult { get; set; }
 		public string TypeOfEmployment { get; set; }
 		public string AverageHourlyWage { get; set; }
+		public string PreviousHourlyWage { get; set; }
+		public string PreviousEmploymentLastDayOfWork { get; set; }
+		public string PreviousEmployerFullName { get; set; }
 		public string MaternalParentalBenefits { get; set; }
 		public bool ShowEmploymentFields { get; set; }
 
 		public ParticipantEmploymentInfoViewModel()
 		{
-
 		}
 
 		public ParticipantEmploymentInfoViewModel(ParticipantForm participantForm, INationalOccupationalClassificationService nationalOccupationalClassificationService)
 		{
 			EmploymentStatus = participantForm.EmploymentStatus?.Caption;
+			HaveYouEverBeenEmployed = participantForm.HaveYouEverBeenEmployed.AsYesOrNo();
+
+			ParticipantAffectedByTariffs = participantForm.AffectedByTariffs.AsYesOrNo();
+			ParticipantFundingStream = participantForm.ParticipantFundingStream != null
+				? participantForm.ParticipantFundingStream.Caption
+				: "---";
+
 			CityofWork = participantForm.PrimaryCity;
+			MultipleEmploymentPositions = participantForm.MultipleEmploymentPositions.AsYesOrNo();
 			ReceivingEIValue = participantForm.EIBenefit?.Caption;
 			if (participantForm?.GrantApplication?.GrantOpening?.GrantStream?.GrantProgram?.ProgramTypeId == ProgramTypes.WDAService)
 				ReceivingEIValue = participantForm.ReceivingEIBenefit.ToStringValue();
 
 			if (participantForm.CurrentNoc != null && participantForm.CurrentNoc.Id != 0 && !string.IsNullOrWhiteSpace(participantForm.CurrentNoc.Code))
-				CurrentNocLevel4 = participantForm.CurrentNoc.ToString();
+				CurrentNocLevel5 = participantForm.CurrentNoc.ToString();
 
 			if (participantForm.FutureNoc != null && participantForm.FutureNoc.Id != 0 && !string.IsNullOrWhiteSpace(participantForm.FutureNoc.Code))
-				FutureNocLevel4 = participantForm.FutureNoc.ToString();
+				FutureNocLevel5 = participantForm.FutureNoc.ToString();
+
+			if (participantForm.PreviousEmploymentNoc != null && participantForm.PreviousEmploymentNoc.Id != 0 && !string.IsNullOrWhiteSpace(participantForm.PreviousEmploymentNoc.Code))
+				PreviousEmploymentNocLevel5 = participantForm.PreviousEmploymentNoc.ToString();
+
+			if (participantForm.PreviousEmploymentNaics != null && participantForm.PreviousEmploymentNaics.Id != 0 && !string.IsNullOrWhiteSpace(participantForm.PreviousEmploymentNaics.Code))
+				PreviousEmploymentNaicsLevel5 = participantForm.PreviousEmploymentNaics.ToString();
 
 			ReceivingIA = participantForm.BceaClient ? "Yes" : "No";
 			Apprentice = participantForm.Apprentice ? "Yes" : "No";
@@ -58,16 +83,22 @@ namespace CJG.Web.External.Areas.Int.Models
 			ITARegistered = participantForm.ItaRegistered ? "Yes" : "No";
 			DurationOfEmployment = participantForm.HowLongYears.HasValue || participantForm.HowLongMonths.HasValue
 				? $"{participantForm.HowLongYears ?? 0} Years {participantForm.HowLongMonths ?? 0} Months"
-				:null;
-			ParticipatingInOtherFundingProg = participantForm.OtherPrograms ? "Yes" :  "No";
+				: null;
+			ParticipatingInOtherFundingProg = participantForm.OtherPrograms ? "Yes" : "No";
 			OwnerOfBusiness = participantForm.BusinessOwner ? "Yes" : "No";
 			ProgramDescription = participantForm.ProgramDescription;
 			OtherProgramDesc = participantForm.OtherProgramDesc;
 			HoursPerWeek = participantForm.AvgHoursPerWeek;
 			HoursPerWeekDuringTraining = participantForm.AvgHoursPerWeekDuringTraining;
+			PreviousHoursPerWeek = participantForm.PreviousAvgHoursPerWeek;
+			PreviousEmploymentLastDayOfWork = participantForm.PreviousEmploymentLastDayOfWork.HasValue
+				? participantForm.PreviousEmploymentLastDayOfWork.Value.ToString(DATEFORMAT)
+				: null;
+			PreviousEmployerFullName = participantForm.PreviousEmployerFullName;
 			MostImportantResult = participantForm.TrainingResult?.Caption;
 			TypeOfEmployment = participantForm.EmploymentType?.Caption;
-			AverageHourlyWage = string.Format("{0:c}", participantForm.HourlyWage);
+			AverageHourlyWage = $"{participantForm.HourlyWage:c}";
+			PreviousHourlyWage = participantForm.PreviousHourlyWage.HasValue ? $"{participantForm.PreviousHourlyWage:c}" : string.Empty;
 			MaternalParentalBenefits = participantForm.MaternalPaternal ? "Yes" : "No";
 			ShowEmploymentFields = new[] { "Employed", "Self-employed" }.Contains(EmploymentStatus);
 		}

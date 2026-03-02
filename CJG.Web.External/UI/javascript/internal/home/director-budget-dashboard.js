@@ -9,6 +9,9 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
         return $scope.model;
       }
     },
+    onSave: function (event, data) {
+      init();
+    },
     budgetTotal: 0,
     fiscalYearId: parseInt($attrs.ngFiscalYearId),
     currentFiscalYearId: parseInt($attrs.ngFiscalYearId)
@@ -143,11 +146,16 @@ app.controller('DirectorBudgetDashboard', function ($scope, $attrs, $controller,
       });
 
       let adjustedBudget = directorBudgetValue + directorOpeningBudgets;
-      let availableBudget = adjustedBudget - item.DirectorsReportPartialAvailableBudget;
-      let remainingBudget = availableBudget + directorClosingBudgets;
+      //let availableBudget = adjustedBudget - item.DirectorsReportPartialAvailableBudget;
+      let availableBudget = (directorBudgetValue + directorOpeningBudgets) -
+        item.DirectorsReportCommittedScheduleA +
+        item.DirectorsReportReceivables +
+        item.DirectorsReportSlippage;
 
       item.DirectorsReportAdjustedBudget = adjustedBudget;
       item.DirectorsReportAvailableBudget = availableBudget;
+
+      let remainingBudget = availableBudget + directorClosingBudgets;
       item.DirectorsReportRemainingBudget = remainingBudget;
     });
   }

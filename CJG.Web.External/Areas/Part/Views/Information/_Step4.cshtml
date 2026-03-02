@@ -2,17 +2,18 @@
 
 <div ng-if="model.ParticipantInfoStep4ViewModel" ng-show="model.ParticipantInfoStep0ViewModel.Step == 4">
     <p class="subheader--step">Step 4 of {{model.ParticipantInfoStep0ViewModel.TotalSteps}}</p>
-<h2 class="subheader">Employment information</h2>
+    <h2 class="subheader">Employment information</h2>
 
     <div class="form__group">
         @Html.DropDownList(new FormControl
         {
-            Label = "Which best describes your employment status <abbr title='Required'>*</abbr>",
+            Label = "Which best describes your employment status? <abbr title='Required'>*</abbr>",
             Model = "model.ParticipantInfoStep4ViewModel.EmploymentStatus",
             Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.EmploymentStatuses",
             CssClass = "input--full",
             IsInnerModel = true,
-            DefaultOverride = true
+            DefaultOverride = true,
+            OnChange = "changeEmploymentStatus()"
         })
         <p class="inline-help" ng-show="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4">
             Those who were unable or unwilling to work, but are now seeking to return to the workforce. This includes individuals who believe it would be impossible to rejoin the workforce without the assistance of this project.
@@ -21,10 +22,132 @@
             Your employment is unstable due to circumstances such as: having just cause to leave one’s employment; having received a lay-off notice; self-employment income is below the poverty line; the job is likely to be replaced with automation; an industry shut down is imminent or there have been changes in the marketplace due to such situations as a pandemic.
         </p>
     </div>
+  
+    <div>
+        <div class="form__group form__group--radio-inline">
+            <div class="form__label">
+                Has your employment been impacted by tariffs? <abbr title="Required">*</abbr>
+            </div>
+
+            <div>
+                <div class="form-item">
+                    @Html.RadioButton(new FormControl
+                    {
+                        Label = "Yes",
+                        Id = "ParticipantAffectedByTariffsYes",
+                        Model = "model.ParticipantInfoStep4ViewModel.ParticipantAffectedByTariffs",
+                        Value = "true"
+                    })
+                </div>
+
+                <div class="form-item">
+                    @Html.RadioButton(new FormControl
+                    {
+                        Label = "No",
+                        Id = "ParticipantAffectedByTariffsNo",
+                        Model = "model.ParticipantInfoStep4ViewModel.ParticipantAffectedByTariffs",
+                        Value = "false"
+                    })
+                </div>
+
+                @Html.ValidationError("model.ParticipantInfoStep4ViewModel.ParticipantAffectedByTariffs", true)
+            </div>
+        </div>
+        
+        <div ng-if="model.ParticipantInfoStep4ViewModel.ParticipantAffectedByTariffs">
+            @Html.DropDownList(new FormControl
+            {
+                Label = "Which of the following best describes the industry you work(ed) in? <abbr title='Required'>*</abbr>",
+                Model = "model.ParticipantInfoStep4ViewModel.ParticipantFundingStream",
+                Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.ParticipantFundingStreams",
+                CssClass = "input",
+                IsInnerModel = true,
+                DefaultOverride = true
+            })
+            <div class="inline-help" ng-if="model.ParticipantInfoStep4ViewModel.ParticipantFundingStream == 3">Any other impacted sector outside of Steel and Softwood Lumber.</div>
+        </div>
+    </div>
+
+    <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4">
+        <div class="form__group form__group--radio-inline">
+            <div class="form__label">
+                Have you ever been employed? <abbr title="Required">*</abbr>
+            </div>
+            
+            <div>
+                <div class="form-item">
+                    @Html.RadioButton(new FormControl
+                    {
+                        Label = "Yes",
+                        Id = "HaveYouEverBeenEmployedYes",
+                        Model = "model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed",
+                        Value = "true",
+                        OnChange = "initializeDatePickerForLastDayOfWork()"
+                    })
+                </div>
+
+                <div class="form-item">
+                    @Html.RadioButton(new FormControl
+                    {
+                        Label = "No",
+                        Id = "HaveYouEverBeenEmployedNo",
+                        Model = "model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed",
+                        Value = "false"
+                    })
+                </div>
+
+                @Html.ValidationError("model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed", true)
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed && (model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4)">
+        @Html.DatePickerDropDownList(new DatePickerFormControl
+        {
+            Id = "previouslastdayofwork-date",
+            Date = "model.ParticipantInfoStep2ViewModel.PreviousEmploymentLastDayOfWork",
+            IsRequired = false,
+            Label = "What was the end date of most recent employment?",
+            StartYear = "{{calculatedYear(model.ParticipantInfoStep0ViewModel.AppDateTimeNow, -20)}}",
+            EndYear = "{{calculatedYear(model.ParticipantInfoStep0ViewModel.AppDateTimeNow, 0)}}"
+        })
+    </div>
+
+    <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 6">
+        <div class="form__group form__group--radio-inline">
+            <div class="form__label">
+                Do you have more than one employer? <abbr title="Required">*</abbr>
+            </div>
+
+            <div>
+                <div class="form-item">
+                    @Html.RadioButton(new FormControl
+                    {
+                        Label = "Yes",
+                        Id = "MultipleEmploymentPositionsYes",
+                        Model = "model.ParticipantInfoStep4ViewModel.MultipleEmploymentPositions",
+                        Value = "true"
+                    })
+                </div>
+
+                <div class="form-item">
+                    @Html.RadioButton(new FormControl
+                    {
+                        Label = "No",
+                        Id = "MultipleEmploymentPositionsNo",
+                        Model = "model.ParticipantInfoStep4ViewModel.MultipleEmploymentPositions",
+                        Value = "false"
+                    })
+                </div>
+
+                @Html.ValidationError("model.ParticipantInfoStep4ViewModel.MultipleEmploymentPositions", true)
+            </div>
+        </div>
+    </div>
 
     <div class="form__group form__group--radio-inline">
         <div class="form__label">
-            Are you currently receiving Employment Insurance (EI) benefits?<abbr title="Required">*</abbr>
+            Are you currently receiving Employment Insurance (EI) benefits? <abbr title="Required">*</abbr>
         </div>
         <div>
             <div class="form-item">
@@ -57,12 +180,12 @@
     <div ng-if="model.ParticipantInfoStep4ViewModel.CurrentReceiveEI">
         <div class="form__group form__group--radio-inline">
             <div class="form__label">
-                Are these maternal or paternal benefits <abbr title="Required">*</abbr>
+                Are these maternal or paternal benefits? <abbr title="Required">*</abbr>
             </div>
 
             <div>
                 <div class="form-item">
-                    @Html.RadioButton(new FormControl()
+                    @Html.RadioButton(new FormControl
                     {
                         Label = "Yes",
                         Id = "MaternalPaternalYes",
@@ -72,7 +195,7 @@
                 </div>
 
                 <div class="form-item">
-                    @Html.RadioButton(new FormControl()
+                    @Html.RadioButton(new FormControl
                     {
                         Label = "No",
                         Id = "MaternalPaternalNo",
@@ -86,11 +209,11 @@
         </div>
         <div class="form__group form__group--radio-inline">
             <div class="form__label">
-                Have you received EI benefits in the past?<abbr title="Required">*</abbr>
+                Have you received EI benefits in the past? <abbr title="Required">*</abbr>
             </div>
             <div>
                 <div>
-                    @Html.RadioButton(new FormControl()
+                    @Html.RadioButton(new FormControl
                     {
                         Label = "No",
                         Id = "EIBenefitNo",
@@ -100,7 +223,7 @@
                 </div>
 
                 <div>
-                    @Html.RadioButton(new FormControl()
+                    @Html.RadioButton(new FormControl
                     {
                         Label = "In last Month",
                         Id = "EIBenefitLastMonth",
@@ -110,7 +233,7 @@
                 </div>
 
                 <div>
-                    @Html.RadioButton(new FormControl()
+                    @Html.RadioButton(new FormControl
                     {
                         Label = "In last 3 months",
                         Id = "EIBenefitLastThreeMonth",
@@ -120,7 +243,7 @@
                 </div>
 
                 <div>
-                    @Html.RadioButton(new FormControl()
+                    @Html.RadioButton(new FormControl
                     {
                         Label = "In last 36 months (3 years)",
                         Id = "EIBenefitLastThreeYears",
@@ -130,7 +253,7 @@
                 </div>
 
                 <div>
-                    @Html.RadioButton(new FormControl()
+                    @Html.RadioButton(new FormControl
                     {
                         Label = "In last 60 months (5 years)",
                         Id = "EIBenefitLastFiveYears",
@@ -149,12 +272,12 @@
                      model.ParticipantInfoStep4ViewModel.EIBenefit == 4 || model.ParticipantInfoStep4ViewModel.EIBenefit == 5">
             <div class="form__group form__group--radio-inline">
                 <div class="form__label">
-                    Were these maternal or paternal benefits <abbr title="Required">*</abbr>
+                    Were these maternal or paternal benefits? <abbr title="Required">*</abbr>
                 </div>
 
                 <div>
                     <div class="form-item">
-                        @Html.RadioButton(new FormControl()
+                        @Html.RadioButton(new FormControl
                         {
                             Label = "Yes",
                             Id = "PastMaternalPaternalYes",
@@ -164,7 +287,7 @@
                     </div>
 
                     <div class="form-item">
-                        @Html.RadioButton(new FormControl()
+                        @Html.RadioButton(new FormControl
                         {
                             Label = "No",
                             Id = "PastMaternalPaternalNo",
@@ -183,7 +306,7 @@
     <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1">
         <div class="form__group form__group--radio-inline">
             <div class="form__label">
-                Are you currently receiving Income Assistance (IA) <abbr title="Required">*</abbr>
+                Are you currently receiving Income Assistance (IA)? <abbr title="Required">*</abbr>
             </div>
 
             <div>
@@ -220,8 +343,8 @@
     </div>
 
     <div>
-        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3">
-            @Html.TextBoxBlock(new FormControl()
+        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 6">
+            @Html.TextBoxBlock(new FormControl
             {
                 Label = "While in training, how many hours per week will you be working? <abbr title='Required'>*</abbr>",
                 Model = "model.ParticipantInfoStep4ViewModel.AvgHoursPerWeekDuringTraining",
@@ -249,7 +372,7 @@
 
             @Html.TextBoxBlock(new FormControl
             {
-                Label = "What is your <span ng-show='model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2'>average </span>hourly wage (rounded to the nearest dollar) <abbr title='Required'>*</abbr>",
+                Label = "What is your <span ng-show='model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2'>average </span>hourly wage (rounded to the nearest dollar)? <abbr title='Required'>*</abbr>",
                 Model = "model.ParticipantInfoStep4ViewModel.HourlyWage",
                 IsInnerModel = true,
                 Size = "input--small",
@@ -257,9 +380,40 @@
             })
         </div>
 
-        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3">
+        <div ng-if="model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed && (model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4)">
+            @Html.TextBoxBlock(new FormControl
+            {
+                Label = "What is the business name of your most recent previous employer? <abbr title='Required'>*</abbr>",
+                Model = "model.ParticipantInfoStep4ViewModel.PreviousEmployerFullName",
+                IsInnerModel = true,
+                Size = "input--full"
+            })
+            <p class="inline-help">
+                This question is to determine eligibility and evaluation and your employer will not be contacted.
+            </p>
+
+            @Html.TextBoxBlock(new FormControl
+            {
+                Label = "How many hours per week did you work on average in your previous position?<abbr title='Required'>*</abbr>",
+                Model = "model.ParticipantInfoStep4ViewModel.PreviousAvgHoursPerWeek",
+                IsInnerModel = true,
+                Size = "input--small",
+                Options = "maxlength = '3'"
+            })
+
+            @Html.TextBoxBlock(new FormControl
+            {
+                Label = "What was your previous hourly rate of pay? <abbr title='Required'>*</abbr>",
+                Model = "model.ParticipantInfoStep4ViewModel.PreviousHourlyWage",
+                IsInnerModel = true,
+                Size = "input--small",
+                Options = "maxlength = '5'"
+            })
+        </div>
+
+        <div ng-if="model.ParticipantInfoStep4ViewModel.EmploymentStatus == 2 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 3 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 6">
             <div class="form__group form__group--radio-inline">
-                <label class="form__label" for="">What is your <u><em>current</em></u> National Occupation Classification (NOC) <u><em>before training</em></u> <abbr title="Required">*</abbr></label>
+                <label class="form__label" for="">What is your <u><em>current</em></u> National Occupation Classification (NOC) <u><em>before training</em></u>? <abbr title="Required">*</abbr></label>
                 <div class="form__control">
                     <div class="form__group--multiselect">
                         @Html.DropDown(new FormControl
@@ -305,16 +459,112 @@
                 </div>
             </div>
 
-            @Html.TextBoxBlock(new FormControl()
+            @Html.TextBoxBlock(new FormControl
             {
-                Label = "In what city do you <u><em>currently</em></u> perform your work <abbr title='Required'>*</abbr>",
+                Label = "In what city do you <u><em>currently</em></u> perform your work? <abbr title='Required'>*</abbr>",
                 Model = "model.ParticipantInfoStep4ViewModel.PrimaryCity",
                 IsInnerModel = true
             })
         </div>
 
+        <div ng-if="model.ParticipantInfoStep4ViewModel.HaveYouEverBeenEmployed && (model.ParticipantInfoStep4ViewModel.EmploymentStatus == 1 || model.ParticipantInfoStep4ViewModel.EmploymentStatus == 4)">
+            <div class="form__group form__group--radio-inline">
+                <label class="form__label">What is the National Occupation Classification (NOC) <u><em>of your previous employment</em></u>? <abbr title="Required">*</abbr></label>
+                <div class="form__control">
+                    <div class="form__group--multiselect">
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc1Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc1Codes",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc2Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc2Codes | filter:{Parent: model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc1Id}:true",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc3Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc3Codes | filter:{Parent: model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc2Id}:true",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc4Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc4Codes | filter:{Parent: model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc3Id}:true",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc5Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc5Codes | filter:{Parent: model.ParticipantInfoStep4ViewModel.PreviousEmploymentNoc4Id}:true",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form__group form__group--radio-inline">
+                <label class="form__label">What is the North American Industry Classification System (NAICS) <u><em>of your previous employment</em></u>? <abbr title="Required">*</abbr></label>
+                <div class="form__control">
+                    <div class="form__group--multiselect">
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics1Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics1Codes",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics2Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics2Codes | filter:{Parent: model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics1Id}:true",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics3Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics3Codes | filter:{Parent: model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics2Id}:true",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics4Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics4Codes | filter:{Parent: model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics3Id}:true",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+
+                        @Html.DropDown(new FormControl
+                        {
+                            Model = "model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics5Id",
+                            Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics5Codes | filter:{Parent: model.ParticipantInfoStep4ViewModel.PreviousEmploymentNaics4Id}:true",
+                            Size = "input--full",
+                            IsInnerModel = true
+                        })
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="form__group form__group--radio-inline">
-            <label class="form__label" for="">What <u><em>will</em></u> your National Occupation Classification (NOC) be <u><em>after training</em></u> <abbr title="Required">*</abbr></label>
+            <label class="form__label" for="">What <u><em>will</em></u> your National Occupation Classification (NOC) be <u><em>after training</em></u>? <abbr title="Required">*</abbr></label>
             <div class="form__control">
                 <div class="form__group--multiselect">
                     @Html.DropDown(new FormControl
@@ -363,7 +613,7 @@
 
     <div class="form__group form__group--radio-inline">
         <div class="form__label">
-            Are you an apprentice <abbr title="Required">*</abbr>
+            Are you an apprentice? <abbr title="Required">*</abbr>
         </div>
 
         <div>
@@ -378,7 +628,7 @@
             </div>
 
             <div class="form-item">
-                @Html.RadioButton(new FormControl()
+                @Html.RadioButton(new FormControl
                 {
                     Label = "No",
                     Id = "ApprenticeNo",
@@ -394,7 +644,7 @@
     <div ng-if="model.ParticipantInfoStep4ViewModel.Apprentice">
         <div class="form__group form__group--radio-inline">
             <div class="form__label">
-                Are you registered with the Industry Training Authority (ITA) <abbr title="Required">*</abbr>
+                Are you registered with the Industry Training Authority (ITA)? <abbr title="Required">*</abbr>
             </div>
 
             <div>
@@ -425,12 +675,12 @@
 
     <div class="form__group form__group--radio-inline">
         <div class="form__label">
-            On the first day of training will you be participating in any other provincially or federally funded training programs <abbr title="Required">*</abbr>
+            On the first day of training will you be participating in any other provincially or federally funded training programs? <abbr title="Required">*</abbr>
         </div>
 
         <div>
             <div class="form-item">
-                @Html.RadioButton(new FormControl()
+                @Html.RadioButton(new FormControl
                 {
                     Label = "Yes",
                     Id = "OtherProgramsYes",
@@ -440,7 +690,7 @@
             </div>
 
             <div class="form-item">
-                @Html.RadioButton(new FormControl()
+                @Html.RadioButton(new FormControl
                 {
                     Label = "No",
                     Id = "OtherProgramsNo",
@@ -454,7 +704,7 @@
     </div>
 
     <div ng-if="model.ParticipantInfoStep4ViewModel.OtherPrograms">
-        @Html.TextBoxBlock(new FormControl()
+        @Html.TextBoxBlock(new FormControl
         {
             Label = "Please describe the provincially or federally funded program <abbr title='Required'>*</abbr>",
             Model = "model.ParticipantInfoStep4ViewModel.OtherProgramDesc",
@@ -463,9 +713,9 @@
         })
     </div>
 
-    @Html.DropDownList(new FormControl()
+    @Html.DropDownList(new FormControl
     {
-        Label = "What do you expect will be the most important result of training <abbr title='Required'>*</abbr>",
+        Label = "What do you expect will be the most important result of training? <abbr title='Required'>*</abbr>",
         Model = "model.ParticipantInfoStep4ViewModel.TrainingResult",
         Options = "item.Key as item.Value for item in model.ParticipantInfoStep4ViewModel.TrainingResults",
         CssClass = "input--full",

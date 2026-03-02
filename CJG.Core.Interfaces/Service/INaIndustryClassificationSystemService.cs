@@ -1,10 +1,9 @@
-﻿using CJG.Core.Entities;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CJG.Core.Entities;
 
 namespace CJG.Core.Interfaces.Service
 {
-    public interface INaIndustryClassificationSystemService : IService
+	public interface INaIndustryClassificationSystemService : IService
     {
         void AddNaIndustryClassificationSystem(NaIndustryClassificationSystem newNaIndustryClassificationSystem);
 
@@ -39,6 +38,5 @@ namespace CJG.Core.Interfaces.Service
         NaIndustryClassificationSystem GetNaIndustryClassificationSystemParentByLevel(int naicsId, int maxLevel = 6);
 
 		int GetRootNaicsID(int naicsVersion);
-
 	}
 }

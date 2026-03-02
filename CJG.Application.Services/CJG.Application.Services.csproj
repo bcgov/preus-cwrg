@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountsReceivablesService.cs" />
+    <Compile Include="AttestationService.cs" />
     <Compile Include="AuthorizationService.cs" />
     <Compile Include="CipsCodesService.cs" />
     <Compile Include="ClaimEligibleCostService.cs" />

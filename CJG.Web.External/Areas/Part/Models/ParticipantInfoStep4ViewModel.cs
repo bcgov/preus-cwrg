@@ -1,4 +1,5 @@
-﻿using CJG.Application.Business.Models;
+﻿using System;
+using CJG.Application.Business.Models;
 using CJG.Core.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,13 +9,33 @@ namespace CJG.Web.External.Areas.Part.Models
 	public class ParticipantInfoStep4ViewModel : StepCompletedViewModelBase
 	{
 		[Required(ErrorMessage = "The Employment Status field is required.")]
-		[Range(1, 5, ErrorMessage = "The Employment Status field is required.")]
+		[Range(1, 6, ErrorMessage = "The Employment Status field is required.")]
 		public int EmploymentStatus { get; set; }
 		public List<KeyValuePair<int, string>> EmploymentStatuses { get; set; } = new List<KeyValuePair<int, string>>();
-		
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateHaveYouEverBeenEmployed")]
+		public bool? HaveYouEverBeenEmployed { get; set; }
+
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateEmploymentType")]
 		public int? EmploymentType { get; set; }
 		public List<KeyValuePair<int, string>> EmploymentTypes { get; set; } = new List<KeyValuePair<int, string>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateParticipantAffectedByTariffs")]
+		public bool? ParticipantAffectedByTariffs { get; set; }
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateParticipantFundingStream")]
+		public int? ParticipantFundingStream { get; set; }
+		public List<KeyValuePair<int, string>> ParticipantFundingStreams { get; set; } = new List<KeyValuePair<int, string>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateMultipleEmploymentPositions")]
+		public bool? MultipleEmploymentPositions { get; set; }
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentLastDayOfWork")]
+		public DateTime? PreviousEmploymentLastDayOfWork { get; set; }
+
+		public int? PreviousEmploymentLastDayOfWorkDay { get; set; }
+		public int? PreviousEmploymentLastDayOfWorkMonth { get; set; }
+		public int? PreviousEmploymentLastDayOfWorkYear { get; set; }
 
 		[Required(ErrorMessage = "The Training Result field is required.")]
 		[Range(1, int.MaxValue, ErrorMessage = "The Training Result field is required.")]
@@ -65,6 +86,50 @@ namespace CJG.Web.External.Areas.Part.Models
 		public List<KeyValueParent<int, string, int>> FutureNoc5Codes { get; set; } = new List<KeyValueParent<int, string, int>>();
 		#endregion
 
+		#region Previous Employment NOC
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNoc")]
+		public int? PreviousEmploymentNoc1Id { get; set; }
+		public List<KeyValuePair<int, string>> PreviousEmploymentNoc1Codes { get; set; } = new List<KeyValuePair<int, string>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNoc")]
+		public int? PreviousEmploymentNoc2Id { get; set; }
+		public List<KeyValueParent<int, string, int>> PreviousEmploymentNoc2Codes { get; set; } = new List<KeyValueParent<int, string, int>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNoc")]
+		public int? PreviousEmploymentNoc3Id { get; set; }
+		public List<KeyValueParent<int, string, int>> PreviousEmploymentNoc3Codes { get; set; } = new List<KeyValueParent<int, string, int>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNoc")]
+		public int? PreviousEmploymentNoc4Id { get; set; }
+		public List<KeyValueParent<int, string, int>> PreviousEmploymentNoc4Codes { get; set; } = new List<KeyValueParent<int, string, int>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNoc")]
+		public int? PreviousEmploymentNoc5Id { get; set; }
+		public List<KeyValueParent<int, string, int>> PreviousEmploymentNoc5Codes { get; set; } = new List<KeyValueParent<int, string, int>>();
+		#endregion
+
+		#region Previous Employment NAICS
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNaics")]
+		public int? PreviousEmploymentNaics1Id { get; set; }
+		public List<KeyValuePair<int, string>> PreviousEmploymentNaics1Codes { get; set; } = new List<KeyValuePair<int, string>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNaics")]
+		public int? PreviousEmploymentNaics2Id { get; set; }
+		public List<KeyValueParent<int, string, int>> PreviousEmploymentNaics2Codes { get; set; } = new List<KeyValueParent<int, string, int>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNaics")]
+		public int? PreviousEmploymentNaics3Id { get; set; }
+		public List<KeyValueParent<int, string, int>> PreviousEmploymentNaics3Codes { get; set; } = new List<KeyValueParent<int, string, int>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNaics")]
+		public int? PreviousEmploymentNaics4Id { get; set; }
+		public List<KeyValueParent<int, string, int>> PreviousEmploymentNaics4Codes { get; set; } = new List<KeyValueParent<int, string, int>>();
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmploymentNaics")]
+		public int? PreviousEmploymentNaics5Id { get; set; }
+		public List<KeyValueParent<int, string, int>> PreviousEmploymentNaics5Codes { get; set; } = new List<KeyValueParent<int, string, int>>();
+		#endregion
+
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateCurrentReceiveEI")]
 		public bool? CurrentReceiveEI { get; set; }
 
@@ -98,8 +163,17 @@ namespace CJG.Web.External.Areas.Part.Models
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateAvgHoursPerWeekDuringTraining"), Range(0, 168, ErrorMessage = "The average hours per week during training must be within 0 to 168.")]
 		public int? AvgHoursPerWeekDuringTraining { get; set; }
 
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousAvgHoursPerWeek"), Range(0, 168, ErrorMessage = "The previous average hours per week must be within 0 to 168.")]
+		public int? PreviousAvgHoursPerWeek { get; set; }
+
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidateHourlyWage"), Range(0, 99999, ErrorMessage = "The hourly rate must be within $0 to $99,999.")]
 		public decimal? HourlyWage { get; set; }
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousHourlyWage"), Range(0, 999, ErrorMessage = "The previous hourly wage must be within $0 to $999.")]
+		public decimal? PreviousHourlyWage { get; set; }
+
+		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePreviousEmployerFullName")]
+		public string PreviousEmployerFullName { get; set; }
 
 		[CustomValidation(typeof(ParticipantInfoStep4VmValidation), "ValidatePrimaryCity")]
 		public string PrimaryCity { get; set; }

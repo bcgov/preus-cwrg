@@ -117,5 +117,23 @@ namespace CJG.Application.Services
 				.ToList()
 				.FirstOrDefault(b => b.Caption.ToLower() == "occupational skills training");
 		}
+
+		public IEnumerable<EligibleExpenseBreakdown> GetPfsCostsForGrantApplication(int grantApplicationId)
+		{
+			var eligibleExpenseTypes = _dbContext.TrainingCosts
+				.Where(tc => tc.GrantApplicationId == grantApplicationId)
+				.SelectMany(ec => ec.EligibleCosts)
+				.Where(et => et.EligibleExpenseType.ServiceCategory.Caption.ToLower() == "participant financial supports")
+				.Select(e => e.EligibleExpenseTypeId)
+				.ToList();
+
+			var breakdowns = _dbContext.EligibleExpenseBreakdowns
+				.Where(ec => ec.IsActive)
+				.Where(ec => eligibleExpenseTypes.Contains(ec.EligibleExpenseTypeId))
+				.OrderBy(ec => ec.RowSequence)
+				.ToList();
+
+			return breakdowns;
+		}
 	}
 }

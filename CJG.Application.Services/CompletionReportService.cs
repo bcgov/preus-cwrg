@@ -1,21 +1,17 @@
-﻿using CJG.Core.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
 using CJG.Infrastructure.Entities;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace CJG.Application.Services
 {
 	public class CompletionReportService : Service, ICompletionReportService
 	{
-		#region Variables
-		#endregion
-
-		#region Constructors
-
 		/// <summary>
 		/// Creates a new instance of a <typeparamref name="CompletionReportService"/> and initializes the specified properties.
 		/// </summary>
@@ -27,9 +23,6 @@ namespace CJG.Application.Services
 		{
 		}
 
-		#endregion
-
-		#region Methods
 		/// <summary>
 		/// Get the completion report by ID
 		/// </summary>
@@ -42,12 +35,21 @@ namespace CJG.Application.Services
 
 		public IEnumerable<CompletionReportQuestion> GetCompletionReportQuestionsForStep(int completionReportId, int groupId)
 		{
-			return _dbContext.CompletionReportQuestions.AsNoTracking().Where(crq => crq.CompletionReportId == completionReportId && crq.GroupId == groupId && crq.IsActive).OrderBy(crq => crq.Sequence).ToArray();
+			return _dbContext.CompletionReportQuestions
+				.AsNoTracking()
+				.Where(crq => crq.CompletionReportId == completionReportId && crq.GroupId == groupId && crq.IsActive)
+				.OrderBy(crq => crq.Sequence)
+				.ToArray();
 		}
 
 		public ICollection<CompletionReportOption> GetCompletionReportOptionsForQuestions(int[] questions)
 		{
-			return _dbContext.CompletionReportOptions.AsNoTracking().Where(cro => questions.Contains(cro.QuestionId) && cro.IsActive).Distinct().ToList();
+			return _dbContext.CompletionReportOptions
+				.OrderBy(cro => cro.Sequence)
+				.AsNoTracking()
+				.Where(cro => questions.Contains(cro.QuestionId) && cro.IsActive)
+				.Distinct()
+				.ToList();
 		}
 
 		public CompletionReportOption GetCompletionReportOption(int id)
@@ -404,11 +406,13 @@ namespace CJG.Application.Services
 			{
 				foreach (var question in completionReportGroup.Questions)
 				{
-					question.Options = question.Options.Where(x => x.IsActive == true).ToList();
+					question.Options = question.Options
+						.Where(x => x.IsActive)
+						.OrderBy(x => x.Sequence)
+						.ToList();
 				}
 			}
 			return completionReportGroup;
 		}
-		#endregion
 	}
 }

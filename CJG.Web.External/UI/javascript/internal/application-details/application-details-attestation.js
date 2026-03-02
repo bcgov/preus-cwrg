@@ -19,7 +19,8 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
             var file = attachment.File; // Add file to array.
             return file;
           }),
-          documents: JSON.stringify($scope.section.documents)
+          documents: JSON.stringify($scope.section.documents),
+          costModel: JSON.stringify($scope.model.AttestationParticipants)
         };
 
         return model;
@@ -46,6 +47,9 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
     documents: []
   };
 
+  if (typeof ($scope.programInitiatives) === 'undefined')
+    $scope.programInitiatives = [];
+
   angular.extend(this, $controller('Section', { $scope: $scope, $attrs: $attrs }));
 
   /**
@@ -60,6 +64,15 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
     });
   }
 
+  function loadProgramInitiatives() {
+    return $scope.load({
+      url: '/Int/Application/Summary/ProgramInitiatives',
+      set: 'programInitiatives',
+      condition: !$scope.programInitiatives || !$scope.programInitiatives.length,
+      localCache: false
+    });
+  }
+
   /**
    * Initialize section data.
    * @function init
@@ -67,6 +80,7 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
    **/
   $scope.init = function () {
     return Promise.all([
+      loadProgramInitiatives(),
       loadAttestationDetails()
     ]).catch(angular.noop);
   }
@@ -98,6 +112,47 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
 
     $scope.model.UnusedFunds = newFunds;
   };
+
+  $scope.validateOther = function (cost, event) {
+    event.preventDefault();
+    if (!cost.RequireOther)
+      return false;
+
+    var totalSpent = parseFloat(cost.TotalSpent);
+    var costCategory = cost.CostCategoryOther;
+    if (costCategory === undefined || costCategory == null)
+      costCategory = '';
+
+    if (isNaN(totalSpent))
+      totalSpent = 0;
+
+    if (totalSpent === 0)
+      return false;
+
+    if (costCategory.length !== 0)
+      return false;
+
+    return "Please enter a value for 'Other'";
+  }
+
+  $scope.recalculateParticipantPfsCosts = function (participant) {
+    var totalSpent = 0;
+    var elementIndex = 0;
+
+    participant.Costs.forEach(function (cost) {
+      let singleCost = parseFloat(cost.TotalSpent);
+      if (isNaN(singleCost)) {
+        singleCost = 0;
+        participant.Costs[elementIndex].TotalSpent = 0;
+      }
+
+      totalSpent += singleCost;
+      elementIndex++;
+    });
+
+    participant.TotalAmountSpent = totalSpent;
+    participant.UnusedFunds = participant.TotalApprovedCost - participant.TotalAmountSpent;
+  }
 
   /**
    * Open modal file uploader popup and then add the new file to the model.

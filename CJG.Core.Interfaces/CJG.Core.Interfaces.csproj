@@ -96,6 +96,7 @@
     <Compile Include="IGlobalBudgetService.cs" />
     <Compile Include="Service\DuplicateSINParticipants.cs" />
     <Compile Include="Service\IAccountsReceivableService.cs" />
+    <Compile Include="Service\IAttestationService.cs" />
     <Compile Include="Service\IAuthorizationService.cs" />
     <Compile Include="Service\ICipsCodesService.cs" />
     <Compile Include="Service\IClaimEligibleCostService.cs" />
