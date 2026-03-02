@@ -108,14 +108,14 @@ namespace CJG.Web.External.Areas.Int.Models
 					FormatMoneyCell(ws.Cell(rowOffset, columnOffset), budget.DirectorsReportClaimsProcessed);
 				}
 
-				rowOffset++;
-				columnOffset = 1;
-				ws.Cell(rowOffset, columnOffset).SetValue("Unclaimed");
-				foreach (var budget in model.DirectorsReport)
-				{
-					columnOffset++;
-					FormatMoneyCell(ws.Cell(rowOffset, columnOffset), budget.DirectorsReportUnclaimed);
-				}
+				//rowOffset++;
+				//columnOffset = 1;
+				//ws.Cell(rowOffset, columnOffset).SetValue("Unclaimed");
+				//foreach (var budget in model.DirectorsReport)
+				//{
+				//	columnOffset++;
+				//	FormatMoneyCell(ws.Cell(rowOffset, columnOffset), budget.DirectorsReportUnclaimed);
+				//}
 
 				rowOffset++;
 				columnOffset = 1;
@@ -128,7 +128,7 @@ namespace CJG.Web.External.Areas.Int.Models
 
 				rowOffset++;
 				columnOffset = 1;
-				ws.Cell(rowOffset, columnOffset).SetValue("Slippage (Sched A - Claims Processed - Unclaimed)");
+				ws.Cell(rowOffset, columnOffset).SetValue("Slippage (Sched A - Claims Processed)");
 				foreach (var budget in model.DirectorsReport)
 				{
 					columnOffset++;

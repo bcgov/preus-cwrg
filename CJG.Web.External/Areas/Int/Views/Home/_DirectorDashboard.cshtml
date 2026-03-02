@@ -66,18 +66,18 @@
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportClaimsProcessed | currencyParentheses : "$" : 2 }}</td>
                         <td class="budget-info">@*{{ sumRow(model.DirectorsReport, 'DirectorsReportClaimsProcessed') | currencyParentheses : "$" : 2 }}*@</td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <th>Unclaimed <sup>1</sup></th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportUnclaimed | currencyParentheses : "$" : 2 }}</td>
-                        <td class="budget-info">@*{{ sumRow(model.DirectorsReport, 'DirectorsReportUnclaimed') | currencyParentheses : "$" : 2 }}*@</td>
-                    </tr>
+                        <td class="budget-info">-->@*{{ sumRow(model.DirectorsReport, 'DirectorsReportUnclaimed') | currencyParentheses : "$" : 2 }}*@<!--</td>
+                    </tr>-->
                     <tr>
                         <th>Receivables (total set up in current FY)</th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportReceivables | currencyParentheses : "$" : 2 }}</td>
                         <td class="budget-info">@*{{ sumRow(model.DirectorsReport, 'DirectorsReportReceivables') | currencyParentheses : "$" : 2 }}*@</td>
                     </tr>
                     <tr>
-                        <th>Slippage <sup>2</sup></th>
+                        <th>Slippage <sup>1</sup></th>
                         <td class="budget-info" ng-repeat="item in model.DirectorsReport">{{ item.DirectorsReportSlippage | currencyParentheses : "$" : 2 }}</td>
                         <td class="budget-info">@*{{ sumRow(model.DirectorsReport, 'DirectorsReportSlippage') | currencyParentheses : "$" : 2 }}*@</td>
                     </tr>
@@ -108,9 +108,10 @@
                     </tbody>
                 </table>
                 <p style="font-size: 0.9em; margin: 0.5em 0;">
-                    <sup>1</sup> Unclaimed amount = Schedule A amount of all agreements <em>(minus)</em> the approved Claimed Amount (files in Completion Reporting status only) <em>(minus)</em> Slippage
-                    <br/>
-                    <sup>2</sup> Slippage = Schedule A of all agreements that have a submitted a claim <em>(minus)</em> the approved Claimed Amount (files in Completion Reporting status only)</p>
+                    @*<sup>1</sup> Unclaimed amount = Schedule A amount of all agreements <em>(minus)</em> the approved Claimed Amount (files in Completion Reporting status only) <em>(minus)</em> Slippage
+        <br/>*@
+                    <sup>1</sup> Slippage = Schedule A of all agreements that have a submitted a claim <em>(minus)</em> the approved Claimed Amount (files in Completion Reporting status only)
+                </p>
             </div>
         </div>
 

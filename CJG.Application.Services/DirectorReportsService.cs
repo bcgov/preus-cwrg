@@ -230,7 +230,7 @@ namespace CJG.Application.Services
 				var directorsReportCommittedScheduleA = commitmentTotalCost;
 				var directorsReportClaimsProcessed = claimTotal;
 				var directorsReportSlippage = committedWithClaims.TotalCostOfApplications - claimTotal;
-				var directorsReportUnclaimed = commitmentTotalCost - (claimTotal + committedWithNoClaims.ValueOfApplications) - directorsReportSlippage;
+				//var directorsReportUnclaimed = commitmentTotalCost - (claimTotal + committedWithNoClaims.ValueOfApplications) - directorsReportSlippage;
 				var directorsReportReceivables = receivablesTotal;
 				var directorsReportYtdActual = directorsReportClaimsProcessed - directorsReportReceivables;
 
@@ -271,7 +271,7 @@ namespace CJG.Application.Services
 
 					DirectorsReportCommittedScheduleA = directorsReportCommittedScheduleA,
 					DirectorsReportClaimsProcessed = directorsReportClaimsProcessed,
-					DirectorsReportUnclaimed = directorsReportUnclaimed,
+					//DirectorsReportUnclaimed = directorsReportUnclaimed,
 					DirectorsReportReceivables = directorsReportReceivables,
 					DirectorsReportSlippage = directorsReportSlippage,
 					DirectorsReportYtdActual = directorsReportYtdActual,
