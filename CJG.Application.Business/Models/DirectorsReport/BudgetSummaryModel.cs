@@ -16,7 +16,7 @@ namespace CJG.Application.Business.Models.DirectorsReport
 		// New Directors Reports (Program Initiative Version)
 		public decimal DirectorsReportCommittedScheduleA { get; set; }
 		public decimal DirectorsReportClaimsProcessed { get; set; }
-		public decimal DirectorsReportUnclaimed { get; set; }
+		//public decimal DirectorsReportUnclaimed { get; set; }
 		public decimal DirectorsReportReceivables { get; set; }
 		public decimal DirectorsReportSlippage { get; set; }
 		public decimal DirectorsReportYtdActual { get; set; }
