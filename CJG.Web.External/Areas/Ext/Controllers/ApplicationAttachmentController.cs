@@ -198,6 +198,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					}
 					else if (files.Length > attachment.Index.Value && files[attachment.Index.Value] != null && attachment.Id != 0) // Update with file
 					{
+
 						var file = files[attachment.Index.Value].UploadFile(attachment.Description, attachment.FileName);
 						var existing = _attachmentService.Get(attachment.Id);
 						existing.RowVersion = Convert.FromBase64String(attachment.RowVersion);

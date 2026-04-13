@@ -108,15 +108,6 @@ namespace CJG.Web.External.Areas.Int.Models
 					FormatMoneyCell(ws.Cell(rowOffset, columnOffset), budget.DirectorsReportClaimsProcessed);
 				}
 
-				//rowOffset++;
-				//columnOffset = 1;
-				//ws.Cell(rowOffset, columnOffset).SetValue("Unclaimed");
-				//foreach (var budget in model.DirectorsReport)
-				//{
-				//	columnOffset++;
-				//	FormatMoneyCell(ws.Cell(rowOffset, columnOffset), budget.DirectorsReportUnclaimed);
-				//}
-
 				rowOffset++;
 				columnOffset = 1;
 				ws.Cell(rowOffset, columnOffset).SetValue("Receivables (total set up in current FY)");
