@@ -44,7 +44,6 @@ namespace CJG.Application.Services
 			if (!_httpContext.User.CanPerformAction(grantApplication, ApplicationWorkflowTrigger.EditClaimAR))
 				throw new NotAuthorizedException($"User does not have permission to edit application '{grantApplication?.Id}' accounts receivables.");
 
-
 			var currentReceivable = _dbContext.AccountsReceivables
 				.FirstOrDefault(ar => ar.GrantApplication.Id == grantApplication.Id);
 
@@ -64,7 +63,7 @@ namespace CJG.Application.Services
 			foreach (var ar in model.ReceivablesByServiceCategory)
 			{
 				var serviceCategoryId = ar.Key;
-				var overpayment = ar.Value;
+				var overpaymentGroup = ar.Value;
 
 				var serviceCategory = _dbContext.ServiceCategories.Find(serviceCategoryId);
 				if (serviceCategory == null)
@@ -86,7 +85,9 @@ namespace CJG.Application.Services
 					currentReceivable.AccountsReceivableEntries.Add(entry);
 				}
 
-				entry.Overpayment = overpayment;
+				entry.Overpayment = overpaymentGroup.Overpayment;
+				entry.OverpaymentLMDA = overpaymentGroup.OverpaymentLMDA;
+				entry.OverpaymentWDA = overpaymentGroup.OverpaymentWDA;
 			}
 
 			_noteService.GenerateUpdateNote(grantApplication);
@@ -190,13 +191,54 @@ namespace CJG.Application.Services
 				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.GrantProgramId == defaultProgramId)
 				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.IsActive)
 				.Where(ar => ar.GrantApplication.ProgramInitiativeId == programInitiativeId)
-				.SelectMany(ar => ar.AccountsReceivableEntries.Where(are => are.Overpayment != 0))
+				.SelectMany(ar => ar.AccountsReceivableEntries.Where(are => are.OverpaymentWDA != 0 || are.OverpaymentLMDA != 0))
 				.ToList();
+
+			var totalLmda = claimAccountsReceivableApplications.Sum(ar => ar.OverpaymentLMDA);
+			var totalWda = claimAccountsReceivableApplications.Sum(ar => ar.OverpaymentWDA);
 
 			var arBreakDown = new AccountsReceivableInitiativeData
 			{
 				Number = claimAccountsReceivableApplications.Select(ar => ar.AccountsReceivable.GrantApplication).Distinct().Count(),
-				Total = claimAccountsReceivableApplications.Sum(ar => ar.Overpayment)
+				HistoricalTotal = claimAccountsReceivableApplications.Sum(ar => ar.Overpayment),
+				Total = totalLmda + totalWda,
+				TotalLMDA = totalLmda,
+				TotalWDA = totalWda,
+			};
+
+			return arBreakDown;
+		}
+
+		public AccountsReceivableInitiativeData GetAccountsReceivableReportDataUnfiltered(int fiscalYearId)
+		{
+			var fiscalYear = _fiscalYearService.Get(fiscalYearId);
+			var defaultProgramId = GetDefaultGrantProgramId();
+
+			var fiscalStart = fiscalYear.StartDate;
+			var fiscalEnd = fiscalYear.EndDate;
+
+			var claimAccountsReceivableApplications = _dbContext.AccountsReceivables
+				.Include(ar => ar.GrantApplication)
+				.Include(ar => ar.AccountsReceivableEntries)
+				.AsNoTracking()
+				.Where(ar => ar.AccountsReceivableEntries.Any(c => c.OverpaymentWDA != 0 || c.OverpaymentLMDA != 0))
+				.Where(ar => ar.PaidDate >= fiscalStart)
+				.Where(ar => ar.PaidDate <= fiscalEnd)
+				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.GrantProgramId == defaultProgramId)
+				.Where(ar => ar.GrantApplication.GrantOpening.GrantStream.IsActive)
+				.SelectMany(ar => ar.AccountsReceivableEntries.Where(are => are.OverpaymentWDA != 0 || are.OverpaymentLMDA != 0))
+				.ToList();
+
+			var totalLmda = claimAccountsReceivableApplications.Sum(ar => ar.OverpaymentLMDA);
+			var totalWda = claimAccountsReceivableApplications.Sum(ar => ar.OverpaymentWDA);
+
+			var arBreakDown = new AccountsReceivableInitiativeData
+			{
+				Number = claimAccountsReceivableApplications.Select(ar => ar.AccountsReceivable.GrantApplication).Distinct().Count(),
+				HistoricalTotal = claimAccountsReceivableApplications.Sum(ar => ar.Overpayment),
+				Total = totalLmda + totalWda,
+				TotalLMDA = totalLmda,
+				TotalWDA = totalWda,
 			};
 
 			return arBreakDown;

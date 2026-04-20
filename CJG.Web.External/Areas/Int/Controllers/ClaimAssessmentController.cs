@@ -711,6 +711,63 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			return Json(model, JsonRequestBehavior.AllowGet);
 		}
 
+		[HttpGet]
+		[Route("Claim/PaymentsAndTariffCodes/{claimId}/{claimVersion}")]
+		public JsonResult GetPaymentsAndTariffCodes(int claimId, int claimVersion)
+		{
+			var model = new ClaimPaymentsAndTariffCodesModel();
+			try
+			{
+				var claim = _claimService.Get(claimId, claimVersion);
+				model = new ClaimPaymentsAndTariffCodesModel(claim);
+
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex);
+			}
+
+			return Json(model, JsonRequestBehavior.AllowGet);
+		}
+
+		[HttpPut]
+		[PreventSpam]
+		[ValidateRequestHeader]
+		[Route("Claim/PaymentsAndTariffCodes")]
+		public JsonResult UpdatePaymentsAndTariffCodes(ClaimPaymentsAndTariffCodesModel model)
+		{
+			try
+			{
+				var claim = _claimService.Get(model.ClaimId, model.ClaimVersion);
+				if (ModelState.IsValid)
+				{
+					var claimPaymentModel = new ClaimPaymentModel
+					{
+						ClaimId = claim.Id,
+						ClaimVersion = claim.ClaimVersion,
+						PaidLMDA = model.PaidLMDA,
+						PaidWDA = model.PaidWDA,
+						LMDATariffTRSW = model.LMDATariffTRSW,
+						LMDATariffTRST = model.LMDATariffTRST,
+						LMDATariffTRCO = model.LMDATariffTRCO,
+						WDATariffCWRG = model.WDATariffCWRG
+					};
+
+					_claimService.Update(claim, claimPaymentModel);
+				}
+				else
+				{
+					HandleModelStateValidation(model, ModelState.GetErrorMessages("<br />"));
+				}
+			}
+			catch (Exception e)
+			{
+				HandleAngularException(e, model);
+			}
+
+			return Json(model, JsonRequestBehavior.AllowGet);
+		}
+
 		private void SetModelQuestions(Claim claim, ClaimEvaluationFormListViewModel model, bool showCurrentQuestions = true)
 		{
 			model.Id = claim.Id;

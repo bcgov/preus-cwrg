@@ -775,6 +775,24 @@ namespace CJG.Application.Services
 						default:
 							return false; // No one is allowed to edit the claim now.
 					}
+				case ApplicationWorkflowTrigger.EditClaimPayment:
+					switch (grantApplication.ApplicationStateInternal)
+					{
+						case ApplicationStateInternal.ChangeRequest:
+						case ApplicationStateInternal.ChangeRequestDenied:
+						case ApplicationStateInternal.ChangeForApproval:
+						case ApplicationStateInternal.ChangeForDenial:
+						case ApplicationStateInternal.ChangeReturned:
+						case ApplicationStateInternal.ClaimApproved:
+						case ApplicationStateInternal.ClaimReturnedToApplicant:
+						case ApplicationStateInternal.ClaimAssessEligibility:
+						case ApplicationStateInternal.ClaimAssessReimbursement:
+						case ApplicationStateInternal.CompletionReporting:
+						case ApplicationStateInternal.Closed:
+							return user.HasPrivilege(Privilege.AM3, Privilege.AM4) || (user.HasPrivilege(Privilege.AM2) && isAssessor);
+						default:
+							return false; // No one is allowed to edit the claim now.
+					}
 				// State change actions.
 				case ApplicationWorkflowTrigger.SelectForAssessment:
 				case ApplicationWorkflowTrigger.RemoveFromAssessment:

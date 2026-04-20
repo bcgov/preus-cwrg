@@ -11,6 +11,7 @@ namespace CJG.Core.Interfaces.Service
 
 		List<AccountsReceivableBreakdown> GetAccountsReceivableReportData(int? fiscalYearId = null);
 		AccountsReceivableInitiativeData GetAccountsReceivableReportDataAsInitiatives(int fiscalYearId, ProgramInitiative programInitiative);
+		AccountsReceivableInitiativeData GetAccountsReceivableReportDataUnfiltered(int fiscalYearId);
 		List<AccountsReceivableApplicationBreakdownModel> GetAccountsReceivableBreakdownData(int fiscalYearId);
 	}
 }

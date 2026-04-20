@@ -590,7 +590,10 @@ namespace CJG.Core.Entities
 		/// <returns></returns>
 		public static Claim GetPriorApprovedClaim(this Claim claim)
 		{
-			return claim.GrantApplication.Claims.Where(c => c.IsApproved() && c.ClaimVersion < claim.ClaimVersion).OrderByDescending(c => c.ClaimVersion).FirstOrDefault();
+			return claim.GrantApplication.Claims
+				.Where(c => c.IsApproved() && c.ClaimVersion < claim.ClaimVersion)
+				.OrderByDescending(c => c.ClaimVersion)
+				.FirstOrDefault();
 		}
 
 		/// <summary>
@@ -601,7 +604,9 @@ namespace CJG.Core.Entities
 		/// <returns></returns>
 		public static bool HasPriorApprovedClaim(this Claim claim)
 		{
-			return claim.GrantApplication.Claims.Count() <= 1 ? false : claim.GrantApplication.Claims.Any(c => c.IsApproved() && c.ClaimVersion < claim.ClaimVersion);
+			return claim.GrantApplication.Claims.Count() <= 1
+				? false
+				: claim.GrantApplication.Claims.Any(c => c.IsApproved() && c.ClaimVersion < claim.ClaimVersion);
 		}
 
 		/// <summary>

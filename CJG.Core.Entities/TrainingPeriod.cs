@@ -202,7 +202,7 @@ namespace CJG.Core.Entities
 			// The DefaultOpeningDate must fall within the the DefaultPublishDate and EndDate.
 			if (DefaultOpeningDate < DefaultPublishDate || DefaultOpeningDate >= EndDate)
 				yield return new ValidationResult($"The default opening date must be between '{DefaultPublishDate.ToLocalMorning():yyyy-MM-dd}' and '{EndDate.ToLocalMidnight():yyyy-MM-dd}'.", new[] { nameof(DefaultOpeningDate) });
-
+			 
 			// Intake Period Start Date cannot be earlier than fiscal year start date.
 			if (FiscalYear != null && StartDate < FiscalYear.StartDate)
 				yield return new ValidationResult("The start date cannot be before the fiscal year start date.", new[] { nameof(StartDate) });

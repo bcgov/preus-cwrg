@@ -67,6 +67,10 @@ namespace CJG.Core.Entities
 		[Required, MaxLength(50), Index("IX_Claim", 3)]
 		public string ClaimNumber { get; set; }
 
+		public int? ClaimPaymentId { get; set; }
+		[ForeignKey(nameof(ClaimPaymentId))]
+		public virtual ClaimPayment ClaimPayment { get; set; }
+
 		/// <summary>
 		/// get/set - The current state of the claim.
 		/// </summary>

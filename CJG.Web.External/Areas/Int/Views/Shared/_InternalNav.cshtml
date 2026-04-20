@@ -2,14 +2,14 @@
 @using CJG.Infrastructure.Identity
 @using CJG.Web.External.Areas.Int.Controllers
 @{
-	var ia1 = User.HasPrivilege(Privilege.IA1);
-	var ia4 = User.HasPrivilege(Privilege.IA4);
-	var um1 = User.HasPrivilege(Privilege.UM1);
-	var pm1 = User.HasPrivilege(Privilege.PM1);
-	var gm1 = User.HasPrivilege(Privilege.GM1);
-	var dir = User.HasPrivilege(Privilege.AM4);
-	var ass = User.HasPrivilege(Privilege.AM2, Privilege.AM3, Privilege.AM5);
-	var sym = User.HasPrivilege(Privilege.SM);
+    var ia1 = User.HasPrivilege(Privilege.IA1);
+    var ia4 = User.HasPrivilege(Privilege.IA4);
+    var um1 = User.HasPrivilege(Privilege.UM1);
+    var pm1 = User.HasPrivilege(Privilege.PM1);
+    var gm1 = User.HasPrivilege(Privilege.GM1);
+    var dir = User.HasPrivilege(Privilege.AM4);
+    var ass = User.HasPrivilege(Privilege.AM2, Privilege.AM3, Privilege.AM5);
+    var sym = User.HasPrivilege(Privilege.SM);
 }
 
 <ul class="primary-nav">
@@ -91,6 +91,7 @@
                     <li>@Html.ActionLink("Intake Budget Summary", "Index", "GlobalBudget")</li>
                     <li>@Html.ActionLink("Accounts Receivable Summary", "Index", "AccountsReceivable")</li>
                     <li>@Html.ActionLink("Claims", nameof(ClaimIntakeController.ClaimManagementDashboardView), typeof(ClaimIntakeController), new { Area = "Int" })</li>
+                    <li>@Html.ActionLink("LMDA/WDA Report", nameof(ProgramFundingReportController.Index), typeof(ProgramFundingReportController), new { Area = "Int" })</li>
                 </ul>
             </li>
         }

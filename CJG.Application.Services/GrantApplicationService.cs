@@ -962,8 +962,7 @@ namespace CJG.Application.Services
 			var grantProgramId = GetDefaultGrantProgramId();
 
 			var query = _dbContext.GrantApplications
-				.Where(ga => ga.GrantOpening.GrantStream.GrantProgramId == grantProgramId)
-				.Where(ga => ga.ApplicationStateInternal != ApplicationStateInternal.Draft);
+				.Where(ga => ga.GrantOpening.GrantStream.GrantProgramId == grantProgramId);
 
 			if (!string.IsNullOrWhiteSpace(filter.Keywords))
 			{
@@ -982,7 +981,19 @@ namespace CJG.Application.Services
 			if (filter.ApplicationStatuses.Any())
 			{
 				var statuses = filter.ApplicationStatuses.Select(s => (ApplicationStateInternal)s);
-				query = query.Where(ga => statuses.Contains(ga.ApplicationStateInternal));
+				if (filter.ApplicationStatuses.Contains((int) ApplicationStateInternal.ReturnedToDraft))
+				{
+					query = query.Where(ga => statuses.Contains(ga.ApplicationStateInternal)
+							|| (ga.ApplicationStateInternal == ApplicationStateInternal.Draft && ga.ReturnedToDraft != null));
+				}
+				else
+				{
+					query = query.Where(ga => statuses.Contains(ga.ApplicationStateInternal));
+				}
+			}
+			else
+			{
+				query = query.Where(ga => ga.ApplicationStateInternal != ApplicationStateInternal.Draft && ga.ReturnedToDraft == null); // Exclude pure Draft applications}
 			}
 
 			if (filter.CourseTitles.Any())
@@ -998,9 +1009,7 @@ namespace CJG.Application.Services
 				query = query.Where(ga => ga.GrantOpening.TrainingPeriod.FiscalYearId == filter.FiscalYearId);
 
 			if (filter.GrantStreamIds.Any())
-			{
 				query = query.Where(ga => filter.GrantStreamIds.Contains(ga.GrantOpening.GrantStreamId));
-			}
 
 			if (filter.Intake.Any())
 			{
@@ -1035,46 +1044,6 @@ namespace CJG.Application.Services
 				query = query.Where(ga => ga.TrainingPrograms.Any(tp => tp.TrainingProviders.Any(p => p.Name.Contains(filter.TrainingProvider))));
 
 			query = query.OrderByDescending(g => g.DateSubmitted);
-
-			//var total = query.Count();
-			//var orderBy = filter.OrderBy != null && filter.OrderBy.Length > 0 ? filter.OrderBy : new[] { $"{nameof(GrantApplication.DateSubmitted)} desc" };
-			//var specialOrders = new List<string> { "TrainingStartDate", "TrainingProviderName", "TrainingProgramName" };
-			//var filterField = filter.OrderBy?[0].Split(new [] {' '}, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-
-			//if (!string.IsNullOrWhiteSpace(filterField) && specialOrders.Contains(filterField))
-			//{
-			//	query = query.ToList()
-			//		.AsQueryable();
-
-			//	var sortDesc = filter.OrderBy[0].Contains("desc");
-
-			//	switch (filterField)
-			//	{
-			//		case "TrainingStartDate":
-			//			query = query.OrderByDynamic(f => f.TrainingStartDate, !sortDesc);
-			//			break;
-
-			//		case "TrainingProviderName":
-			//			query = query.OrderByDynamic(f => f.TrainingPrograms.OrderBy(tp => tp.StartDate).FirstOrDefault().TrainingProvider.Name, !sortDesc);
-			//			break;
-
-			//		case "TrainingProgramName":
-			//			query = query.OrderByDynamic(f => f.TrainingPrograms.OrderBy(tp => tp.StartDate).FirstOrDefault().CourseTitle, !sortDesc);
-			//			break;
-
-			//		case "TrainingCostRequested":
-			//			query = query.OrderByDynamic(f => f.TrainingPrograms.OrderBy(tp => tp.StartDate).FirstOrDefault().CourseTitle, !sortDesc);
-			//			break;
-			//	}
-			//}
-			//else
-			//{
-			//	query = query.OrderByProperty(orderBy);
-			//}
-
-			//query = query
-			//	.Skip((page - 1) * quantity)
-			//	.Take(quantity);
 
 			return query.AsEnumerable();
 		}

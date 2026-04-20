@@ -17,6 +17,7 @@ namespace CJG.Core.Interfaces.Service
 		Claim CreateNewClaimVersion(GrantApplication grantApplication);
 		Claim Update(Claim claim, bool overrideRates = false);
 		Claim UpdateAccountsReceivable(Claim claim);
+		ClaimPayment Update(Claim claim, ClaimPaymentModel model);
 
 		IEnumerable<Claim> GetClaims(int id);
 		IEnumerable<Claim> GetClaims(ClaimState state);

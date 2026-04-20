@@ -47,11 +47,33 @@ app.controller('ApplicationAccountsReceivables', function ($scope, $attrs, $cont
     return new Date(year + 2, 12, 31);
   }
 
-  $scope.rowTotal = function (records) {
+  $scope.rowTotalHistorical = function (records) {
     var total = 0;
 
     records.forEach(function (ar) {
       const overpayment = parseFloat(ar.Overpayment);
+      total += overpayment;
+    });
+
+    return total;
+  }
+
+  $scope.rowTotalWDA = function (records) {
+    var total = 0;
+
+    records.forEach(function (ar) {
+      const overpayment = parseFloat(ar.OverpaymentWDA);
+      total += overpayment;
+    });
+
+    return total;
+  }
+
+  $scope.rowTotalLMDA = function (records) {
+    var total = 0;
+
+    records.forEach(function (ar) {
+      const overpayment = parseFloat(ar.OverpaymentLMDA);
       total += overpayment;
     });
 

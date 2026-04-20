@@ -386,6 +386,11 @@ namespace CJG.Core.Entities
 		/// </summary>
 		EditClaimAR = 120,
 
+		/// <summary>
+		/// EditClaimPayment - The Claim can have it's Payment and Tariffs edited
+		/// </summary>
+		EditClaimPayment = 122,
+
 		[Description("Edit Denial Reason")]
 		EditRecommendForDenialReasons = 121,
 

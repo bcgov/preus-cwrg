@@ -141,6 +141,7 @@
     <Compile Include="ClaimEligibleCostService.cs" />
     <Compile Include="DeliveryPartnerService.cs" />
     <Compile Include="DenialReasonService.cs" />
+    <Compile Include="ProgramFundingReportsService.cs" />
     <Compile Include="DirectorReportsService.cs" />
     <Compile Include="EvaluationFormService.cs" />
     <Compile Include="EvaluationNoteService.cs" />
