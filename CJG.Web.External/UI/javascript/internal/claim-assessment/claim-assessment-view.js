@@ -1,6 +1,7 @@
 require('./claim-assessment-attachments');
 require('./claim-assessment-details');
 require('./claim-assessment-evaluation');
+require('./claim-assessment-paid-tariff-codes');
 
 app.controller('ClaimAssessmentView', function ($scope, $attrs, $controller, $timeout, Utils, ngDialog) {
   $scope.section = {

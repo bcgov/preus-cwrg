@@ -568,6 +568,7 @@
     <Content Include="UI\javascript\internal\batch-approval\index.js" />
     <Content Include="UI\javascript\internal\change-request\change-program-dates-view.js" />
     <Content Include="UI\javascript\internal\change-request\index.js" />
+    <Content Include="UI\javascript\internal\claim-assessment\claim-assessment-paid-tariff-codes.js" />
     <Content Include="UI\javascript\internal\claim-assessment\claim-assessment-evaluation.js" />
     <Content Include="UI\javascript\internal\claim-assessment\index.js" />
     <Content Include="UI\javascript\internal\claim-dashboard\index.js" />
@@ -575,6 +576,7 @@
     <Content Include="UI\javascript\internal\completion-report\index.js" />
     <Content Include="UI\javascript\internal\debug\index.js" />
     <Content Include="UI\javascript\internal\debug\notifications-service-view.js" />
+    <Content Include="UI\javascript\internal\reports\program-funding-budget-dashboard.js" />
     <Content Include="UI\javascript\internal\program-initiatives\program-initiatives-items.js" />
     <Content Include="UI\javascript\internal\program-initiatives\program-initiatives-view.js" />
     <Content Include="UI\javascript\internal\program-initiatives\index.js" />
@@ -991,6 +993,9 @@
     <Content Include="Areas\Int\Views\ProgramInitiatives\_Initiatives.cshtml" />
     <Content Include="Areas\Int\Views\ProgramInitiatives\ProgramInitiativesView.cshtml" />
     <Content Include="Areas\Int\Views\Home\_DirectorDashboardForecastAndFinanceReport.cshtml" />
+    <Content Include="Areas\Int\Views\ProgramFundingReport\Index.cshtml" />
+    <Content Include="Areas\Int\Views\ProgramFundingReport\_DirectorDashboard.cshtml" />
+    <Content Include="Areas\Int\Views\ClaimAssessment\_ClaimAssessmentPaidTariffCodes.cshtml" />
     <None Include="NLog.Training.config">
       <DependentUpon>NLog.config</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1325,6 +1330,7 @@
     <Compile Include="Areas\Int\Controllers\ApplicationEvaluationController.cs" />
     <Compile Include="Areas\Int\Controllers\AttestationController.cs" />
     <Compile Include="Areas\Int\Controllers\ApplicationAccountsReceivableController.cs" />
+    <Compile Include="Areas\Int\Controllers\ProgramFundingReportController.cs" />
     <Compile Include="Areas\Int\Controllers\ProgramInitiativesController.cs" />
     <Compile Include="Areas\Int\Controllers\EvaluationFormController.cs" />
     <Compile Include="Areas\Int\Controllers\GlobalBudgetController.cs" />
@@ -1406,6 +1412,7 @@
     <Compile Include="Areas\Int\Models\EvaluationForm\ClaimEvaluationFormListViewModel.cs" />
     <Compile Include="Areas\Int\Models\EvaluationForm\ClaimEvaluationFormQuestionViewModel.cs" />
     <Compile Include="Areas\Int\Models\EvaluationForm\ClaimEvaluationQuestionAndAnswerViewModel.cs" />
+    <Compile Include="Areas\Int\Models\EvaluationForm\ClaimPaymentsAndTariffCodesModel.cs" />
     <Compile Include="Areas\Int\Models\EvaluationForm\EvaluationFormAttachmentsViewModel.cs" />
     <Compile Include="Areas\Int\Models\Attachments\GrantApplicationAttachmentsViewModel.cs" />
     <Compile Include="Areas\Int\Models\Attachments\UpdateAttachmentViewModel.cs" />
@@ -1484,6 +1491,7 @@
     <Compile Include="Areas\Int\Models\Organizations\OrganizationListViewModel.cs" />
     <Compile Include="Areas\Int\Models\Organizations\OrganizationsViewModel.cs" />
     <Compile Include="Areas\Int\Models\ParticipantSurveyInfoViewModel.cs" />
+    <Compile Include="Areas\Int\Models\ProgramFundingBudgetSummaryModel.cs" />
     <Compile Include="Areas\Int\Models\ProgramInitiatives\ProgramInitiativesModel.cs" />
     <Compile Include="Areas\Int\Models\ProgramInitiatives\ProgramInitiativeModel.cs" />
     <Compile Include="Areas\Int\Models\ProgramNotifications\ProgramNotificationPreviewModel.cs" />

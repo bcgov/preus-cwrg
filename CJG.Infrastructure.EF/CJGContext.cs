@@ -197,6 +197,7 @@ namespace CJG.Infrastructure.EF
 
 		#region Claims
 		public virtual DbSet<Claim> Claims { get; set; }
+		public virtual DbSet<ClaimPayment> ClaimPayments { get; set; }
 		public virtual DbSet<ClaimId> ClaimIds { get; set; }
 		public virtual DbSet<ClaimEligibleCost> ClaimEligibleCosts { get; set; }
 		public virtual DbSet<ClaimBreakdownCost> ClaimBreakdownCosts { get; set; }
@@ -219,6 +220,10 @@ namespace CJG.Infrastructure.EF
 		public virtual DbSet<DirectorBudgetRow> DirectorBudgetRows { get; set; }
 		public virtual DbSet<DirectorBudgetEntry> DirectorBudgetEntries { get; set; }
 		public virtual DbSet<GlobalProgramBudget> GlobalProgramBudgets { get; set; }
+
+		public virtual DbSet<ProgramFundingBudget> ProgramFundingBudgets { get; set; }
+		public virtual DbSet<ProgramFundingBudgetRow> ProgramFundingBudgetRows { get; set; }
+		public virtual DbSet<ProgramFundingBudgetEntry> ProgramFundingBudgetEntries{ get; set; }
 		#endregion
 
 		#region Completion Report
@@ -669,6 +674,10 @@ namespace CJG.Infrastructure.EF
 			modelBuilder.Entity<ClaimEvaluation>()
 				.HasRequired(e => e.Claim)
 				.WithMany();
+
+			modelBuilder.Entity<ClaimPayment>()
+				.HasRequired(e => e.Claim)
+				.WithMany();
 			#endregion
 
 			#region Documents
@@ -819,6 +828,16 @@ namespace CJG.Infrastructure.EF
 				.WillCascadeOnDelete(false);
 
 			modelBuilder.Entity<DirectorBudgetRow>()
+				.HasRequired(b => b.FiscalYear)
+				.WithMany()
+				.WillCascadeOnDelete(false);
+
+			modelBuilder.Entity<ProgramFundingBudget>()
+				.HasOptional(b => b.ProgramInitiative)
+				.WithMany()
+				.WillCascadeOnDelete(false);
+
+			modelBuilder.Entity<ProgramFundingBudgetRow>()
 				.HasRequired(b => b.FiscalYear)
 				.WithMany()
 				.WillCascadeOnDelete(false);

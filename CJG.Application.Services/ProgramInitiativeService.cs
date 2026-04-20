@@ -40,7 +40,10 @@ namespace CJG.Application.Services
 
 		public bool IsInUse(int programInitiativeId)
 		{
-			return _dbContext.GrantApplications.Any(ga => ga.ProgramInitiativeId == programInitiativeId);
+			var usedByApplications = _dbContext.GrantApplications.Any(ga => ga.ProgramInitiativeId == programInitiativeId);
+			var usedByAttestations = _dbContext.AttestationParticipants.Any(ap => ap.ProgramInitiativeId == programInitiativeId);
+
+			return usedByApplications || usedByAttestations;
 		}
 
 		public void UpdateInitiatives(List<ProgramInitiative> initiativeList, List<ProgramInitiative> removeItems)
@@ -61,6 +64,7 @@ namespace CJG.Application.Services
 					continue;
 
 				RemoveDirectorReports(removeItem);
+				RemoveProgramFundingReports(removeItem);
 
 				_dbContext.ProgramInitiatives.Remove(removeItem);
 			}
@@ -70,15 +74,29 @@ namespace CJG.Application.Services
 
 		private void RemoveDirectorReports(ProgramInitiative programInitiative)
 		{
-			var directorReports = _dbContext.DirectorBudgets
+			var budgets = _dbContext.DirectorBudgets
 				.Where(dr => dr.ProgramInitiativeId == programInitiative.Id);
 
-			foreach (var directorReport in directorReports)
+			foreach (var budget in budgets)
 			{
-				var budgetRows = directorReport.BudgetEntries.Select(be => be.DirectorBudgetRow);
-				_dbContext.DirectorBudgetEntries.RemoveRange(directorReport.BudgetEntries);
+				var budgetRows = budget.BudgetEntries.Select(be => be.DirectorBudgetRow);
+				_dbContext.DirectorBudgetEntries.RemoveRange(budget.BudgetEntries);
 				_dbContext.DirectorBudgetRows.RemoveRange(budgetRows);
-				_dbContext.DirectorBudgets.Remove(directorReport);
+				_dbContext.DirectorBudgets.Remove(budget);
+			}
+		}
+
+		private void RemoveProgramFundingReports(ProgramInitiative programInitiative)
+		{
+			var budgets = _dbContext.ProgramFundingBudgets
+				.Where(dr => dr.ProgramInitiativeId == programInitiative.Id);
+
+			foreach (var budget in budgets)
+			{
+				var budgetRows = budget.BudgetEntries.Select(be => be.ProgramFundingBudgetRow);
+				_dbContext.ProgramFundingBudgetEntries.RemoveRange(budget.BudgetEntries);
+				_dbContext.ProgramFundingBudgetRows.RemoveRange(budgetRows);
+				_dbContext.ProgramFundingBudgets.Remove(budget);
 			}
 		}
 	}

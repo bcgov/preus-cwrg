@@ -306,22 +306,16 @@ namespace CJG.Web.External.Areas.Int.Controllers
 
 				bool deliveryDatesModified = (model.DeliveryStartDate.ToLocalTime().Date != grantApplication.StartDate.ToLocalTime().Date || model.DeliveryEndDate.ToLocalTime().Date != grantApplication.EndDate.ToLocalTime().Date);
 				if (deliveryDatesModified && grantApplication.ApplicationStateInternal.In(ApplicationStateInternal.NewClaim, ApplicationStateInternal.ClaimAssessEligibility, ApplicationStateInternal.ClaimAssessReimbursement, ApplicationStateInternal.ClaimApproved))
-				{
 					ModelState.AddModelError(nameof(model.DeliveryStartDate) + " + " + nameof(model.DeliveryEndDate), "You cannot change the Delivery Dates when a Claim is currently submitted or a previous Claim has been approved.");
-				}
 
 				if (model.ProgramInitiativeId == null)
 					ModelState.AddModelError(nameof(model.ProgramInitiativeId), "Program Initiative is required.");
 
 				if (model.DeliveryPartnerId == null)
-				{
 					model.SelectedDeliveryPartnerServiceIds = new List<int>();
-				}
 
-				if ((!model.HasRequestedAdditionalFunding) ?? true)
-				{
+				if (!model.HasRequestedAdditionalFunding ?? true)
 					ModelState.Remove("DescriptionOfFundingRequested");
-				}
 
 				if (ModelState.IsValid)
 				{
@@ -370,6 +364,12 @@ namespace CJG.Web.External.Areas.Int.Controllers
 					grantApplication.Organization.DoingBusinessAsMinistry = model.DoingBusinessAsMinistry;
 					grantApplication.RowVersion = Convert.FromBase64String(model.RowVersion);
 					//grantApplication.RiskClassificationId = model.RiskClassificationId;
+
+					if (grantApplication.TrainingCost != null)
+					{
+						grantApplication.TrainingCost.CommittedWDA = model.CommittedWDA;
+						grantApplication.TrainingCost.CommittedLMDA = model.CommittedLMDA;
+					}
 
 					_grantApplicationService.UpdateChecklist(grantApplication, model.ChecklistItemIds);
 

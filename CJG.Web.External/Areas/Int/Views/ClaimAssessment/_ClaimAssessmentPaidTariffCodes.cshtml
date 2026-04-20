@@ -1,0 +1,64 @@
+﻿<div ng-controller="ClaimAssessmentPaidTariffCodes" ng-init="init()" show="true">
+    <h2 class="display-inline-block">Claim Payments and Tariff Codes</h2>
+    <div class="pull-right">
+        <span class="panel-section-buttons">
+            <section-edit-buttons ng-model="section.editing" ng-if="claim.CanEditClaimPayment"></section-edit-buttons>
+        </span>
+    </div>
+    <div class="panel-section-content" ng-if="section.show">
+        <div class="form form--2-col">
+            <div class="col-50p">
+                <div class="form__group">
+                    <div class="form__label">WDA Paid</div>
+                    <div class="form__control">
+                        <div class="control-wrapper" ng-if="section.editing">
+                            <input type="text" ng-model="model.PaidWDA" class="input-inline-align input-right-align" ng-currency="13" ng-editing />
+                        </div>
+                        <div class="control-wrapper" ng-if="!section.editing">
+                            <span>{{ model.PaidWDA | currency : '$' : 2 }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group form__group--radio-inline">
+                    <div class="form__label">WDA Tariff Codes</div>
+                    <div class="form__control">
+                        <div class="control-wrapper">
+                            <input type="checkbox" ng-model="model.WDATariffCWRG" id="wda-cwrg" ng-value="true" class="form__group--radio-inline" ng-disabled="!section.editing" />
+                            <label for="wda-cwrg">111CWRG</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-50p">
+                <div class="form__group">
+                    <div class="form__label">LMDA Paid</div>
+                    <div class="form__control">
+                        <div class="control-wrapper" ng-if="section.editing">
+                            <input type="text" ng-model="model.PaidLMDA" class="input-inline-align input-right-align" ng-currency="13" ng-editing />
+                        </div>
+                        <div class="control-wrapper" ng-if="!section.editing">
+                            <span>{{ model.PaidLMDA | currency : '$' : 2 }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form__group form__group--radio-inline">
+                    <div class="form__label">LMDA Tariff Codes</div>
+                    <div class="form__control">
+                        <div class="control-wrapper">
+                            <input type="checkbox" ng-model="model.LMDATariffTRSW" id="trsw" ng-value="true" class="form__group--radio-inline" ng-disabled="!section.editing" />
+                            <label for="trsw">111TRSW</label>
+                            <br />
+                            <input type="checkbox" ng-model="model.LMDATariffTRST" id="trst" ng-value="true" class="form__group--radio-inline" ng-disabled="!section.editing" />
+                            <label for="trst">111TRST</label>
+                            <br />
+                            <input type="checkbox" ng-model="model.LMDATariffTRCO" id="trco" ng-value="true" class="form__group--radio-inline" ng-disabled="!section.editing" />
+                            <label for="trco">111TRCO</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

@@ -120,7 +120,7 @@ namespace CJG.Application.Services
 				{
 					BudgetEntryType = BudgetEntryType.CoreStream,
 					FiscalYearId = fiscalYear.Id,
-					StreamFilter = initiative.ToString(),
+					StreamFilter = initiative.Code,
 					ProgramInitiative = initiative,
 					DateAdded = AppDateTime.UtcNow
 				});

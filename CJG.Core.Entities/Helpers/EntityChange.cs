@@ -70,7 +70,8 @@ namespace CJG.Core.Entities.Helpers
 			get
 			{
 				var found = this.Changes.TryGetValue(name, out IList<PropertyChange> change);
-				if (found) return change.ToArray();
+				if (found)
+					return change.ToArray();
 				return new PropertyChange[0];
 			}
 		}
@@ -94,16 +95,21 @@ namespace CJG.Core.Entities.Helpers
 			this.Changes = new Dictionary<string, IList<PropertyChange>>();
 
 			// No need to do more if it's being deleted.
-			if (entry.State == EntityState.Deleted) return;
+			if (entry.State == EntityState.Deleted)
+				return;
 
-			if (ignorePropertyNames == null) ignorePropertyNames = new string[0];
+			if (ignorePropertyNames == null)
+				ignorePropertyNames = new string[0];
+
 			var type = entry.Entity.GetType().GetProxyType();
 			var entityProperties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
 			foreach (var property in entry.CurrentValues.PropertyNames.Where(p => !ignorePropertyNames.Contains(p)))
 			{
 				var propertyName = GetDisplayName(type.GetProperty(property));
-				if (entry.State == EntityState.Added && entry.CurrentValues[property] == null) continue;
+				if (entry.State == EntityState.Added && entry.CurrentValues[property] == null)
+					continue;
+
 				// Test each property to see if it has changed.
 				if (entry.State == EntityState.Added || !(entry.OriginalValues[property]?.Equals(entry.CurrentValues[property]) ?? entry.OriginalValues[property] == entry.CurrentValues[property]))
 				{
@@ -196,18 +202,21 @@ namespace CJG.Core.Entities.Helpers
 					{
 						var trainingProvider = entry.Entity as TrainingProvider;
 						if (trainingProvider.TrainingAddressId == address.Id || trainingProvider.TrainingAddress == address)
-						     { return entry; }
+						{ return entry; }
 						else if (trainingProvider.TrainingProviderAddressId == address.Id || trainingProvider.TrainingProviderAddress == address)
-						         { return entry; }
+						{ return entry; }
 
 					}
-					
+
 					else if (entryType == typeof(GrantApplication))
 					{
 						var grantApplication = entry.Entity as GrantApplication;
-						if (grantApplication.ApplicantPhysicalAddressId == address.Id || grantApplication.ApplicantPhysicalAddress == address) return entry;
-						else if (grantApplication.ApplicantMailingAddressId == address.Id || grantApplication.ApplicantMailingAddress == address) return entry;
-						else if (grantApplication.OrganizationAddressId == address.Id || grantApplication.OrganizationAddress == address) return entry;
+						if (grantApplication.ApplicantPhysicalAddressId == address.Id || grantApplication.ApplicantPhysicalAddress == address)
+							return entry;
+						else if (grantApplication.ApplicantMailingAddressId == address.Id || grantApplication.ApplicantMailingAddress == address)
+							return entry;
+						else if (grantApplication.OrganizationAddressId == address.Id || grantApplication.OrganizationAddress == address)
+							return entry;
 					}
 				}
 				else if (childType == typeof(Attachment))
@@ -218,7 +227,8 @@ namespace CJG.Core.Entities.Helpers
 						var trainingProvider = entry.Entity as TrainingProvider;
 						if (trainingProvider.CourseOutlineDocumentId == attachment.Id
 							|| trainingProvider.BusinessCaseDocumentId == attachment.Id
-							|| trainingProvider.ProofOfQualificationsDocumentId == attachment.Id) return entry;
+							|| trainingProvider.ProofOfQualificationsDocumentId == attachment.Id)
+							return entry;
 					}
 					else if (entryType == typeof(Claim))
 					{
@@ -257,7 +267,8 @@ namespace CJG.Core.Entities.Helpers
 		/// <returns></returns>
 		private static string GetDisplayName(object entity)
 		{
-			if (entity == null) return null;
+			if (entity == null)
+				return null;
 			var entityType = entity.GetType().GetProxyType();
 			var getDisplayNameMethod = entityType.GetMethods(BindingFlags.Instance | BindingFlags.Public).FirstOrDefault(m => m.Name == "GetDisplayName" && !m.GetParameters().Any());
 			var attr = entityType.GetCustomAttribute<DisplayNameAttribute>();
@@ -272,7 +283,8 @@ namespace CJG.Core.Entities.Helpers
 		/// <returns></returns>
 		private static string GetDefaultText(object entity)
 		{
-			if (entity == null) return null;
+			if (entity == null)
+				return null;
 			var entityType = entity.GetType().GetProxyType();
 			var toStringMethod = entityType.GetMethods(BindingFlags.Instance | BindingFlags.Public).FirstOrDefault(m => m.Name == "ToString" && !m.GetParameters().Any() && m.DeclaringType == entityType);
 			return toStringMethod != null ? (string)toStringMethod.Invoke(entity, null) : null;
@@ -286,7 +298,8 @@ namespace CJG.Core.Entities.Helpers
 		/// <returns></returns>
 		private static string GetDefaultText(object entity, string[] propertyNames)
 		{
-			if (entity == null) return null;
+			if (entity == null)
+				return null;
 			var entityType = entity.GetType().GetProxyType();
 			var textProperty = entityType.GetProperties(BindingFlags.Instance | BindingFlags.Public).FirstOrDefault(p => propertyNames.Contains(p.Name));
 			return textProperty != null ? (string)textProperty?.GetValue(entity) : null;
@@ -419,8 +432,10 @@ namespace CJG.Core.Entities.Helpers
 		public void AddChange(string propertyName, object oldValue, object newValue, EntityState state = EntityState.Modified)
 		{
 			var found = this.Changes.TryGetValue(propertyName, out IList<PropertyChange> changes);
-			if (!found) this.Changes.Add(propertyName, new List<PropertyChange>(new[] { new PropertyChange(propertyName, oldValue, newValue, state) }));
-			else changes.Add(new PropertyChange(propertyName, oldValue, newValue, state));
+			if (!found)
+				this.Changes.Add(propertyName, new List<PropertyChange>(new[] { new PropertyChange(propertyName, oldValue, newValue, state) }));
+			else
+				changes.Add(new PropertyChange(propertyName, oldValue, newValue, state));
 		}
 
 		/// <summary>
@@ -436,8 +451,10 @@ namespace CJG.Core.Entities.Helpers
 			var value = valueProperty.GetValue(entry.Entity);
 
 			var found = this.Changes.TryGetValue(propertyName, out IList<PropertyChange> changes);
-			if (!found) this.Changes.Add(propertyName, new List<PropertyChange>(new[] { new PropertyChange(propertyName, null, value, state) }));
-			else changes.Add(new PropertyChange(propertyName, null, value, state));
+			if (!found)
+				this.Changes.Add(propertyName, new List<PropertyChange>(new[] { new PropertyChange(propertyName, null, value, state) }));
+			else
+				changes.Add(new PropertyChange(propertyName, null, value, state));
 		}
 
 		/// <summary>
@@ -479,7 +496,9 @@ namespace CJG.Core.Entities.Helpers
 		/// <returns></returns>
 		private static string SplitCamelCase(string value)
 		{
-			if (String.IsNullOrWhiteSpace(value)) return value;
+			if (string.IsNullOrWhiteSpace(value))
+				return value;
+
 			return Regex.Replace(value, "([A-Z])", " $1", RegexOptions.Compiled).Trim();
 		}
 		#endregion

@@ -7,13 +7,14 @@ using CJG.Web.External.Models.Shared;
 
 namespace CJG.Web.External.Areas.Int.Models.AccountsReceivables
 {
-	public class ApplicationAccountsReceivableModel : BaseViewModel
+    public class ApplicationAccountsReceivableModel : BaseViewModel
 	{
 		public string RowVersion { get; set; }
 
 		[Required(ErrorMessage = "Paid Date is required")]
 		public DateTime? AccountsReceivablePaidDate { get; set; }
 		public string AccountsReceivablePaidDateFormatted { get; set; }
+
 		public List<AccountsReceivableRowModel> Records { get; set; } = new List<AccountsReceivableRowModel>();
 
 		public ApplicationAccountsReceivableModel()
@@ -32,7 +33,9 @@ namespace CJG.Web.External.Areas.Int.Models.AccountsReceivables
 				{
 					ServiceCategoryId = ee.ServiceCategory.Id,
 					ServiceCategoryName = ee.ServiceCategory.Caption,
-					Overpayment = 0
+					Overpayment = 0,
+					OverpaymentLMDA = 0,
+					OverpaymentWDA = 0
 				})
 				.ToList();
 
@@ -49,6 +52,8 @@ namespace CJG.Web.External.Areas.Int.Models.AccountsReceivables
 					continue;
 
 				entry.Overpayment = ar.Overpayment;
+				entry.OverpaymentLMDA = ar.OverpaymentLMDA;
+				entry.OverpaymentWDA = ar.OverpaymentWDA;
 			}
 		}
 	}

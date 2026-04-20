@@ -1,4 +1,4 @@
-﻿@using CJG.Web.External.Areas.Int.Controllers
+@using CJG.Web.External.Areas.Int.Controllers
 
 <div ng-controller="ApplicationSummary" show-hide="false">
     <div class="panel-section-item">
@@ -100,9 +100,33 @@
                 <div class="form__group">
                     <div class="form__label">Training cost:</div>
                     <div class="form__control">
-                        {{model.EligibleTotalCost|currency}}
+                        {{model.EligibleTotalCost | currency}}
                     </div>
                 </div>
+                <div class="form__group">
+                    <div class="form__label">Committed:</div>
+                    <div class="form__control">
+                        <div class="form__group" style="padding-top: 0;">
+                            <div class="form__label form__minorlabel">WDA:</div>
+                            <div class="form__control" ng-if="section.editing">
+                                <input type="text" ng-model="model.CommittedWDA" class="input-inline-align input-right-align" ng-currency="13" ng-validation />
+                            </div>
+                            <div class="form__control" ng-if="!section.editing">
+                                <span>{{ model.CommittedWDA | currency : '$' : 2 }}</span>
+                            </div>
+                        </div>
+                        <div class="form__group">
+                            <div class="form__label form__minorlabel">LMDA:</div>
+                            <div class="form__control" ng-if="section.editing">
+                                <input type="text" ng-model="model.CommittedLMDA" class="input-inline-align input-right-align" ng-currency="13" ng-validation />
+                            </div>
+                            <div class="form__control" ng-if="!section.editing">
+                                <span>{{ model.CommittedLMDA | currency : '$' : 2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div ng-if="model.GrantProgramId == 3">
                     <div class="form__group">
                         <label class="form__label">Have you received or requested any other government or third-party funding for this training:</label>

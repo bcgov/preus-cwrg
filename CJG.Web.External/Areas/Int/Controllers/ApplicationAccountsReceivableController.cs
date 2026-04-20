@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web.Mvc;
 using CJG.Application.Business.Models;
 using CJG.Core.Interfaces.Service;
-using CJG.Infrastructure.Identity;
 using CJG.Web.External.Areas.Int.Models.AccountsReceivables;
 using CJG.Web.External.Controllers;
 using CJG.Web.External.Helpers;
@@ -33,7 +32,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		}
 		
 		[HttpGet]
-		[AuthorizeAction(Privilege.AM2, Privilege.AM4, Privilege.AM5)]
 		[Route("Application/AccountsReceivable/{grantApplicationId}")]
 		public ActionResult GetAccountsReceivables(int grantApplicationId)
 		{
@@ -53,7 +51,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 
         [HttpPut]
         [ValidateRequestHeader]
-        [AuthorizeAction(Privilege.AM2, Privilege.AM4, Privilege.AM5)]
         [Route("Application/AccountsReceivable")]
         public ActionResult UpdateAccountsReceivable(ApplicationAccountsReceivableModel model)
         {
@@ -70,7 +67,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 						GrantApplicationId = grantApplication.Id,
 						PaidDate = model.AccountsReceivablePaidDate.Value,
 						ReceivablesByServiceCategory = model.Records
-							.Select(r => new KeyValuePair<int, decimal>(r.ServiceCategoryId, r.Overpayment))
+							.Select(r => new KeyValuePair<int, OverpaymentGroup>(r.ServiceCategoryId, new OverpaymentGroup(r.Overpayment, r.OverpaymentLMDA, r.OverpaymentWDA)))
 							.ToList()
 					};
 
