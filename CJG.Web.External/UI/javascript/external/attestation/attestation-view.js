@@ -50,22 +50,16 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     grantApplicationId: $attrs.ngGrantApplicationId,
 
     redirectUrl: $attrs.ngRedirectUrl,
-    attachments: []
+    attachments: [],
+    hasValidationIssue: false
   };
 
   $scope.grantFile = {
     Id: $attrs.grantApplicationId
   };
-
-  $scope.hasValidationIssue = false;
-
+  
   angular.extend(this, $controller('Section', { $scope: $scope, $attrs: $attrs }));
 
-  /**
-   * Make AJAX request to fetch Attestation data
-   * @function loadAttachments
-   * @returns {Promise}
-   **/
   function loadAttestation() {
     return $scope.load({
       url: '/Ext/Application/Attestation/' + $scope.section.grantApplicationId,
@@ -77,16 +71,8 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     for (var i = 0; i < $scope.model.AttestationParticipants.length; i++) {
       $scope.recalculateParticipantPfsCosts($scope.model.AttestationParticipants[i]);
     }
-  //  $scope.model.AttestationParticipants.forEach(function (participant) {
-  //    $scope.recalculateParticipantPfsCosts(participant);
-  //  });
   }
 
-  /**
-   * Initialize form data.
-   * @function init
-   * @returns {Promise}
-   **/
   function init() {
     return Promise.all([
         loadAttestation()
@@ -97,6 +83,19 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
         });
       })
       .catch(angular.noop);
+  }
+
+  $scope.allowSave = function() {
+    if ($scope.model.IsComplete)
+      return false;
+
+    if ($scope.hasValidationIssue)
+      return false;
+
+    if ($scope.model.CompleteAttestation || $scope.model.AttestationNotApplicable)
+      return true;
+
+    return false;
   }
 
   $scope.recalculateAttestation = function () {
@@ -132,6 +131,8 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     if (!cost.RequireOther)
       return false;
 
+    $scope.hasValidationIssue = false;
+
     var totalSpent = parseFloat(cost.TotalSpent);
     var costCategory = cost.CostCategoryOther;
     if (costCategory === undefined || costCategory == null)
@@ -145,6 +146,8 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
 
     if (costCategory.length !== 0)
       return false;
+
+    $scope.hasValidationIssue = true;
 
     return true;
   }
