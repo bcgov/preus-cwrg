@@ -142,6 +142,25 @@ app.controller('ApplicationAttachmentsView', function ($scope, $attrs, $controll
       .catch(angular.noop);
   };
 
+  $scope.downloadAttachment = function(referenceId = 0) {
+    const attachments = $scope.model.Attachments.filter((d) => d.ReferenceId === referenceId);
+    if (attachments.length == 0)
+      return false;
+
+    const attachment = attachments[0];
+    const url = window.URL.createObjectURL(attachment.File);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = attachment.FileName;
+
+    document.body.appendChild(a);
+
+    a.click();
+    window.URL.revokeObjectURL(url);
+
+    return false;
+  }
+
   /**
    * Open modal file uploader popup and allow user to update the attachment and/or file.
    * @function changeAttachment
