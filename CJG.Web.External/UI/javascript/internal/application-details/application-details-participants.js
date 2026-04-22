@@ -177,4 +177,11 @@ app.controller('Participants', function ($scope, $attrs, $controller, $timeout, 
         updateParticipantReporting();
       });
   }
+
+  $scope.toggleLmdaEligibility = function (participant) {
+    return $scope.ajax({
+      url: '/Int/Application/Participant/Reporting/ToggleLMDAEligibility/' + $scope.parent.grantApplicationId + '/' + participant.ParticipantId,
+      method: 'PUT'
+    }).catch(angular.noop);
+  }
 });

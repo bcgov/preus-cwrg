@@ -144,5 +144,33 @@ namespace CJG.Web.External.Areas.Int.Controllers
 
 			return Json(model, JsonRequestBehavior.AllowGet);
 		}
+
+		[HttpPut]
+		[PreventSpam]
+		[ValidateRequestHeader]
+		[Route("Participant/Reporting/ToggleLMDAEligibility/{grantApplicationId}/{participantId}")]
+		public JsonResult ToggleLMDAEligibility(ParticipantLmdaEligibilityModel model)
+        {
+			if (model.GrantApplicationId == null)
+				throw new NullReferenceException("GrantApplicationId");
+
+			if (model.ParticipantId == null)
+				throw new NullReferenceException("ParticipantId");
+
+			var grantApplication = _grantApplicationService.Get(model.GrantApplicationId.Value);
+	        var participantForm = _participantService.Get(model.ParticipantId.Value);
+
+	        bool? result = null;
+			try
+			{
+				result = _participantService.ToggleLmdaReporting(grantApplication, participantForm);
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex, model);
+			}
+
+			return Json(result, JsonRequestBehavior.AllowGet);
+		}
 	}
 }

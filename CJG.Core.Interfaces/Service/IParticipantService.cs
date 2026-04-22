@@ -36,5 +36,6 @@ namespace CJG.Core.Interfaces.Service
 		void IncludeParticipant(ParticipantForm participant);
 		void ExcludeParticipant(ParticipantForm participant);
 		void UpdateWithdrawalSurveyReportedDate(List<SurveyParticipantModel> withdrawnParticipants, DateTime reportedDate);
+		bool ToggleLmdaReporting(GrantApplication grantApplication, ParticipantForm participantForm);
 	}
 }
