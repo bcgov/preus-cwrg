@@ -1490,6 +1490,7 @@
     <Compile Include="Areas\Int\Models\Organizations\OrganizationProfileViewModel.cs" />
     <Compile Include="Areas\Int\Models\Organizations\OrganizationListViewModel.cs" />
     <Compile Include="Areas\Int\Models\Organizations\OrganizationsViewModel.cs" />
+    <Compile Include="Areas\Int\Models\ParticipantLmdaEligibilityModel.cs" />
     <Compile Include="Areas\Int\Models\ParticipantSurveyInfoViewModel.cs" />
     <Compile Include="Areas\Int\Models\ProgramFundingBudgetSummaryModel.cs" />
     <Compile Include="Areas\Int\Models\ProgramInitiatives\ProgramInitiativesModel.cs" />

@@ -277,7 +277,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 			{
 				var grantApplication = _grantApplicationService.Get(grantApplicationId);
 				var attachment = _attachmentService.Get(attachmentId);
-				return File(attachment.AttachmentData, System.Net.Mime.MediaTypeNames.Application.Octet, $"{attachment.FileName}{attachment.FileExtension}");
+				return File(attachment.AttachmentData, System.Net.Mime.MediaTypeNames.Application.Octet, attachment.FileName);
 			}
 			catch (Exception ex)
 			{

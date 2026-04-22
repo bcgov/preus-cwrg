@@ -645,6 +645,11 @@ namespace CJG.Core.Entities
 		public DateTime? EarlyWithdrawalReportedOn { get; set; }
 
 		/// <summary>
+		/// This is an Internal-only tracking field about LMDA reporting
+		/// </summary>
+		public bool? LMDAEligible { get; set; }
+
+		/// <summary>
 		/// get - All the costs associated with this participant.
 		/// </summary>
 		public virtual ICollection<ParticipantCost> ParticipantCosts { get; set; } = new List<ParticipantCost>();

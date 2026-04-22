@@ -21,5 +21,8 @@ namespace CJG.Core.Entities
 
 		[Min(0)]
 		public int RowSequence { get; set; }
+
+		public bool IsWDA => Code.ToLower() == "wda";
+		public bool IsLMDA => Code.ToLower() == "lmda" || Code.ToLower() == "provincial";
 	}
 }

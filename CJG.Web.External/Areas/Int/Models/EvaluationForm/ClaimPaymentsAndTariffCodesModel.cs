@@ -1,12 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Data;
 using CJG.Core.Entities;
 using CJG.Web.External.Models.Shared;
 
 namespace CJG.Web.External.Areas.Int.Models.EvaluationForm
 {
-	public class ClaimPaymentsAndTariffCodesModel : BaseViewModel
+    public class ClaimPaymentsAndTariffCodesModel : BaseViewModel
 	{
 		public int ClaimId { get; set; }
 		public int ClaimVersion { get; set; }

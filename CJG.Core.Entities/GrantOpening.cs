@@ -150,7 +150,6 @@ namespace CJG.Core.Entities
 		/// <param name="grantStream"></param>
 		/// <param name="trainingPeriod"></param>
 		/// <param name="budgetAllocation"></param>
-		/// <param name="intakeTarget"></param>
 		public GrantOpening(GrantStream grantStream, TrainingPeriod trainingPeriod, decimal budgetAllocation)
 		{
 			if (budgetAllocation < 0)

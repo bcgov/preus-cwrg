@@ -197,10 +197,12 @@ namespace CJG.Application.Services
 
 			var receivableData = _accountsReceivableService.GetAccountsReceivableReportDataUnfiltered(fiscalYear.Id);
 
-			if (programInitiative.Code.ToUpper() == "LMDA")
+			var programCode = programInitiative.Code.ToUpper();
+
+			if (programInitiative.IsLMDA)
 				return receivableData.TotalLMDA;
 
-			if (programInitiative.Code.ToUpper() == "WDA")
+			if (programInitiative.IsWDA)
 				return receivableData.TotalWDA;
 
 			return 0;
@@ -223,13 +225,13 @@ namespace CJG.Application.Services
 			// There can be multiple claims, but they will be versioned and we only care about the highest version
 			if (claimType == ClaimTypes.SingleAmendableClaim)
 			{
-				if (programInitiative.Code.ToUpper() == "LMDA")
+				if (programInitiative.IsLMDA)
 					processedPaymentsTotals = grantApplications.Where(ga => statesForProcessedPayments.Contains(ga.ApplicationStateInternal))
 						.Sum(x => x.Claims.Where(c => c.IsApproved())
 									  .OrderByDescending(c => c.ClaimVersion)
 									  .FirstOrDefault()?.ClaimPayment?.PaidLMDA ?? 0);
 
-				if (programInitiative.Code.ToUpper() == "WDA")
+				if (programInitiative.IsWDA)
 					processedPaymentsTotals = grantApplications.Where(ga => statesForProcessedPayments.Contains(ga.ApplicationStateInternal))
 						.Sum(x => x.Claims.Where(c => c.IsApproved())
 									  .OrderByDescending(c => c.ClaimVersion)
@@ -239,13 +241,13 @@ namespace CJG.Application.Services
 			// There can be multiple claims - we don't care about claim version
 			if (claimType == ClaimTypes.MultipleClaimsWithoutAmendments)
 			{
-				if (programInitiative.Code.ToUpper() == "LMDA")
+				if (programInitiative.IsLMDA)
 					processedPaymentsTotals = grantApplications.Where(ga => statesForTotalNumberOfAgreements.Contains(ga.ApplicationStateInternal))
 												  .SelectMany(x => x.Claims)
 												  .Where(c => c.IsApproved())
 												  .Sum(c => c.ClaimPayment?.PaidLMDA) ?? 0;
 
-				if (programInitiative.Code.ToUpper() == "WDA")
+				if (programInitiative.IsWDA)
 					processedPaymentsTotals = grantApplications.Where(ga => statesForTotalNumberOfAgreements.Contains(ga.ApplicationStateInternal))
 												  .SelectMany(x => x.Claims)
 												  .Where(c => c.IsApproved())
@@ -273,10 +275,10 @@ namespace CJG.Application.Services
 				.Where(g => checkStates.Contains(g.ApplicationStateInternal))
 				.ToList();
 
-			if (programInitiative.Code.ToUpper() == "LMDA")
+			if (programInitiative.IsLMDA)
 				return applicationsWithStatus.Sum(ga => ga.TrainingCost.CommittedLMDA) ?? 0;
 
-			if (programInitiative.Code.ToUpper() == "WDA")
+			if (programInitiative.IsWDA)
 				return applicationsWithStatus.Sum(ga => ga.TrainingCost.CommittedWDA) ?? 0;
 
 			return 0;
