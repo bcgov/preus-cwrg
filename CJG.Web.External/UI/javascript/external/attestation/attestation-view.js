@@ -3,7 +3,7 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     name: 'AttestationView',
     displayName: 'Attestation',
     save: {
-      url: function () {
+      url: function() {
         return '/Ext/Application/Attestation/' + $scope.section.grantApplicationId;
       },
       method: 'PUT',
@@ -11,9 +11,9 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
       //data: function () {
       //  return $scope.model;
       //},
-      data: function () {
+      data: function() {
         var files = [];
-        var attachments = $scope.section.attachments.filter(function (attachment) {
+        var attachments = $scope.section.attachments.filter(function(attachment) {
           if (typeof (attachment.File) !== 'undefined') {
             attachment.Index = files.length;
             files.push(attachment.File);
@@ -24,33 +24,34 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
           completeAttestation: $scope.model.CompleteAttestation,
           attestationNotApplicable: $scope.model.AttestationNotApplicable,
           allocatedCosts: $scope.model.AllocatedCosts,
+          saveForLater: $scope.model.SaveForLater,
           files: files,
           attachments: JSON.stringify(attachments),
           costModel: JSON.stringify($scope.model.AttestationParticipants)
-      };
-
+        };
         return model;
       },
       backup: true
     },
-    loaded: function () {
+    loaded: function() {
       return $scope.model && $scope.model.RowVersion && $scope.model.RowVersion === $scope.grantFile.RowVersion;
     },
-    onSave: function () {
+    onSave: function() {
       $scope.section.attachments = [];
       window.location = $scope.section.redirectUrl;
     },
-    onRefresh: function () {
+    onRefresh: function() {
       $scope.section.attachments = [];
       return loadAttestation().catch(angular.noop);
     },
-    onCancel: function () {
+    onCancel: function() {
       $scope.section.attachments = [];
     },
     grantApplicationId: $attrs.ngGrantApplicationId,
 
     redirectUrl: $attrs.ngRedirectUrl,
     attachments: [],
+    validationIssues: new Map(),
     hasValidationIssue: false
   };
 
@@ -78,18 +79,33 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
         loadAttestation()
       ])
       .then(function () {
-        setTimeout(function() {
+        setTimeout(function () {
+          $scope.model.SaveForLater = false;
+          if ($scope.validationIssues == undefined)
+            $scope.validationIssues = new Map();
+
           calculateAttestations();
         });
       })
       .catch(angular.noop);
   }
 
+  $scope.saveForLater = function() {
+    $scope.model.SaveForLater = true;
+    $scope.save();
+
+    return false;
+  }
+
   $scope.allowSave = function() {
+    if ($scope.validationIssues == undefined)
+      $scope.validationIssues = new Map();
+
     if ($scope.model.IsComplete)
       return false;
 
-    if ($scope.hasValidationIssue)
+    const hasValidationIssue = [...$scope.validationIssues.values()].some(v => v === true);
+    if (hasValidationIssue)
       return false;
 
     if ($scope.model.CompleteAttestation || $scope.model.AttestationNotApplicable)
@@ -114,20 +130,31 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     var totalSpent = 0;
     var elementIndex = 0;
 
-    participant.Costs.forEach(function(cost) {
+    participant.Costs.forEach(function (cost) {
       let singleCost = parseFloat(cost.TotalSpent);
+
       if (isNaN(singleCost)) {
         singleCost = 0;
         participant.Costs[elementIndex].TotalSpent = 0;
       }
+
       totalSpent += singleCost;
+      elementIndex++;
     });
+
+    if (isNaN(totalSpent))
+      totalSpent = 0;
 
     participant.TotalAmountSpent = totalSpent;
     participant.UnusedFunds = participant.TotalApprovedCost - participant.TotalAmountSpent;
   }
 
   $scope.validateOther = function (cost) {
+    if ($scope.validationIssues == undefined)
+      $scope.validationIssues = new Map();
+    
+    $scope.validationIssues.set(cost.$$hashKey, false);
+
     if (!cost.RequireOther)
       return false;
 
@@ -147,6 +174,7 @@ app.controller('AttestationView', function ($scope, $attrs, $controller) {
     if (costCategory.length !== 0)
       return false;
 
+    $scope.validationIssues.set(cost.$$hashKey, true);
     $scope.hasValidationIssue = true;
 
     return true;
