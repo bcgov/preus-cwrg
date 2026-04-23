@@ -18,6 +18,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
 
 		public bool? AttestationNotApplicable { get; set; }
 		public bool? CompleteAttestation { get; set; }
+		public bool SaveForLater { get; set; }
 
 		public List<AttestationParticipantModel> AttestationParticipants { get; set; }
 

@@ -104,7 +104,7 @@
                                 <td><input type="text" class="input-inline-align input-right-align input--small" ng-disabled="model.IsComplete" ng-model="cost.TotalSpent" ng-currency="13" ng-change="recalculateParticipantPfsCosts(participant)"></td>
                                 <td>
                                     <span ng-if="cost.RequireOther">
-                                        <input type="text" class="input-inline-align input--medium" ng-disabled="model.IsComplete" ng-model="cost.CostCategoryOther" maxlength="150" placeholder="Please define 'Other'." />
+                                        <input type="text" class="input-inline-align input--medium" ng-disabled="model.IsComplete" ng-model="cost.CostCategoryOther" ng-change="recalculateParticipantPfsCosts(participant)" maxlength="150" placeholder="Please define 'Other'." />
                                         <br />
                                         <ng-validation ng-if="validateOther(cost)" class="error">Please enter a cost description</ng-validation>
                                     </span>
@@ -163,7 +163,8 @@
 
         <div class="button-group">
             <button class="btn btn--secondary" ng-click="cancel()">Cancel</button>
-            <button class="btn btn--primary btn--forward" ng-click="save()" ng-disabled="!allowSave()">Save</button>
+            <button class="btn btn--primary btn--forward" style="float: right" ng-click="save()" ng-disabled="!allowSave()">Save</button>
+            <button class="btn btn--primary btn--forward" style="float: right" ng-click="saveForLater()" ng-show="!model.IsComplete">Save for Later</button>
         </div>
     </div>
 </div>
