@@ -105,17 +105,24 @@ namespace CJG.Web.External.Areas.Ext.Models.ParticipantReporting
 			ProgramType = grantApplication.GrantOpening.GrantStream.GrantProgram.ProgramTypeId;
 			InvitationBrowserLink = $"{baseUrlFragment}/Part/Information/{HttpUtility.UrlEncode(grantApplication.InvitationKey.ToString())}";
 
-			var invitation = $"As this training is being funded through the {GrantProgramName}, you must complete a participant information form using the following link:\r\n\r\n{InvitationBrowserLink}\r\n\r\n";
+			var trainingDetails = grantApplication.GetParticipantTrainingLetterDetails();
+			var skillTrainingLocation = trainingDetails.Location;
+			var skillTrainingCourse = trainingDetails.CourseTitle;
+			var skillTrainingOrganization = grantApplication.OrganizationLegalName ?? grantApplication.Organization.LegalName;
+			var skillTrainingProvider = trainingDetails.TrainingProvider;
+
 			InvitationEmailText =
 				"Dear {{participant}},\r\n\r\n" +
 				"You have been identified as a participant for the following training program:\r\n\r\n" +
-				$"{grantApplication.GetProgramDescription()}\r\n" +
+				$"{skillTrainingCourse} training facilitated by the {skillTrainingOrganization} with training provided by {skillTrainingProvider}\r\n\r\n" +
 				$"Start Date: {trainingStartDate.ToLocalMorning():yyyy-MM-dd}\r\n" +
-				$"Location: {grantApplication.GetProviderLocation()}\r\n\r\n" +
-				$"{invitation}" +
+				$"Location: {skillTrainingLocation}\r\n\r\n" +
+				$"As this training is being funded through the BC Ministry of Post Secondary Education and Future Skills and its {GrantProgramName}, you must complete a participant information form using the following link:\r\n\r\n" +
+				$"{InvitationBrowserLink}\r\n\r\n" +
 				"Please use a current version of Chrome or Firefox to enter participant information.\r\n\r\n" +
 				$"Please complete your participant information form prior to midnight on {ParticipantReportingDueDate:yyyy-MM-dd}. " +
-				"If you do not complete this form, you may not be able to participate in the training.";
+				"If you do not complete this form, you may not be able to participate in the training.\r\n\r\n" +
+				"Funding provided by the Government of Canada and the Province of British Columbia.";
 		}
 	}
 }

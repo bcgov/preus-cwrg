@@ -1892,6 +1892,29 @@ namespace CJG.Core.Entities
 			return locations[grantApplication.GrantOpening.GrantStream.GrantProgram.ProgramTypeId];
 		}
 
+		/// <summary>
+		/// GetProviderLocation
+		/// </summary>
+		/// <param name="grantApplication"></param>
+		/// <returns></returns>
+		public static (string Location, string CourseTitle, string TrainingProvider) GetParticipantTrainingLetterDetails(this GrantApplication grantApplication)
+		{
+			var trainingProgram = grantApplication.TrainingPrograms.FirstOrDefault();
+
+			var location = string.Empty;
+			var courseTitle = string.Empty;
+			var courseTrainingProvider = string.Empty;
+
+			if (trainingProgram == null)
+				return (location, courseTitle, courseTrainingProvider);
+
+			location = trainingProgram.TrainingProvider?.TrainingAddress?.City;
+			courseTitle = trainingProgram.CourseTitle;
+			courseTrainingProvider = trainingProgram.TrainingProvider?.Name;
+
+			return (location, courseTitle, courseTrainingProvider);
+		}
+
 		public static bool ShowSkillsTrainingFocusDropDown(this GrantApplication grantApplication)
 		{
 			//Starting on Mar 15, 2022 we no longer display a dropdown for Skills Focus
