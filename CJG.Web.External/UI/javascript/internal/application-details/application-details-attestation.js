@@ -113,8 +113,7 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
     $scope.model.UnusedFunds = newFunds;
   };
 
-  $scope.validateOther = function (cost, event) {
-    event.preventDefault();
+  $scope.validateOther = function (cost) {
     if (!cost.RequireOther)
       return false;
 

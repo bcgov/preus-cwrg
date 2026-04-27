@@ -565,7 +565,8 @@ namespace CJG.Application.Services
 		/// <param name="participant"></param>
 		public void ExcludeParticipant(ParticipantForm participant)
 		{
-			if (participant == null) throw new ArgumentNullException(nameof(participant));
+			if (participant == null)
+				throw new ArgumentNullException(nameof(participant));
 
 			var grantApplication = participant.GrantApplication;
 
@@ -631,6 +632,25 @@ namespace CJG.Application.Services
 			}
 
 			_dbContext.CommitTransaction();
+		}
+
+		public bool ToggleLmdaReporting(GrantApplication grantApplication, ParticipantForm participantForm)
+		{
+			if (grantApplication == null)
+				throw new ArgumentNullException(nameof(grantApplication));
+
+			if (participantForm == null)
+				throw new ArgumentNullException(nameof(participantForm));
+
+			if (!participantForm.LMDAEligible.HasValue)
+				participantForm.LMDAEligible = false;
+
+			participantForm.LMDAEligible = !participantForm.LMDAEligible;
+
+			_dbContext.Update(participantForm);
+			_dbContext.CommitTransaction();
+
+			return participantForm.LMDAEligible.Value;
 		}
 
 		[Obsolete("May not be needed anymore. Consider removing, but leaving for reference for now.")]

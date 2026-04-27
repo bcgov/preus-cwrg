@@ -4,7 +4,6 @@ using System.Web;
 using System.Web.Mvc;
 using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
-using CJG.Web.External.Areas.Ext.Models.Attachments;
 using CJG.Web.External.Areas.Ext.Models.Reporting;
 using CJG.Web.External.Controllers;
 using CJG.Web.External.Helpers;
@@ -91,6 +90,7 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		/// <param name="allocatedCosts"></param>
 		/// <param name="attestationNotApplicable"></param>
 		/// <param name="completeAttestation"></param>
+		/// <param name="saveForLater"></param>
 		/// <param name="files"></param>
 		/// <param name="attachments"></param>
 		/// <param name="costModel"></param>
@@ -99,13 +99,14 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 		[PreventSpam]
 		[ValidateRequestHeader]
 		[Route("Application/Attestation/{grantApplicationId}")]
-		public JsonResult SaveAttestation(int grantApplicationId, decimal allocatedCosts, bool? attestationNotApplicable, bool? completeAttestation, HttpPostedFileBase[] files, string attachments, string costModel)
+		public JsonResult SaveAttestation(int grantApplicationId, decimal allocatedCosts, bool? attestationNotApplicable, bool? completeAttestation, bool? saveForLater, HttpPostedFileBase[] files, string attachments, string costModel)
 		{
 			var model = new AttestationViewModel
 			{
 				AllocatedCosts = allocatedCosts,
 				AttestationNotApplicable = attestationNotApplicable,
-				CompleteAttestation = completeAttestation
+				CompleteAttestation = completeAttestation,
+				SaveForLater = saveForLater ?? false
 			};
 
 			var participantData = JsonConvert.DeserializeObject<List<AttestationParticipantModel>>(costModel);
@@ -212,13 +213,13 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 
                 var sendCompletionNotification = false;
 
-                if (model.CompleteAttestation.HasValue && model.CompleteAttestation.Value)
-                {
-                    grantApplication.Attestation.State = AttestationState.Complete;
-                    sendCompletionNotification = true;
-                }
+				if (!model.SaveForLater && model.CompleteAttestation.HasValue && model.CompleteAttestation.Value)
+				{
+					grantApplication.Attestation.State = AttestationState.Complete;
+					sendCompletionNotification = true;
+				}
 
-                _grantApplicationService.UpdateAttestation(grantApplication, sendCompletionNotification);
+				_grantApplicationService.UpdateAttestation(grantApplication, sendCompletionNotification);
 				var breakdowns = _eligibleExpenseBreakdownService.GetPfsCostsForGrantApplication(grantApplicationId);
 
 				model = new AttestationViewModel(grantApplication, breakdowns);

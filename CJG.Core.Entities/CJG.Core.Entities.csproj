@@ -124,6 +124,7 @@
     <Compile Include="AttachmentType.cs" />
     <Compile Include="AttestationParticipant.cs" />
     <Compile Include="AttestationParticipantCost.cs" />
+    <Compile Include="ClaimPayment.cs" />
     <Compile Include="DirectorBudgetEntry.cs" />
     <Compile Include="DirectorBudgetEntryType.cs" />
     <Compile Include="DirectorBudgetRow.cs" />
@@ -163,6 +164,10 @@
     <Compile Include="ParticipantWithdrawalSurveyQuestion.cs" />
     <Compile Include="ParticipantWithdrawalSurveyQuestionOption.cs" />
     <Compile Include="PaymentRequestExtensions.cs" />
+    <Compile Include="ProgramFundingBudget.cs" />
+    <Compile Include="ProgramFundingBudgetEntry.cs" />
+    <Compile Include="ProgramFundingBudgetEntryType.cs" />
+    <Compile Include="ProgramFundingBudgetRow.cs" />
     <Compile Include="ProgramInitiative.cs" />
     <Compile Include="ProofOfPayment.cs" />
     <Compile Include="ProofOfPaymentState.cs" />

@@ -57,6 +57,7 @@
     <Compile Include="Models\ClaimEligibleCostModel.cs" />
     <Compile Include="Models\ClaimEvaluationAnswerModel.cs" />
     <Compile Include="Models\ClaimModel.cs" />
+    <Compile Include="Models\ClaimPaymentModel.cs" />
     <Compile Include="Models\CollectionItemModel.cs" />
     <Compile Include="Models\DirectorsReport\BudgetEntryModel.cs" />
     <Compile Include="Models\DirectorsReport\BudgetRowModel.cs" />

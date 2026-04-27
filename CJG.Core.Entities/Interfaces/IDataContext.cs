@@ -166,6 +166,7 @@ namespace CJG.Infrastructure.Entities
 
 		#region Claims
 		DbSet<Claim> Claims { get; }
+		DbSet<ClaimPayment> ClaimPayments { get; }
 		DbSet<ClaimId> ClaimIds { get; }
 		DbSet<ClaimEligibleCost> ClaimEligibleCosts { get; }
 		DbSet<ClaimBreakdownCost> ClaimBreakdownCosts { get; }
@@ -185,6 +186,10 @@ namespace CJG.Infrastructure.Entities
 		DbSet<DirectorBudgetRow> DirectorBudgetRows { get; }
 		DbSet<DirectorBudgetEntry> DirectorBudgetEntries { get; }
 		DbSet<GlobalProgramBudget> GlobalProgramBudgets { get; }
+
+		DbSet<ProgramFundingBudget> ProgramFundingBudgets { get; }
+		DbSet<ProgramFundingBudgetRow> ProgramFundingBudgetRows { get; }
+		DbSet<ProgramFundingBudgetEntry> ProgramFundingBudgetEntries { get; }
 		#endregion
 
 		#region Completion Report

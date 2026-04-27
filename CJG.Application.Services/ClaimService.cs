@@ -227,6 +227,41 @@ namespace CJG.Application.Services
 			return claim;
 		}
 
+		public ClaimPayment Update(Claim claim, ClaimPaymentModel model)
+		{
+			if (claim == null)
+				throw new ArgumentNullException(nameof(claim));
+
+			if (!_httpContext.User.CanPerformAction(claim.GrantApplication, ApplicationWorkflowTrigger.EditClaimPayment))
+				throw new NotAuthorizedException("User does not have permission to update claim payment information.");
+
+			if (claim.ClaimPayment == null)
+			{
+				claim.ClaimPayment = new ClaimPayment
+				{
+					Claim = claim,
+					DateAdded = AppDateTime.Now
+				};
+			}
+
+			claim.ClaimPayment.PaidLMDA = model.PaidLMDA;
+			claim.ClaimPayment.PaidWDA = model.PaidWDA;
+			claim.ClaimPayment.LMDATariffTRSW = model.LMDATariffTRSW;
+			claim.ClaimPayment.LMDATariffTRST = model.LMDATariffTRST;
+			claim.ClaimPayment.LMDATariffTRCO = model.LMDATariffTRCO;
+			claim.ClaimPayment.WDATariffCWRG = model.WDATariffCWRG;
+
+			_dbContext.Update(claim);
+			var accountType = _httpContext.User.GetAccountType();
+
+			if (accountType == AccountTypes.Internal)
+				_noteService.GenerateUpdateNote(claim.GrantApplication);
+
+			_dbContext.CommitTransaction();
+
+			return claim.ClaimPayment;
+		}
+
 		/// <summary>
 		/// Update the specified <typeparamref name="Claim"/> in the datastore.
 		/// </summary>

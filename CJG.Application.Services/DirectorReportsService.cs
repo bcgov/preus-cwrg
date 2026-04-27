@@ -120,7 +120,7 @@ namespace CJG.Application.Services
 				{
 					BudgetEntryType = BudgetEntryType.CoreStream,
 					FiscalYearId = fiscalYear.Id,
-					StreamFilter = initiative.ToString(),
+					StreamFilter = initiative.Code,
 					ProgramInitiative = initiative,
 					DateAdded = AppDateTime.UtcNow
 				});
@@ -230,7 +230,6 @@ namespace CJG.Application.Services
 				var directorsReportCommittedScheduleA = commitmentTotalCost;
 				var directorsReportClaimsProcessed = claimTotal;
 				var directorsReportSlippage = committedWithClaims.TotalCostOfApplications - claimTotal;
-				var directorsReportUnclaimed = commitmentTotalCost - (claimTotal + committedWithNoClaims.ValueOfApplications) - directorsReportSlippage;
 				var directorsReportReceivables = receivablesTotal;
 				var directorsReportYtdActual = directorsReportClaimsProcessed - directorsReportReceivables;
 
@@ -271,7 +270,6 @@ namespace CJG.Application.Services
 
 					DirectorsReportCommittedScheduleA = directorsReportCommittedScheduleA,
 					DirectorsReportClaimsProcessed = directorsReportClaimsProcessed,
-					DirectorsReportUnclaimed = directorsReportUnclaimed,
 					DirectorsReportReceivables = directorsReportReceivables,
 					DirectorsReportSlippage = directorsReportSlippage,
 					DirectorsReportYtdActual = directorsReportYtdActual,

@@ -680,6 +680,22 @@
     <Compile Include="Migrations\202602261946451_v02.19.11.Designer.cs">
       <DependentUpon>202602261946451_v02.19.11.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202604141927557_v02.20.00.cs" />
+    <Compile Include="Migrations\202604141927557_v02.20.00.Designer.cs">
+      <DependentUpon>202604141927557_v02.20.00.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202604151624596_v02.20.01.cs" />
+    <Compile Include="Migrations\202604151624596_v02.20.01.Designer.cs">
+      <DependentUpon>202604151624596_v02.20.01.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202604171936192_v02.20.02.cs" />
+    <Compile Include="Migrations\202604171936192_v02.20.02.Designer.cs">
+      <DependentUpon>202604171936192_v02.20.02.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202604221841155_v02.20.03.cs" />
+    <Compile Include="Migrations\202604221841155_v02.20.03.Designer.cs">
+      <DependentUpon>202604221841155_v02.20.03.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Content Include="Migrations\v02.02.03\PostDeploy\Seed\03 GrantOpenings.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1820,6 +1836,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202602261946451_v02.19.11.resx">
       <DependentUpon>202602261946451_v02.19.11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202604141927557_v02.20.00.resx">
+      <DependentUpon>202604141927557_v02.20.00.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202604151624596_v02.20.01.resx">
+      <DependentUpon>202604151624596_v02.20.01.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202604171936192_v02.20.02.resx">
+      <DependentUpon>202604171936192_v02.20.02.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202604221841155_v02.20.03.resx">
+      <DependentUpon>202604221841155_v02.20.03.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

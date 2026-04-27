@@ -1,4 +1,9 @@
-﻿using CJG.Application.Services;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using System.Web.UI.WebControls;
+using CJG.Application.Services;
 using CJG.Core.Entities;
 using CJG.Core.Entities.Helpers;
 using CJG.Core.Interfaces.Service;
@@ -8,19 +13,13 @@ using CJG.Web.External.Controllers;
 using CJG.Web.External.Helpers;
 using CJG.Web.External.Helpers.Filters;
 using Microsoft.AspNet.Identity;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.UI.WebControls;
 
 namespace CJG.Web.External.Areas.Int.Controllers
 {
-	/// <summary>
-	/// UserController class, provides endpoints to manage internal application users.
-	/// </summary>
-	[RouteArea("Int")]
+    /// <summary>
+    /// UserController class, provides endpoints to manage internal application users.
+    /// </summary>
+    [RouteArea("Int")]
 	[AuthorizeAction(Privilege.UM1)]
 	public class UserController : BaseController
 	{

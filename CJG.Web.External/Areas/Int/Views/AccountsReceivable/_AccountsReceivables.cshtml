@@ -14,30 +14,44 @@
                 <thead>
                 <tr>
                     <th>Overpayment Category</th>
-                    <th>Overpayment $</th>
-                    <td colspan="4"></td>
+                    <th>WDA Overpayment $</th>
+                    <th>LMDA Overpayment $</th>
+                    <th>Overpayment $ (Historical)</th>
+                    <td colspan="2"></td>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="accountsReceivable in model.Records">
-                    <td class="white-cell">
-                        {{ accountsReceivable.ServiceCategoryName }}
-                    </td>
-                    <td class="white-cell" ng-if="section.editing">
-                        <input type="text" ng-model="accountsReceivable.Overpayment" class="input-inline-align input-right-align" ng-currency="13" ng-validation="errors.Records_{{accountsReceivable.ServiceCategoryId}}_Overpayment"/>
-                    </td>
-                    <td class="white-cell" ng-if="!section.editing">
-                        <span ng-validation="errors.Records_{{accountsReceivable.ServiceCategoryId}}_ServiceCategoryId">{{ accountsReceivable.Overpayment | currency : '$' : 2 }}</span>
-                    </td>
-                    <td class="white-cell" colspan="4">
-                    </td>
-                </tr>
+                    <tr ng-repeat="accountsReceivable in model.Records">
+                        <td class="white-cell">
+                            {{ accountsReceivable.ServiceCategoryName }}
+                        </td>
+                        <td class="white-cell" ng-if="section.editing">
+                            <input type="text" ng-model="accountsReceivable.OverpaymentWDA" class="input-inline-align input-right-align" ng-currency="13" ng-validation="errors.Records_{{accountsReceivable.ServiceCategoryId}}_OverpaymentWDA" />
+                        </td>
+                        <td class="white-cell" ng-if="section.editing">
+                            <input type="text" ng-model="accountsReceivable.OverpaymentLMDA" class="input-inline-align input-right-align" ng-currency="13" ng-validation="errors.Records_{{accountsReceivable.ServiceCategoryId}}_OverpaymentLMDA" />
+                        </td>
+                        <td class="white-cell text--right" ng-if="!section.editing">
+                            <span ng-validation="errors.Records_{{accountsReceivable.ServiceCategoryId}}_ServiceCategoryId">{{ accountsReceivable.OverpaymentWDA | currency : '$' : 2 }}</span>
+                        </td>
+                        <td class="white-cell text--right" ng-if="!section.editing">
+                            <span ng-validation="errors.Records_{{accountsReceivable.ServiceCategoryId}}_ServiceCategoryId">{{ accountsReceivable.OverpaymentLMDA | currency : '$' : 2 }}</span>
+                        </td>
+                        <td class="white-cell text--right">
+                            {{ accountsReceivable.Overpayment | currency : '$' : 2 }}
+                        </td>
+                        <td class="white-cell" colspan="2">
+                            <input type="hidden" ng-model="accountsReceivable.Overpayment" class="input-inline-align input-right-align" ng-currency="13" />
+                        </td>
+                    </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <th>Total</th>
-                    <th>{{ rowTotal(model.Records) | currency : '$' : 2}}</th>
-                    <td colspan="4"></td>
+                    <th>Totals</th>
+                    <th class="text--right">{{ rowTotalWDA(model.Records) | currency : '$' : 2}}</th>
+                    <th class="text--right">{{ rowTotalLMDA(model.Records) | currency : '$' : 2}}</th>
+                    <th class="text--right">{{ rowTotalHistorical(model.Records) | currency : '$' : 2}}</th>
+                    <td colspan="2"></td>
                 </tr>
                 </tfoot>
 

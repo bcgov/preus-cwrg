@@ -29,7 +29,8 @@ namespace CJG.Core.Entities.Helpers
 			{
 				var entityType = type.GetProxyType();
 				var found = _types.TryGetValue(entityType, out IList<EntityChange> changes);
-				if (found) return changes.ToArray();
+				if (found)
+					return changes.ToArray();
 				return new EntityChange[0];
 			}
 		}
@@ -40,7 +41,8 @@ namespace CJG.Core.Entities.Helpers
 			{
 				var entityType = entity.GetType().GetProxyType();
 				var found = _types.TryGetValue(entityType, out IList<EntityChange> changes);
-				if (found) return changes.FirstOrDefault(c => c.Entry.Entity.Equals(entity));
+				if (found)
+					return changes.FirstOrDefault(c => c.Entry.Entity.Equals(entity));
 				return null;
 			}
 		}
@@ -53,16 +55,19 @@ namespace CJG.Core.Entities.Helpers
 		/// <param name="context"></param>
 		public EntityChanges(DbContext context)
 		{
-			if (context == null) throw new ArgumentNullException(nameof(context));
+			if (context == null)
+				throw new ArgumentNullException(nameof(context));
 
 			if (context.ChangeTracker.HasChanges())
 			{
 				var ignore = new[] { "Id", nameof(EntityBase.DateUpdated), nameof(EntityBase.DateAdded), nameof(EntityBase.RowVersion) };
+
 				// Get all the updated entries and update their DateAdded or DateUpdated based on their state.
 				foreach (var entry in context.ChangeTracker.Entries().Where(e => (new[] { EntityState.Modified, EntityState.Added, EntityState.Deleted }).Contains(e.State)))
 				{
 					var track = new EntityChange(context, entry, ignore); //GetDifferences(context, entry, ignore);
-					if (track.IsChanged || track.IsAdded || track.IsDeleted) Add(track);
+					if (track.IsChanged || track.IsAdded || track.IsDeleted)
+						Add(track);
 				}
 
 				// Many-to-many relationships are not expressed in the change tracker.
@@ -196,7 +201,8 @@ namespace CJG.Core.Entities.Helpers
 		public bool HasChanged(Object entity, params string[] propertyNames)
 		{
 			var changes = this[entity];
-			if (changes == null) return false;
+			if (changes == null)
+				return false;
 			return propertyNames.Any(p => changes.HasChanged(p));
 		}
 
@@ -223,7 +229,8 @@ namespace CJG.Core.Entities.Helpers
 		public bool HasModified(object entity)
 		{
 			var result = this[entity];
-			if (result != null) return this[entity].State == EntityState.Modified;
+			if (result != null)
+				return this[entity].State == EntityState.Modified;
 			return false;
 		}
 
@@ -248,7 +255,7 @@ namespace CJG.Core.Entities.Helpers
 			var next = false;
 			foreach (var entity in this)
 			{
-				message.Append($"{(next ? ",": "")}{entity.ToString()}");
+				message.Append($"{(next ? "," : "")}{entity.ToString()}");
 				next = true;
 			}
 			message.Append("]");

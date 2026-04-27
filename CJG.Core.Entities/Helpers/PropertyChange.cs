@@ -23,11 +23,17 @@ namespace CJG.Core.Entities.Helpers
 		/// <param name="state"></param>
 		public PropertyChange(string name, object oldValue, object newValue, EntityState state = EntityState.Modified)
 		{
-			if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Argument 'name' is required and cannot be null, empty or whitespace.");
+			if (string.IsNullOrWhiteSpace(name))
+				throw new ArgumentException("Argument 'name' is required and cannot be null, empty or whitespace.");
 
-			if (oldValue?.GetType() == typeof(DateTime) || oldValue?.GetType() == typeof(DateTime?)) oldValue = ((DateTime)oldValue).ToLocalTime().ToString("yyyy-MM-dd");
-			if (newValue?.GetType() == typeof(DateTime) || newValue?.GetType() == typeof(DateTime?)) newValue = ((DateTime)newValue).ToLocalTime().ToString("yyyy-MM-dd");
-			this.Name = SplitCamelCase(name);
+			if (oldValue?.GetType() == typeof(DateTime) || oldValue?.GetType() == typeof(DateTime?))
+				oldValue = ((DateTime)oldValue).ToLocalTime().ToString("yyyy-MM-dd");
+
+			if (newValue?.GetType() == typeof(DateTime) || newValue?.GetType() == typeof(DateTime?))
+				newValue = ((DateTime)newValue).ToLocalTime().ToString("yyyy-MM-dd");
+
+			var isAcronym = name == name.ToUpper();
+			this.Name = !isAcronym ? SplitCamelCase(name) : name;
 			this.OldValue = oldValue;
 			this.NewValue = newValue;
 			this.State = state;

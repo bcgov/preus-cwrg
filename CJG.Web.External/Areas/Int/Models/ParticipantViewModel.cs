@@ -3,7 +3,7 @@ using CJG.Core.Entities;
 
 namespace CJG.Web.External.Areas.Int.Models
 {
-    public class ParticipantViewModel
+	public class ParticipantViewModel
     {
 	    public int? GrantApplicationId { get; set; }
         public int? ParticipantId { get; set; }
@@ -21,6 +21,7 @@ namespace CJG.Web.External.Areas.Int.Models
 		public bool? Approved { get; set; }
 		public bool? Attended { get; set; }
 		public bool MultipleInstancesInFiscalYear { get; set; }
+		public bool? LMDAEligible { get; set; }
 
 		public ParticipantViewModel() { }
 
@@ -46,6 +47,8 @@ namespace CJG.Web.External.Areas.Int.Models
 			Approved = participant.Approved;
 			Attended = participant.Attended;
 			MultipleInstancesInFiscalYear = false;
+
+			LMDAEligible = participant.LMDAEligible;
         }
     }
 }

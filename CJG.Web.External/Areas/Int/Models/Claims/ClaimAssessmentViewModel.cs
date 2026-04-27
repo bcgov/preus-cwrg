@@ -82,6 +82,7 @@ namespace CJG.Web.External.Areas.Int.Models.Claims
 		public bool CanUnlock { get; set; }
 		public bool CanReassign { get; set; }
 		public bool CanEditAR { get; set; }
+		public bool CanEditClaimPayment { get; set; }
 		public bool HasPriorApprovedClaim { get; set; }
 
 		public WorkflowViewModel Workflow { get; set; }
@@ -148,6 +149,7 @@ namespace CJG.Web.External.Areas.Int.Models.Claims
 			CanUnlock = user.HasPrivilege(Privilege.AM4);
 			CanReassign = user.CanPerformAction(claim.GrantApplication, ApplicationWorkflowTrigger.ReassignAssessor);
 			CanEditAR = user.CanPerformAction(claim.GrantApplication, ApplicationWorkflowTrigger.EditClaimAR);
+			CanEditClaimPayment = user.CanPerformAction(claim.GrantApplication, ApplicationWorkflowTrigger.EditClaimPayment);
 			HasPriorApprovedClaim = claim.HasPriorApprovedClaim();
 
 			switch (ProgramType)

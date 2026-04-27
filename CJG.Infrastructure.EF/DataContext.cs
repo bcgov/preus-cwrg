@@ -172,6 +172,7 @@ namespace CJG.Infrastructure.EF
 
 		#region Claims
 		public DbSet<Claim> Claims => _context.Claims;
+		public DbSet<ClaimPayment> ClaimPayments => _context.ClaimPayments;
 		public DbSet<ClaimId> ClaimIds => _context.ClaimIds;
 		public DbSet<ClaimEligibleCost> ClaimEligibleCosts => _context.ClaimEligibleCosts;
 		public DbSet<ClaimBreakdownCost> ClaimBreakdownCosts => _context.ClaimBreakdownCosts;
@@ -190,6 +191,10 @@ namespace CJG.Infrastructure.EF
 		public DbSet<DirectorBudgetRow> DirectorBudgetRows => _context.DirectorBudgetRows;
 		public DbSet<DirectorBudgetEntry> DirectorBudgetEntries => _context.DirectorBudgetEntries;
 		public DbSet<GlobalProgramBudget> GlobalProgramBudgets => _context.GlobalProgramBudgets;
+
+		public DbSet<ProgramFundingBudget> ProgramFundingBudgets => _context.ProgramFundingBudgets;
+		public DbSet<ProgramFundingBudgetRow> ProgramFundingBudgetRows => _context.ProgramFundingBudgetRows;
+		public DbSet<ProgramFundingBudgetEntry> ProgramFundingBudgetEntries => _context.ProgramFundingBudgetEntries;
 		#endregion
 
 		#region Completion Report

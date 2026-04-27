@@ -40,6 +40,8 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 		public string DoingBusinessAsMinistry { get; set; }
 		public string StatementOfRegistrationNumber { get; set; }
 		public decimal EligibleTotalCost { get; set; }
+		public decimal? CommittedLMDA { get; set; }
+		public decimal? CommittedWDA { get; set; }
 		public int? PrimaryAssessorId { get; set; }
 		public int? AssessorId { get; set; }
 		public InternalUser PrimaryAssessor { get; set; }
@@ -125,6 +127,8 @@ namespace CJG.Web.External.Areas.Int.Models.Applications
 			TotalGrantApplications = grantApplicationService.GetApplicationsCountByFiscal(grantApplication);
 			TotalGrantApplicationCost = grantApplicationService.GetApplicationsCostByFiscal(grantApplication);
 			EligibleTotalCost = grantApplication.TrainingCost != null ? (grantApplication.ApplicationStateInternal.ShowAgreedCosts() ? grantApplication.TrainingCost.TotalAgreedMaxCost : grantApplication.TrainingCost.TotalEstimatedCost) : 0;
+			CommittedWDA = grantApplication.TrainingCost?.CommittedWDA;
+			CommittedLMDA = grantApplication.TrainingCost?.CommittedLMDA;
 			ApplicationStateExternalViewModel = new ApplicationStateViewModel
 			{
 				Id = (int)grantApplication.ApplicationStateExternal,
