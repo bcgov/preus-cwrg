@@ -1,11 +1,10 @@
-﻿using CJG.Core.Entities;
-using System;
+﻿using System;
+using CJG.Core.Entities;
 
 namespace CJG.Application.Business.Models
 {
 	public class PaymentRequestPDFModel : RequestPDFBaseModel
 	{
-		#region Properties
 		public string Recipient { get; set; }
 		public string RecipientAddress { get; set; }
 
@@ -18,30 +17,28 @@ namespace CJG.Application.Business.Models
 
 		public string BusinessNumber { get; set; }
 		public bool BusinessNumberVerified { get; set; }
-		#endregion
 
-		#region Constructors
 		public PaymentRequestPDFModel(PaymentRequest paymentRequest, bool duplicate) : base(paymentRequest, duplicate)
 		{
-			if (paymentRequest == null) throw new ArgumentNullException(nameof(paymentRequest));
+			if (paymentRequest == null)
+				throw new ArgumentNullException(nameof(paymentRequest));
 
 			var application = paymentRequest.GrantApplication;
 			var address = application.ApplicantMailingAddressId == null ? application.OrganizationAddress : application.ApplicantMailingAddress;
 
-			this.Recipient = application.OrganizationLegalName;
-			this.RecipientName = $"{application.ApplicantFirstName} {application.ApplicantLastName}";
-			this.RecipientAddress = $"{address.AddressLine1 + (string.IsNullOrEmpty(address.AddressLine2) ? "" : " " + address.AddressLine2)}<br />{address.City}, {address.RegionId} {address.PostalCode}";
+			Recipient = application.OrganizationLegalName;
+			RecipientName = $"{application.ApplicantFirstName} {application.ApplicantLastName}";
+			RecipientAddress = $"{address.AddressLine1 + (string.IsNullOrEmpty(address.AddressLine2) ? "" : " " + address.AddressLine2)}<br />{address.City}, {address.RegionId} {address.PostalCode}";
 
-			this.InvoiceDate = paymentRequest.Claim.DateSubmitted?.ToString("yyyy-MM-dd");
-			this.InvoiceNumber = paymentRequest.DocumentNumber;
+			InvoiceDate = paymentRequest.Claim.DateSubmitted?.ToString("yyyy-MM-dd");
+			InvoiceNumber = paymentRequest.DocumentNumber;
 
-			this.Receiver = $"{paymentRequest.Claim.Assessor.FirstName} {paymentRequest.Claim.Assessor.LastName}";
+			Receiver = $"{paymentRequest.Claim.Assessor.FirstName} {paymentRequest.Claim.Assessor.LastName}";
 
-			this.BusinessNumber = application.Organization.BusinessNumber;
-			this.BusinessNumberVerified = application.Organization.BusinessNumberVerified == true;
+			BusinessNumber = application.Organization.BusinessNumber;
+			BusinessNumberVerified = application.Organization.BusinessNumberVerified == true;
 
-			this.PaymentType = paymentRequest.PaymentType.ToString();
+			PaymentType = paymentRequest.PaymentType.ToString();
 		}
-		#endregion
 	}
 }

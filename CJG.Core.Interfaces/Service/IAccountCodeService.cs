@@ -7,7 +7,7 @@ namespace CJG.Core.Interfaces.Service
     {
         IEnumerable<AccountCode> GetAll();
         AccountCode Get(int id);
-        void Add(AccountCode accountCode);
+		void Add(AccountCode accountCode);
         void Update(AccountCode accountCode);
         void Delete(AccountCode accountCode);
     }

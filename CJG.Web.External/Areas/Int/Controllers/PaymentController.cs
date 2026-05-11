@@ -68,6 +68,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		/// <summary>
 		/// Get payment request batches for grant program.
 		/// </summary>
+		/// <param name="grantProgramId"></param>
 		/// <param name="page"></param>
 		/// <param name="quantity"></param>
 		/// <param name="search"></param>
@@ -130,7 +131,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[HttpGet, Route("Amount/Owing/{grantProgramId}")]
 		[ValidateRequestHeader]
 		[AuthorizeAction(Privilege.PM1)]
-		public JsonResult GetAmountOwings(int grantProgramId)
+		public JsonResult GetAmountOwing(int grantProgramId)
 		{
 			var model = new BaseViewModel();
 			try

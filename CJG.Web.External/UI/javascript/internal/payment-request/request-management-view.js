@@ -24,7 +24,8 @@ app.controller('PaymentRequestManagement', function ($scope, $attrs, $controller
    **/
   function init() {
     return Promise.all([
-      loadGrantPrograms()
+      loadGrantPrograms(),
+      $scope.selectGrantProgramId = 3  // Default to CWRG
     ]);
   }
 
@@ -36,13 +37,17 @@ app.controller('PaymentRequestManagement', function ($scope, $attrs, $controller
   $scope.refresh = function () {
     if ($scope.selectGrantProgramId) {
       $scope.broadcast('refreshPager');
+
       if ($scope.paymentRequest)
         return $scope.getPaymentRequestClaims();
+
       if ($scope.amountOwing)
         return $scope.getAmountOwingClaims();
+
       if ($scope.paymentRequestHold)
         return $scope.getPaymentRequestOnHoldClaims();
     }
+
     return Promise.resolve();
   };
 
