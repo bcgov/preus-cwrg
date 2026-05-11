@@ -213,6 +213,7 @@ namespace CJG.Infrastructure.Entities
 
 		#region Payment Requests
 		DbSet<PaymentRequest> PaymentRequests { get; }
+		DbSet<PaymentRequestAccountCode> PaymentRequestAccountCodes { get; }
 		DbSet<PaymentRequestBatch> PaymentRequestBatches { get; }
 		DbSet<AccountCode> AccountCodes { get; }
 		DbSet<ReconciliationReport> ReconciliationReports { get; }

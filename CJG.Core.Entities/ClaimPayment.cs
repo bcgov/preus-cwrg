@@ -37,7 +37,7 @@ namespace CJG.Core.Entities
 		[Description("111TRCO")]
 		public bool LMDATariffTRCO { get; set; }
 
-		[Description("111CWRG")]
+		[Description("111CWRD")]
 		public bool WDATariffCWRG { get; set; }
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using CJG.Core.Entities;
 using CJG.Application.Business.Models;
+using CJG.Core.Entities;
 using CJG.Core.Entities.Helpers;
 
 namespace CJG.Core.Interfaces.Service
@@ -15,7 +15,7 @@ namespace CJG.Core.Interfaces.Service
 		
         PaymentRequestBatch GeneratePaymentRequests(int grantProgramId);
         PaymentRequestBatch GenerateAmountOwing(int grantProgramId);
-        PaymentRequestBatch GeneratePaymentRequestBatch(int grantProgramId, IEnumerable<Claim> claims, PaymentBatchTypes batchType);
+        PaymentRequestBatch GeneratePaymentRequestBatch(int grantProgramId, List<Claim> claims, PaymentBatchTypes batchType);
         PaymentRequestBatchPDFModel GetPaymentRequestBatchPDF(int id, bool duplicate);
         AmountOwingBatchPDFModel GetAmountOwingBatchPDF(int id, bool duplicate);
         PaymentRequestBatch GetPaymentRequestBatch(int id);

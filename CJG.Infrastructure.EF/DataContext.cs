@@ -218,6 +218,7 @@ namespace CJG.Infrastructure.EF
 
 		#region Payment Requests
 		public DbSet<PaymentRequest> PaymentRequests => _context.PaymentRequests;
+		public DbSet<PaymentRequestAccountCode> PaymentRequestAccountCodes => _context.PaymentRequestAccountCodes;
 		public DbSet<PaymentRequestBatch> PaymentRequestBatches => _context.PaymentRequestBatches;
 		public DbSet<AccountCode> AccountCodes => _context.AccountCodes;
 		public DbSet<ReconciliationReport> ReconciliationReports => _context.ReconciliationReports;
