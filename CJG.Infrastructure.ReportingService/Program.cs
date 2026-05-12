@@ -22,6 +22,7 @@ namespace CJG.Infrastructure.ReportingService
                 logger = appFactory.GetLogger();
 
 				CreateSection25Report(appFactory, options);
+				CreateEiEligibilityCheckReport(appFactory, options);
 				CreateTemporaryResidentReport(appFactory, options);
 				CreateDuplicateSinReport(appFactory, options);
 				CreateExitSurveyReport(appFactory, options);
@@ -57,6 +58,16 @@ namespace CJG.Infrastructure.ReportingService
 		        Settings.Default.ReportCutoffDate,
 		        Settings.Default.MaxParticipants,
 		        Settings.Default.CsvAddReportHeader);
+        }
+
+        private static void CreateEiEligibilityCheckReport(AppFactory appFactory, Options options)
+        {
+			// Get the participants that are on EI
+	        var job = appFactory.GetEiEligibilityCheckReportJob();
+	        job.Start(options.CurrentDate,
+		        string.Format(Settings.Default.CsvFilePathTemplateEiCheck, options.CurrentDate),
+		        new DateTime(2026, 4, 1),
+		        Settings.Default.MaxParticipants);
         }
 
         private static void CreateTemporaryResidentReport(AppFactory appFactory, Options options)

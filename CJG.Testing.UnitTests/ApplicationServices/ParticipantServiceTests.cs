@@ -1,51 +1,47 @@
-﻿using CJG.Application.Services;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using CJG.Application.Services;
 using CJG.Core.Entities;
 using CJG.Infrastructure.Entities;
 using CJG.Testing.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CJG.Testing.UnitTests.ApplicationServices
 {
 	[TestClass]
     public class ParticipantServiceTests : ServiceUnitTestBase
     {
-        #region Initialize
-        [TestInitialize]
+	    private User _user;
+	    private ServiceHelper _helper;
+	    private ParticipantService _service;
+
+	    [TestInitialize]
         public void Setup()
         {
-        }
-        #endregion
+	        _user = EntityHelper.CreateExternalUser();
+	        _helper = new ServiceHelper(typeof(ParticipantService), _user.CreateIdentity());
+	        _service = _helper.Create<ParticipantService>();
+		}
 
-        #region Tests
-        [TestMethod, TestCategory("Participant"), TestCategory("Service")]
+		[TestMethod, TestCategory("Participant"), TestCategory("Service")]
         public void AddParticipantConst_WithNewParticipantCost_AddsNewParticipantCostToRepository()
         {
 			// Arrange
-			var user = EntityHelper.CreateExternalUser();
-            var identity = HttpHelper.CreateIdentity(user);
-            var helper = new ServiceHelper(typeof(ParticipantService), identity);
-            helper.MockDbSet<ParticipantCost>();
-            var service = helper.Create<ParticipantService>();
+            _helper.MockDbSet<ParticipantCost>();
 
 			// Act
-			service.Add(new ParticipantCost());
+			_service.Add(new ParticipantCost());
 
 			// Assert
-            helper.GetMock<IDataContext>().Verify(x => x.Commit(), Times.Once);
+            _helper.GetMock<IDataContext>().Verify(x => x.Commit(), Times.Once);
         }
 
         [TestMethod, TestCategory("Participant"), TestCategory("Service")]
         public void AddParticipantForm_WithNewParticipantForm_AddsNewParticipantFormToRepository()
         {
 			// Arrange
-            var user = EntityHelper.CreateExternalUser();
-            var identity = HttpHelper.CreateIdentity(user);
-            var helper = new ServiceHelper(typeof(ParticipantService), identity);
-            var service = helper.Create<ParticipantService>();
             var invitationKey = Guid.NewGuid();
             var participantForm = new ParticipantForm()
             {
@@ -65,15 +61,15 @@ namespace CJG.Testing.UnitTests.ApplicationServices
             
             var trainingProgram = new TrainingProgram(grantApplication);
             grantApplication.TrainingPrograms.Add(trainingProgram);
-            helper.MockDbSet<ParticipantCost>();
-            helper.MockDbSet<ParticipantForm>();
-            helper.MockDbSet( new[] { grantApplication} );
+            _helper.MockDbSet<ParticipantCost>();
+            _helper.MockDbSet<ParticipantForm>();
+            _helper.MockDbSet( new[] { grantApplication} );
 
 			// Act
-            service.Add(grantApplication.ParticipantForms.First());
+            _service.Add(grantApplication.ParticipantForms.First());
 
 			// Assert
-            helper.GetMock<IDataContext>().Verify(x => x.CommitTransaction(), Times.Once);
+            _helper.GetMock<IDataContext>().Verify(x => x.CommitTransaction(), Times.Once);
         }
 
         /// <summary>
@@ -83,13 +79,9 @@ namespace CJG.Testing.UnitTests.ApplicationServices
         public void AddParticipantForm_WithClaim_ShouldReturnParticipantForm()
         {
             // Arrange
-            var applicationAdministrator = EntityHelper.CreateExternalUser();
-            var identity = HttpHelper.CreateIdentity(applicationAdministrator);
-            var helper = new ServiceHelper(typeof(ParticipantService), identity);
-            var service = helper.Create<ParticipantService>();
             var invitationKey = Guid.NewGuid();
 
-            var grantApplication = EntityHelper.CreateGrantApplicationWithAgreement(EntityHelper.CreateGrantOpening(), applicationAdministrator, EntityHelper.CreateInternalUser(), ApplicationStateInternal.AgreementAccepted);
+            var grantApplication = EntityHelper.CreateGrantApplicationWithAgreement(EntityHelper.CreateGrantOpening(), _user, EntityHelper.CreateInternalUser(), ApplicationStateInternal.AgreementAccepted);
             grantApplication.InvitationKey = invitationKey;
             var claim = EntityHelper.CreateClaim(grantApplication);
             claim.EligibleCosts.Add(new ClaimEligibleCost(claim)
@@ -100,15 +92,15 @@ namespace CJG.Testing.UnitTests.ApplicationServices
             var participantForm = new ParticipantForm(grantApplication, invitationKey);
             grantApplication.ParticipantForms.Add(participantForm);
 
-			helper.MockDbSet<ParticipantForm>();
-			helper.MockDbSet( new[] { grantApplication });
+			_helper.MockDbSet<ParticipantForm>();
+			_helper.MockDbSet( new[] { grantApplication });
 
             // Act
-            var participantFormResult = service.Add(participantForm);
+            var participantFormResult = _service.Add(participantForm);
 
             // Assert
             Assert.IsInstanceOfType(participantFormResult, typeof(ParticipantForm));
-            helper.GetMock<IDataContext>().Verify(x => x.CommitTransaction(), Times.Once);
+            _helper.GetMock<IDataContext>().Verify(x => x.CommitTransaction(), Times.Once);
         }
 
         /// <summary>
@@ -119,14 +111,10 @@ namespace CJG.Testing.UnitTests.ApplicationServices
         public void AddParticipantFormNullShouldThrowArgumentNullException()
         {
             // Arrange
-            var user = EntityHelper.CreateExternalUser();
-            var identity = HttpHelper.CreateIdentity(user);
-            var helper = new ServiceHelper(typeof(ParticipantService), identity);
-            var service = helper.Create<ParticipantService>();
             ParticipantForm participantForm = null;
 
             // Act
-            service.Add(participantForm);
+            _service.Add(participantForm);
 
             // Assert (Handled by decorator)
         }
@@ -139,15 +127,10 @@ namespace CJG.Testing.UnitTests.ApplicationServices
         public void AddParticipantCostNullShouldThrowArgumentNullException()
         {
             // Arrange
-            var user = EntityHelper.CreateExternalUser();
-            var identity = HttpHelper.CreateIdentity(user);
-            var helper = new ServiceHelper(typeof(ParticipantService), identity);
-            var service = helper.Create<ParticipantService>();
             ParticipantCost participantCost = null;
 
             // Act
-            service.Add(participantCost);
-
+            _service.Add(participantCost);
             // Assert (Handled by decorator)
         }
 
@@ -159,14 +142,10 @@ namespace CJG.Testing.UnitTests.ApplicationServices
         public void UpdateParticipantCostNullShouldThrowArgumentNullException()
         {
             // Arrange
-            var user = EntityHelper.CreateExternalUser();
-            var identity = HttpHelper.CreateIdentity(user);
-            var helper = new ServiceHelper(typeof(ParticipantService), identity);
-            var service = helper.Create<ParticipantService>();
             ParticipantCost participantCost = null;
 
             // Act
-            service.Update(participantCost);
+            _service.Update(participantCost);
 
             // Assert (Handled by decorator)
         }
@@ -175,19 +154,104 @@ namespace CJG.Testing.UnitTests.ApplicationServices
         public void UpdateParticipantCost_WithParticipantCost_UpdatesParticipantCostInRepository()
         {
 			// Arrange
-            var user = EntityHelper.CreateExternalUser();
-            var identity = HttpHelper.CreateIdentity(user);
-            var helper = new ServiceHelper(typeof(ParticipantService), identity);
-            helper.MockDbSet<ParticipantCost>();
-            var service = helper.Create<ParticipantService>();
+            _helper.MockDbSet<ParticipantCost>();
 
 			// Act
-            service.Update(new ParticipantCost());
+            _service.Update(new ParticipantCost());
 
 			// Assert
-			helper.GetMock<IDataContext>().Verify(x => x.Update(It.IsAny<ParticipantCost>()), Times.Once);
-            helper.GetMock<IDataContext>().Verify(x => x.Commit(), Times.Once);
+			_helper.GetMock<IDataContext>().Verify(x => x.Update(It.IsAny<ParticipantCost>()), Times.Once);
+            _helper.GetMock<IDataContext>().Verify(x => x.Commit(), Times.Once);
         }
-        #endregion
+
+        [TestMethod, TestCategory("Participant"), TestCategory("Service")]
+		[DataRow(-30, 1)]
+		[DataRow(-7, 1)]
+		[DataRow(0, 0)]
+		[DataRow(4, 0)]
+		[DataRow(6, 0)]
+		[DataRow(7, 0)]
+		[DataRow(30, 0)]
+        public void EiCheckParticipantsAreCorrectlyReturned(int trainingDaysToOffset, int expectedResults)
+        {
+	        var currentDate = AppDateTime.UtcNow;
+	        var offsetStartDate = currentDate.AddDays(trainingDaysToOffset);
+
+	        var grantApplication = EntityHelper.CreateGrantApplicationWithAgreement(EntityHelper.CreateGrantOpening(), _user, EntityHelper.CreateInternalUser(), ApplicationStateInternal.AgreementAccepted);
+	        grantApplication.DateAdded = offsetStartDate;
+	        grantApplication.StartDate = offsetStartDate;
+
+	        grantApplication.TrainingPrograms.Add(new TrainingProgram
+			{
+				StartDate = offsetStartDate
+			});
+
+	        var participantForm = new ParticipantForm(grantApplication, Guid.NewGuid())
+	        {
+		        PreviousEmploymentNoc = new NationalOccupationalClassification("12345", "Test NOC", 5, 0, 0, 0),
+		        PreviousEmploymentNaics = new NaIndustryClassificationSystem("12345", "Test NAICS", 5, 0, 0, 0, 2021),
+		        AffectedByTariffs = true,
+		        EiEligibilityReportedOn = null,
+		        DateAdded = offsetStartDate
+			};
+
+	        grantApplication.ParticipantForms.Add(participantForm);
+
+	        _helper.MockDbSet(new[] { participantForm });
+			_helper.MockDbSet(new[] { grantApplication });
+
+            var results = _service.GetParticipantsEnrollmentsForEiCheck(currentDate, 1000, new DateTime(2026, 4, 1));
+
+            Assert.AreEqual(expectedResults, results.Count());
+        }
+
+        [TestMethod, TestCategory("Participant"), TestCategory("Service")]
+        public void EiCheckParticipantsIgnoresReportedOn()
+        {
+	        var trainingDaysToOffset = 7;
+			var currentDate = AppDateTime.UtcNow;
+	        var offsetStartDate = currentDate.AddDays(trainingDaysToOffset);
+
+	        var grantApplication = EntityHelper.CreateGrantApplicationWithAgreement(EntityHelper.CreateGrantOpening(), _user, EntityHelper.CreateInternalUser(), ApplicationStateInternal.AgreementAccepted);
+	        grantApplication.DateAdded = offsetStartDate;
+	        grantApplication.StartDate = offsetStartDate;
+
+	        grantApplication.TrainingPrograms.Add(new TrainingProgram
+			{
+				StartDate = offsetStartDate
+			});
+
+	        var participantForm1 = new ParticipantForm(grantApplication, Guid.NewGuid())
+	        {
+		        PreviousEmploymentNoc = new NationalOccupationalClassification("12345", "Test NOC", 5, 0, 0, 0),
+		        PreviousEmploymentNaics = new NaIndustryClassificationSystem("12345", "Test NAICS", 5, 0, 0, 0, 2021),
+		        AffectedByTariffs = true,
+		        EiEligibilityReportedOn = null,
+		        DateAdded = offsetStartDate,
+				FirstName = "Fred"
+			};
+
+	        var participantForm2 = new ParticipantForm(grantApplication, Guid.NewGuid())
+	        {
+		        PreviousEmploymentNoc = new NationalOccupationalClassification("12345", "Test NOC", 5, 0, 0, 0),
+		        PreviousEmploymentNaics = new NaIndustryClassificationSystem("12345", "Test NAICS", 5, 0, 0, 0, 2021),
+		        AffectedByTariffs = true,
+		        EiEligibilityReportedOn = currentDate.AddDays(-2),
+		        DateAdded = offsetStartDate,
+		        FirstName = "Bob"
+			};
+
+	        grantApplication.ParticipantForms.Add(participantForm1);
+	        grantApplication.ParticipantForms.Add(participantForm2);
+
+	        _helper.MockDbSet(new[] { participantForm1, participantForm2 });
+			_helper.MockDbSet(new[] { grantApplication });
+
+            var results = _service.GetParticipantsEnrollmentsForEiCheck(currentDate, 1000, new DateTime(2026, 4, 1))
+	            .ToList();
+
+            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual(true, results.All(r => r.FirstName == "Fred"));
+        }
     }
 }

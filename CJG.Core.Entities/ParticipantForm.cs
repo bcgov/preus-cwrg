@@ -625,6 +625,11 @@ namespace CJG.Core.Entities
 		public DateTime? ReportedOn { get; set; }
 
 		/// <summary>
+		/// get/set - When the participant was reported on for EI Eligibility
+		/// </summary>
+		public DateTime? EiEligibilityReportedOn { get; set; }
+
+		/// <summary>
 		/// get/set - When the participant with a SIN that starts with 9 was reported on.
 		/// </summary>
 		public DateTime? SinReportedOn { get; set; }

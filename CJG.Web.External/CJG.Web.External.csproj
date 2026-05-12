@@ -666,6 +666,8 @@
     <Content Include="UI\javascript\internal\reports\index.js" />
     <Content Include="UI\javascript\internal\reports\reports-stream-agreement-details.js" />
     <Content Include="UI\javascript\internal\service-description\index.js" />
+    <Content Include="UI\javascript\internal\system-settings\index.js" />
+    <Content Include="UI\javascript\internal\system-settings\system-settings-management.js" />
     <Content Include="UI\javascript\internal\training-provider-inventory\index.js" />
     <Content Include="UI\javascript\internal\training-provider-inventory\training-provider-history-view.js" />
     <Content Include="UI\javascript\internal\training-provider-inventory\training-provider-inventory-list.js" />
@@ -996,6 +998,7 @@
     <Content Include="Areas\Int\Views\ProgramFundingReport\Index.cshtml" />
     <Content Include="Areas\Int\Views\ProgramFundingReport\_DirectorDashboard.cshtml" />
     <Content Include="Areas\Int\Views\ClaimAssessment\_ClaimAssessmentPaidTariffCodes.cshtml" />
+    <Content Include="Areas\Int\Views\SystemSettings\Index.cshtml" />
     <None Include="NLog.Training.config">
       <DependentUpon>NLog.config</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1327,6 +1330,7 @@
     <Compile Include="Areas\Ext\Models\TrainingProviders\TrainingProviderViewModel.cs" />
     <Compile Include="Areas\Ext\Models\ChangeRequest\ApplicationAddressViewModel.cs" />
     <Compile Include="Areas\Int\Controllers\AccountsReceivableController.cs" />
+    <Compile Include="Areas\Int\Controllers\SystemSettingsController.cs" />
     <Compile Include="Areas\Int\Controllers\ApplicationEvaluationController.cs" />
     <Compile Include="Areas\Int\Controllers\AttestationController.cs" />
     <Compile Include="Areas\Int\Controllers\ApplicationAccountsReceivableController.cs" />
@@ -1513,6 +1517,7 @@
     <Compile Include="Areas\Int\Models\SkillsTraining\SkillsTrainingProviderViewModel.cs" />
     <Compile Include="Areas\Int\Models\SteamAgreementDetails\SteamAgreementApplicationModel.cs" />
     <Compile Include="Areas\Int\Models\SuccessStories\SuccessStoriesDocumentsModel.cs" />
+    <Compile Include="Areas\Int\Models\SystemSettings\SystemSettingsModel.cs" />
     <Compile Include="Areas\Int\Models\TrainingPrograms\TrainingProgramViewModel.cs" />
     <Compile Include="Areas\Int\Models\TrainingProviders\TrainingProviderDocumentsViewModel.cs" />
     <Compile Include="Areas\Int\Models\TrainingProviders\TrainingProvidersInventoryViewModel.cs" />

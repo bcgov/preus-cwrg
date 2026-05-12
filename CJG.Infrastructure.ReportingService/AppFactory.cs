@@ -27,6 +27,7 @@ namespace CJG.Infrastructure.ReportingService
 			builder.RegisterInstance(new InternalHttpContext(new HttpContextWrapper(new HttpContext(new HttpRequest("", Settings.Default.SiteUrl, null), new HttpResponse(null))))).As<HttpContextBase>();
 
 			builder.RegisterType<SdsiReportJob>().As<ISdsiReportJob>();
+			builder.RegisterType<EiEligibilityCheckReportJob>().As<IEiEligibilityCheckReportJob>();
 			builder.RegisterType<SinReportJob>().As<ISinReportJob>();
 			builder.RegisterType<DuplicateSinReportJob>().As<IDuplicateSinReportJob>();
 			builder.RegisterType<ExitSurveyReportJob>().As<IExitSurveyReportJob>();
@@ -39,6 +40,7 @@ namespace CJG.Infrastructure.ReportingService
 			builder.RegisterType<SiteMinderService>().As<ISiteMinderService>();
 			builder.RegisterType<OrganizationService>().As<IOrganizationService>();
 			builder.RegisterType<FiscalYearService>().As<IFiscalYearService>();
+			builder.RegisterType<SettingService>().As<ISettingService>();
 			builder.RegisterType<UserService>().As<IUserService>();
 			builder.RegisterType<BCeIDService>().As<IBCeIDService>();
 			builder.RegisterType<DataContext>().As<IDataContext>().InstancePerLifetimeScope();
@@ -58,6 +60,11 @@ namespace CJG.Infrastructure.ReportingService
 		public ISdsiReportJob GetSection25ReportJob()
 		{
 			return Container.Resolve<ISdsiReportJob>();
+		}
+
+		public IEiEligibilityCheckReportJob GetEiEligibilityCheckReportJob()
+		{
+			return Container.Resolve<IEiEligibilityCheckReportJob>();
 		}
 
 		public ISinReportJob GetTemporaryResidentReportJob()
