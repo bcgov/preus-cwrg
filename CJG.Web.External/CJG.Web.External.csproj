@@ -1411,6 +1411,8 @@
     <Compile Include="Areas\Int\Models\Agreements\GrantAgreementCoverLetterViewModel.cs" />
     <Compile Include="Areas\Int\Models\Applications\ApplicationPreviewModel.cs" />
     <Compile Include="Areas\Int\Models\Attachments\AttachmentViewModel.cs" />
+    <Compile Include="Areas\Int\Models\Attestation\AttestationParticipantCostModel.cs" />
+    <Compile Include="Areas\Int\Models\Attestation\AttestationParticipantModel.cs" />
     <Compile Include="Areas\Int\Models\DirectorBudgetSummaryModel.cs" />
     <Compile Include="Areas\Int\Models\DirectorBudgetSummaryModelExcelExtension.cs" />
     <Compile Include="Areas\Int\Models\EvaluationForm\ClaimEvaluationFormListViewModel.cs" />

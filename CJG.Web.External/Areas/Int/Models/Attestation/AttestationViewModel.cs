@@ -20,6 +20,7 @@ namespace CJG.Web.External.Areas.Int.Models.Attestation
 		public bool? CompleteAttestation { get; set; }
 
 		public bool IsComplete { get; set; }
+		public bool? ReviewedByAdjudicatorAnalyst { get; set; }
 
 		public int MaximumDocuments { get; set; } = 1;
 		public IEnumerable<AttachmentViewModel> Documents { get; set; }
@@ -45,6 +46,7 @@ namespace CJG.Web.External.Areas.Int.Models.Attestation
 
 			AttestationNotApplicable = attestation.AttestationNotApplicable;
 			IsComplete = attestation.State == AttestationState.Complete;
+			ReviewedByAdjudicatorAnalyst = attestation.ReviewedByAdjudicatorAnalyst;
 
 			MaximumDocuments = 1;
 			Documents = attestation.Documents
@@ -90,41 +92,5 @@ namespace CJG.Web.External.Areas.Int.Models.Attestation
 
 			return attestationParticipantModels;
 		}
-	}
-
-	public class AttestationParticipantModel : BaseViewModel
-	{
-		public int AttestationParticipantId { get; set; }
-		public int ParticipantFormId { get; set; } // Probably don't need this
-		public string ParticipantName { get; set; }
-		public decimal TotalApprovedCost { get; set; }
-
-		public bool TariffAffected { get; set; }
-		public string TariffCategory { get; set; }
-
-		// These are only used by the ng-side models to calculate totals
-		public decimal TotalAmountSpent { get; set; }
-		public decimal UnusedFunds { get; set; }
-
-		public int? ProgramInitiativeId { get; set; }
-		public string ProgramInitiative { get; set; }
-
-		public List<AttestationParticipantCostModel> Costs { get; set; }
-
-		public AttestationParticipantModel()
-		{
-			UnusedFunds = TotalApprovedCost - TotalAmountSpent;
-        }
-    }
-
-	public class AttestationParticipantCostModel : BaseViewModel
-	{
-		public int AttestationParticipantCostId { get; set; }
-		public int ParticipantFormId { get; set; } // Probably don't need this
-		public int CostCategoryId { get; set; }
-		public string CostCategoryName { get; set; }
-		public string CostCategoryOther { get; set; }
-		public decimal TotalSpent { get; set; }
-		public bool RequireOther { get; set; }
 	}
 }
