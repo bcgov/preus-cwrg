@@ -19,6 +19,7 @@ namespace CJG.Core.Interfaces.Service
 		IEnumerable<ParticipantCost> GetParticipantCostsForClaimEligibleCost(int claimEligibleCostId);
 		IEnumerable<ParticipantCost> GetParticipantCosts(ClaimEligibleCost eligibleCost);
 		IEnumerable<ParticipantForm> GetUnemployedParticipantEnrollments(DateTime currentDate, int take, DateTime cutoffDate);
+		IEnumerable<ParticipantForm> GetParticipantsEnrollmentsForEiCheck(DateTime currentDate, int take, DateTime cutoffDate);
 		IEnumerable<ParticipantForm> GetTemporaryResidentParticipantEnrollments(DateTime currentDate, int take, DateTime cutoffDate);
 		IEnumerable<DuplicateSINParticipants> GetParticipantEnrollmentsWithDuplicatedSIN(DateTime currentDate, int take, DateTime cutoffDate, DateTime fiscalStart, DateTime fiscalEnd);
 
@@ -27,6 +28,7 @@ namespace CJG.Core.Interfaces.Service
 		IDictionary<string, bool> GetParticipantMultipleInstances(GrantApplication grantApplication);
 
 		void UpdateReportedDate(IEnumerable<ParticipantForm> participantEnrollments, DateTime reportedDate);
+		void UpdateEiEligibilityReportedDate(IEnumerable<ParticipantForm> participantEnrollments, DateTime reportedDate);
 		void UpdateSINReportedDate(IEnumerable<ParticipantForm> participantEnrollments, DateTime reportedDate);
 		void UpdateDuplicateSINReportedDate(IEnumerable<ParticipantForm> primaryForms, DateTime reportedDate);
 		void UpdateExitSurveyReportedDate(List<SurveyParticipantModel> exitFormParticipants, DateTime reportedDate);

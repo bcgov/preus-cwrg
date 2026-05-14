@@ -29,6 +29,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="form__group form__group--radio-inline">
+                    <div class="form__label">Reviewed by Adjudicator Analyst</div>
+                    <div class="form__control">
+                        <div class="control-wrapper" ng-validation="errors.ReviewedByAdjudicatorAnalyst">
+                            <input type="radio" ng-model="model.ReviewedByAdjudicatorAnalyst" id="attestation-reviewed-yes-{{section.name}}" name="attestation-reviewed-{{section.name}}" ng-value="true" class="form__group--radio-inline" ng-editing />
+                            <label for="attestation-reviewed-yes-{{section.name}}">Yes</label>
+                            <input type="radio" ng-model="model.ReviewedByAdjudicatorAnalyst" id="attestation-reviewed-no-{{section.name}}" name="attestation-reviewed-{{section.name}}" ng-value="false" class="form__group--radio-inline" ng-editing />
+                            <label for="attestation-reviewed-no-{{section.name}}">No</label>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-50p">
                 <div class="table--horizontal-wrapper-wide">

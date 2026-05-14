@@ -555,6 +555,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			try
 			{
 				StartSection25ReportingService(model);
+				StartEiEligibilityCheckReportingService(model);
 				StartSINReportingService(model);
 				StartDuplicateSinReportingService(model);
 				StartExitSurveyReportingService(model);
@@ -627,6 +628,30 @@ namespace CJG.Web.External.Areas.Int.Controllers
 
 			var paths = Directory.EnumerateFiles(tempSessionDir.FullName, $"{fileNamePrefix}*.csv").ToList();
 			paths.AddRange(Directory.EnumerateFiles(tempSessionDir.FullName, $"{fileNamePrefix}*.html"));
+
+			model.FileNames.AddRange(GetProcessedFiles(paths, tempPath));
+		}
+
+		private void StartEiEligibilityCheckReportingService(DebugReportingViewModel model)
+		{
+			const string fileNamePrefix = "ei-eligibility-report";
+
+			var tempPath = Path.GetTempPath();
+			var tempSessionDir = Directory.CreateDirectory(Path.Combine(tempPath, Guid.NewGuid().ToString("N")));
+
+			var csvFilePath = Path.Combine(tempSessionDir.FullName, $"{fileNamePrefix}-{DateTime.Now:yyyy-MM-dd}.csv");
+			var cutoffDate = new DateTime(2026, 4, 1);  // Might need to move this to debug UI at some point.
+
+			using (new DisposableListLogger(model.LogRecords, LogManager.Configuration))
+			{
+				new EiEligibilityCheckReportJob(_participantService, _settingService, _logger)
+					.Start(model.CurrentDate,
+						csvFilePath,
+						cutoffDate,
+						model.MaxParticipants);
+			}
+
+			var paths = Directory.EnumerateFiles(tempSessionDir.FullName, $"{fileNamePrefix}*.csv").ToList();
 
 			model.FileNames.AddRange(GetProcessedFiles(paths, tempPath));
 		}

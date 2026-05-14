@@ -2,7 +2,7 @@ using System;
 
 namespace CJG.Infrastructure.ReportingService
 {
-    internal interface ISdsiReportJob
+	internal interface ISdsiReportJob
     {
         void Start(DateTime currentDate, 
             string csvFilePath,

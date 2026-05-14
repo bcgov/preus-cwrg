@@ -11,6 +11,7 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
           grantApplicationId: $scope.model.Id,
           completeAttestation: $scope.model.CompleteAttestation,
           attestationNotApplicable: $scope.model.AttestationNotApplicable,
+          reviewedByAdjudicatorAnalyst: $scope.model.ReviewedByAdjudicatorAnalyst,
           allocatedCosts: $scope.model.AllocatedCosts,
           files: $scope.section.documents.filter(function (attachment) {
             return !attachment.Delete && typeof (attachment.File) !== 'undefined';

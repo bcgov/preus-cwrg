@@ -35,13 +35,15 @@ namespace CJG.Application.Business.Models
 			ContractNumber = paymentRequest.GrantApplication.FileNumber;
 			Duplicate = duplicate;
 			IsAccrual = paymentRequest.PaymentType == PaymentTypes.Accrual;
+
+			// This is used on the Amount Owing Report
 			ClientNumb = paymentRequest.GLClientNumber;
 			RESP = paymentRequest.GLRESP;
 			ServiceLine = paymentRequest.GLServiceLine;
 			STOB = paymentRequest.GLSTOB;
 			ProjectCode = paymentRequest.GLProjectCode;
 
-			// If we have no account codes, serve out the default stored value
+			// If we have no account codes, serve out the default stored value on the Payment Request Report
 			if (!paymentRequest.PaymentRequestAccountCodes.Any())
 			{
 				AccountCodes.Add(new PaymentRequestAccountCodeModel

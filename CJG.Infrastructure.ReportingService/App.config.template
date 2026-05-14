@@ -48,6 +48,9 @@
       <setting name="HtmlFilePathTemplateSin" serializeAs="String">
         <value>#{html-sin-file-path-template}</value>
       </setting>
+      <setting name="CsvFilePathTemplateEiCheck" serializeAs="String">
+        <value>#{csv-ei-file-path-template}</value>
+      </setting>
       <setting name="CsvFilePathTemplateDuplicateSin" serializeAs="String">
         <value>#{csv-duplicate-sin-file-path-template}</value>
       </setting>
