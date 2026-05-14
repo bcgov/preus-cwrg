@@ -228,7 +228,12 @@ namespace CJG.Core.Entities
 			if (GrantApplication == null && GrantApplicationId == 0)
 				yield return new ValidationResult("The claim must be associated with a training program.", new[] { nameof(GrantApplication) });
 
-			if (GrantApplication == null) GrantApplication = context.GrantApplications.Find(GrantApplicationId);
+			if (GrantApplication == null)
+				GrantApplication = context.GrantApplications.Find(GrantApplicationId);
+
+			// Temporary validation bypass to fix QA issue
+			if (GrantApplication.ApplicationStateInternal == ApplicationStateInternal.CancelledByMinistry)
+				yield break;
 
 			if (entry.State == EntityState.Added)
 			{
