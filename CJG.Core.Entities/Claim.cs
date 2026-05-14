@@ -231,10 +231,6 @@ namespace CJG.Core.Entities
 			if (GrantApplication == null)
 				GrantApplication = context.GrantApplications.Find(GrantApplicationId);
 
-			// Temporary validation bypass to fix QA issue
-			if (GrantApplication.ApplicationStateInternal == ApplicationStateInternal.CancelledByMinistry)
-				yield break;
-
 			if (entry.State == EntityState.Added)
 			{
 				var claims = context.Set<Claim>().Where(c => c.Id == Id);
@@ -266,7 +262,7 @@ namespace CJG.Core.Entities
 					yield return new ValidationResult("The claim version cannot be changed.", new[] { nameof(ClaimVersion) });
 
 				// A submitted claim (NewClaim) must have a FileNumber.
-				if (ClaimState == ClaimState.Unassessed && String.IsNullOrEmpty(ClaimNumber))
+				if (ClaimState == ClaimState.Unassessed && string.IsNullOrEmpty(ClaimNumber))
 					yield return new ValidationResult("The claim must have a file number before it can be submitted for assessment.", new[] { nameof(ClaimNumber), nameof(ClaimState) });
 
 				// A submitted claim (NewClaim) must have a DateSubmitted.
@@ -318,16 +314,16 @@ namespace CJG.Core.Entities
 										   select pc.ParticipantFormId).ToArray().Distinct().Count();
 
 				if (participantsOnClaim > GrantApplication.TrainingCost.AgreedParticipants)
-					yield return new ValidationResult($"[{ClaimNumber}] The number of participants ({participantsOnClaim}) included in this claim is more than the agreed number of participants ({GrantApplication.TrainingCost.AgreedParticipants}).", new[] { nameof(GrantApplication.TrainingCost.AgreedParticipants) });
+					yield return new ValidationResult($"The number of participants ({participantsOnClaim}) included in this claim is more than the agreed number of participants ({GrantApplication.TrainingCost.AgreedParticipants}).", new[] { nameof(GrantApplication.TrainingCost.AgreedParticipants) });
 			}
 
 			if (ClaimTypeId == ClaimTypes.SingleAmendableClaim)
 			{
 				if (TotalAssessedReimbursement < 0)
-					yield return new ValidationResult($"[{ClaimNumber}] The assessed total claim reimbursement must be greater than or equal to 0.", new[] { nameof(TotalAssessedReimbursement) });
+					yield return new ValidationResult("The assessed total claim reimbursement must be greater than or equal to 0.", new[] { nameof(TotalAssessedReimbursement) });
 
 				if (TotalClaimReimbursement < 0)
-					yield return new ValidationResult($"[{ClaimNumber}] The total claim reimbursement must be greater than or equal to 0.", new[] { nameof(TotalClaimReimbursement) });
+					yield return new ValidationResult("The total claim reimbursement must be greater than or equal to 0.", new[] { nameof(TotalClaimReimbursement) });
 			}
 
 			// If there are eligible costs.
@@ -340,20 +336,22 @@ namespace CJG.Core.Entities
 
 				// The TotalClaimReimbursement must equal the sum of the eligible cost ClaimMaxReimbursementCost.
 				if (TotalClaimReimbursement != sum_reimbursements)
-					yield return new ValidationResult($"[{ClaimNumber}] The total claim must be equal to the sum of the participant reimbursements ${sum_reimbursements}.", new[] { nameof(TotalClaimReimbursement) });
+					yield return new ValidationResult($"The total claim must be equal to the sum of the participant reimbursements ${sum_reimbursements}.", new[] { nameof(TotalClaimReimbursement) });
 
 				// The TotalAssessedReimbursement must equal to the sum of the eligible cost AssessedMaxReimbursementCost.
 				if (ClaimState != ClaimState.ClaimDenied && TotalAssessedReimbursement != sum_assessed_reimbursements)
-					yield return new ValidationResult($"[{ClaimNumber}] The total claim assessed reimbursement must be equal to the sum of the assessed participant reimbursements ${sum_assessed_reimbursements}.", new[] { nameof(TotalAssessedReimbursement) });
+					yield return new ValidationResult($"The total claim assessed reimbursement must be equal to the sum of the assessed participant reimbursements ${sum_assessed_reimbursements}.", new[] { nameof(TotalAssessedReimbursement) });
 
 				// load TrainingCost before validating it
-				if (GrantApplication.TrainingCost == null) GrantApplication.TrainingCost = context.Set<TrainingCost>().SingleOrDefault(x => x.GrantApplicationId == GrantApplication.Id);
+				if (GrantApplication.TrainingCost == null)
+					GrantApplication.TrainingCost = context.Set<TrainingCost>().SingleOrDefault(x => x.GrantApplicationId == GrantApplication.Id);
+
 				if (sum_reimbursements > GrantApplication.TrainingCost.AgreedCommitment)
-					yield return new ValidationResult($"[{ClaimNumber}] Total claimed reimbursement ${sum_reimbursements} must not exceed the agreement amount ${GrantApplication.TrainingCost.AgreedCommitment}.", new[] { nameof(TotalClaimReimbursement) });
+					yield return new ValidationResult($"Total claimed reimbursement ${sum_reimbursements} must not exceed the agreement amount ${GrantApplication.TrainingCost.AgreedCommitment}.", new[] { nameof(TotalClaimReimbursement) });
 
 				//if (GrantApplication.GetProgramType() == ProgramTypes.WDAService)
 				if (sum_assessed_reimbursements > GrantApplication.TrainingCost.AgreedCommitment)
-					yield return new ValidationResult($"[{ClaimNumber}] Total assessed reimbursement ${sum_assessed_reimbursements} must not exceed the agreement amount ${GrantApplication.TrainingCost.AgreedCommitment}.", new[] { nameof(TotalAssessedReimbursement) });
+					yield return new ValidationResult($"Total assessed reimbursement ${sum_assessed_reimbursements} must not exceed the agreement amount ${GrantApplication.TrainingCost.AgreedCommitment}.", new[] { nameof(TotalAssessedReimbursement) });
 
 				// Each unique participant cannot exceed the GrantApplication.MaxReimbursementAmt for either claimed or assessed
 				var maxParticipantReimbursement = (
@@ -373,7 +371,7 @@ namespace CJG.Core.Entities
 				//if (GrantApplication.GetProgramType() == ProgramTypes.WDAService)
 					// if either of these values are greater than zero, then return the validation result
 				if (maxParticipantAssessedReimbursement + maxParticipantReimbursement > 0)
-					yield return new ValidationResult($"[{ClaimNumber}] Average assessed participant reimbursement cannot exceed the stream participant annual limit.", new[] { nameof(TotalClaimReimbursement) });
+					yield return new ValidationResult("Average assessed participant reimbursement cannot exceed the stream participant annual limit.", new[] { nameof(TotalClaimReimbursement) });
 
 				// You cannot report more participants than agreed.
 				if (participantsWithCostsAssigned > GrantApplication.TrainingCost.AgreedParticipants)
