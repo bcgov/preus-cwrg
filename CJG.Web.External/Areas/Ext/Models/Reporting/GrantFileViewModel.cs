@@ -93,7 +93,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
 			}
 
 			ClaimDueDate = grantApplication.StartDate.AddDays(30);
-			CompletionDueDate = grantApplication.EndDate.AddDays(30);
+			CompletionDueDate = grantApplication.EndDate.AddDays(45); // Completion is due 90 days after training ends, so 45 days off the 45 days training-end offset
 
 			var completionReportStatus = completionReportService.GetCompletionReportStatus(Id);
 			CompletionReport.CompletionReportStatus = (CompletionReportStatus) Enum.Parse(typeof(CompletionReportStatus), completionReportStatus.Replace(" ", string.Empty));
@@ -117,7 +117,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
 			AllowAttestations = claimApproved;
 
 			ProofOfPaymentDueDate = (claimStateDate ?? grantApplication.StartDate).AddDays(30);
-			AttestationDueDate = grantApplication.EndDate.AddDays(30);
+			AttestationDueDate = grantApplication.EndDate;  // Completion is due 45 days after training ends, so the same day as the 45 days training-end offset
 
 			ProofOfPayment = new ProofOfPaymentStatusViewModel { ProofOfPaymentStatus = ProofOfPaymentReportStatus.NotStarted };
 			if (proofOfPayment != null)

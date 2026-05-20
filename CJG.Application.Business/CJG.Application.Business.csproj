@@ -77,6 +77,7 @@
     <Compile Include="Models\GlobalBudget\IntakePeriodSlotModel.cs" />
     <Compile Include="Models\KeyValueListItem.cs" />
     <Compile Include="Models\ParticipantFormModel.cs" />
+    <Compile Include="Models\PaymentRequestAccountCodeModel.cs" />
     <Compile Include="Models\RequestBatchPDFBaseModel.cs" />
     <Compile Include="Models\PaymentRequestBatchPDFModel.cs" />
     <Compile Include="Models\RequestOnHoldModel.cs" />

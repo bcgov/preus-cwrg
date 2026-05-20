@@ -163,6 +163,7 @@
     <Compile Include="ParticipantWithdrawalSurveyAnswer.cs" />
     <Compile Include="ParticipantWithdrawalSurveyQuestion.cs" />
     <Compile Include="ParticipantWithdrawalSurveyQuestionOption.cs" />
+    <Compile Include="PaymentRequestAccountCode.cs" />
     <Compile Include="PaymentRequestExtensions.cs" />
     <Compile Include="ProgramFundingBudget.cs" />
     <Compile Include="ProgramFundingBudgetEntry.cs" />

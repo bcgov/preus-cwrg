@@ -1,19 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Collections.Generic;
 using CJG.Core.Entities.Attributes;
 
 namespace CJG.Core.Entities
 {
 	/// <summary>
-	/// <typeparamref name="GrantAgreement"/> class, provides an ORM for Grant Agreemnt information.  A <typeparamref name="GrantAgreement"/> is a one-to-one relationship with GrantApplication.
+	/// <typeparamref name="GrantAgreement"/> class, provides an ORM for Grant Agreement information.  A <typeparamref name="GrantAgreement"/> is a one-to-one relationship with GrantApplication.
 	/// This is a one-to-one relationship with the grant application.
 	/// </summary>
 	public class GrantAgreement : EntityBase
 	{
-		#region Properties
 		/// <summary>
 		/// get/set - The primary key of the Grant Agreement, which is the Grant Application Id (one-to-one relationship).
 		/// </summary>
@@ -130,9 +129,7 @@ namespace CJG.Core.Entities
 		[Index("IX_GrantAgreement", 2)]
 		[Column(TypeName = "DATETIME2")]
 		public DateTime EndDate { get; set; }
-		#endregion
 
-		#region Constructors
 		/// <summary>
 		/// Creates a new instance of <typeparamref name="GrantAgreement"/> object.
 		/// </summary>
@@ -149,9 +146,7 @@ namespace CJG.Core.Entities
 		{
 			ApplyTo(grantApplication);
 		}
-		#endregion
 
-		#region Methods
 		/// <summary>
 		/// Update the GrantAgreement and attach it to the specified GrantApplication.
 		/// Extracts relevant information from the GrantApplication and applies it this <typeparamref name="GrantAgreement"/>.
@@ -165,23 +160,23 @@ namespace CJG.Core.Entities
 			if (grantApplication.Id == 0)
 				throw new InvalidOperationException("The grant application must already exist before creating the agreement.");
 
-			if (grantApplication.TrainingPrograms.Count() == 0)
+			if (grantApplication.TrainingPrograms.Count == 0)
 				throw new InvalidOperationException("The grant application must have at least one training project defined.");
 
 			grantApplication.GrantAgreement = this;
-			this.GrantApplication = grantApplication;
-			this.GrantApplicationId = grantApplication.Id;
+			GrantApplication = grantApplication;
+			GrantApplicationId = grantApplication.Id;
 
 			// Agreement Term dates
-			this.StartDate = AppDateTime.UtcNow;
-			this.EndDate = grantApplication.EndDate.AddDays(60);
+			StartDate = AppDateTime.UtcNow;
+			EndDate = grantApplication.EndDate.AddDays(60);
 
 			var trainingStartDate = grantApplication.TrainingPrograms.Min(tp => tp.StartDate);
 			var trainingEndDate = grantApplication.TrainingPrograms.Max(tp => tp.EndDate);
 
-			this.ParticipantReportingDueDate = trainingStartDate.AddDays(-5);
-			this.ReimbursementClaimDueDate = trainingStartDate.AddDays(30);
-			this.CompletionReportingDueDate = trainingEndDate.AddDays(30);
+			ParticipantReportingDueDate = trainingStartDate.AddDays(-5);
+			ReimbursementClaimDueDate = trainingStartDate.AddDays(30);
+			CompletionReportingDueDate = trainingEndDate.AddDays(45);
 		}
 
 		/// <summary>
@@ -192,20 +187,18 @@ namespace CJG.Core.Entities
 		public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 		{
 			// Must be associated with a GrantApplication.
-			if (this.GrantApplication == null && this.GrantApplicationId == 0)
-				yield return new ValidationResult("The grant agreement must be associated with a grant application.", new[] { nameof(this.GrantApplication) });
+			if (GrantApplication == null && GrantApplicationId == 0)
+				yield return new ValidationResult("The grant agreement must be associated with a grant application.", new[] { nameof(GrantApplication) });
 
 			// Cannot have a DateAccepted unless related documents are confirmed; CoverLetterConfirmed, ScheduleAConfirmed, ScheduleBConfirmed.
-			if (this.DateAccepted != null && (!this.CoverLetterConfirmed || !this.ScheduleAConfirmed || !this.ScheduleBConfirmed))
-				yield return new ValidationResult("A grant agreement cannot be accepted before the cover letter, schedule A and schedule B are confirmed.", new[] { nameof(this.DateAccepted) });
+			if (DateAccepted != null && (!CoverLetterConfirmed || !ScheduleAConfirmed || !ScheduleBConfirmed))
+				yield return new ValidationResult("A grant agreement cannot be accepted before the cover letter, schedule A and schedule B are confirmed.", new[] { nameof(DateAccepted) });
 
 			foreach (var validation in base.Validate(validationContext))
 			{
 				yield return validation;
 			}
 		}
-
-		#endregion
 	}
 
 	public static class GrantAgreementExtensions
@@ -223,10 +216,8 @@ namespace CJG.Core.Entities
 					returnTime -= new TimeSpan(1, 0, 0);
 				return returnTime;
 			}
-			else
-			{
-				return time;
-			}
+
+			return time;
 		}
 
 		public static DateTime GetClaimSubmissionDeadline(this GrantAgreement grantAgreement)

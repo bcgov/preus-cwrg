@@ -29,16 +29,13 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		private readonly IEligibleExpenseBreakdownService _eligibleExpenseBreakdownService;
 		private readonly IProgramInitiativeService _programInitiativeService;
 
-		private readonly INoteService _noteService;
-
 		public AttestationController(
 			IControllerService controllerService,
 			IGrantApplicationService grantApplicationService,
 			IAttachmentService attachmentService,
 			ISuccessStoryService successStoryService,
 			IEligibleExpenseBreakdownService eligibleExpenseBreakdownService,
-			IProgramInitiativeService programInitiativeService,
-			INoteService noteService
+			IProgramInitiativeService programInitiativeService
 		   ) : base(controllerService.Logger)
 		{
 			_grantApplicationService = grantApplicationService;
@@ -46,7 +43,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			_successStoryService = successStoryService;
 			_eligibleExpenseBreakdownService = eligibleExpenseBreakdownService;
 			_programInitiativeService = programInitiativeService;
-			_noteService = noteService;
 		}
 
 		/// <summary>
@@ -109,6 +105,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		/// <param name="grantApplicationId"></param>
 		/// <param name="allocatedCosts"></param>
 		/// <param name="attestationNotApplicable"></param>
+		/// <param name="reviewedByAdjudicatorAnalyst"></param>
 		/// <param name="completeAttestation"></param>
 		/// <param name="files"></param>
 		/// <param name="documents"></param>
@@ -118,7 +115,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		[PreventSpam]
 		[ValidateRequestHeader]
 		[Route("Application/Attestation/")]
-		public JsonResult SaveAttestation(int grantApplicationId, decimal allocatedCosts, bool? attestationNotApplicable, bool? completeAttestation, HttpPostedFileBase[] files, string documents, string costModel)
+		public JsonResult SaveAttestation(int grantApplicationId, decimal allocatedCosts, bool? attestationNotApplicable, bool? reviewedByAdjudicatorAnalyst, bool? completeAttestation, HttpPostedFileBase[] files, string documents, string costModel)
 		{
 			var model = new AttestationViewModel();
 			try
@@ -129,6 +126,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 				{
 					AllocatedCosts = allocatedCosts,
 					AttestationNotApplicable = attestationNotApplicable,
+					ReviewedByAdjudicatorAnalyst = reviewedByAdjudicatorAnalyst,
 					CompleteAttestation = completeAttestation
 				};
 
@@ -160,6 +158,9 @@ namespace CJG.Web.External.Areas.Int.Controllers
 
 				if (model.AttestationNotApplicable.HasValue)
 					grantApplication.Attestation.AttestationNotApplicable = model.AttestationNotApplicable.Value;
+
+				if (model.ReviewedByAdjudicatorAnalyst.HasValue)
+					grantApplication.Attestation.ReviewedByAdjudicatorAnalyst = model.ReviewedByAdjudicatorAnalyst.Value;
 
 				if (model.CompleteAttestation.HasValue && model.CompleteAttestation.Value)
 					grantApplication.Attestation.State = AttestationState.Complete;

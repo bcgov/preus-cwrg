@@ -258,6 +258,33 @@ namespace CJG.Application.Services
 					.Take(take);
 		}
 
+		/// <summary>
+		/// Get participant forms that haven't had EI checks reported on
+		/// </summary>
+		/// <param name="currentDate"></param>
+		/// <param name="take"></param>
+		/// <param name="cutoffDate"></param>
+		/// <returns>Collection of ParticipantEnrollment</returns>
+		public IEnumerable<ParticipantForm> GetParticipantsEnrollmentsForEiCheck(DateTime currentDate, int take, DateTime cutoffDate)
+		{
+			var currentDateUtc = currentDate.ToUniversalTime();
+			var cutoffDateUtc = cutoffDate.ToUniversalTime();
+
+			var trainingStartReportDate = currentDateUtc.AddDays(-7);
+
+			var participantForms = _dbContext.ParticipantForms
+				.Include(pf => pf.GrantApplication)
+				.Include(pf => pf.PreviousEmploymentNaics)
+				.Include(pf => pf.PreviousEmploymentNoc)
+				.Where(pf => pf.EiEligibilityReportedOn == null || pf.EiEligibilityReportedOn > currentDateUtc)
+				.Where(pf => pf.DateAdded >= cutoffDateUtc)
+				.Where(pf => pf.GrantApplication.ApplicationStateInternal != ApplicationStateInternal.Draft)
+				.Where(pf => pf.GrantApplication.TrainingPrograms.Any(tp => trainingStartReportDate >= tp.StartDate))
+				.OrderBy(pf => pf.DateAdded)
+				.Take(take);
+
+			return participantForms;
+		}
 
 		/// <summary>
 		/// Get enrollments for participants that have a SIN that starts with a 9 (Temporary Residents)
@@ -352,6 +379,21 @@ namespace CJG.Application.Services
 			foreach (var participantEnrollment in participantEnrollments)
 			{
 				participantEnrollment.ReportedOn = reportedDate.ToUniversalTime();
+			}
+
+			_dbContext.Commit();
+		}
+
+		/// <summary>
+		/// Update ParticipantEnrollments with date when they were reported for EI Eligibility
+		/// </summary>
+		/// <param name="participantEnrollments"></param>
+		/// <param name="reportedDate"></param>
+		public void UpdateEiEligibilityReportedDate(IEnumerable<ParticipantForm> participantEnrollments, DateTime reportedDate)
+		{
+			foreach (var participantEnrollment in participantEnrollments)
+			{
+				participantEnrollment.EiEligibilityReportedOn = reportedDate.ToUniversalTime();
 			}
 
 			_dbContext.Commit();

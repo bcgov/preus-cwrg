@@ -104,7 +104,7 @@ namespace CJG.Application.Services.Notifications
 			ParticipantReportDueDate = FormatDate(grantApplication.GetParticipantReportingDueDateForNotification());
 			ClaimReportDueDate = FormatDate(grantApplication.StartDate.AddDays(30));
 
-			CompletionReportDueDate = FormatDate(grantApplication.EndDate.AddDays(30));
+			CompletionReportDueDate = FormatDate(grantApplication.EndDate.AddDays(45));
 			ParticipantsWithCompletionReport = grantApplication.ParticipantForms.Where(pf => pf.ParticipantCompletionReportAnswers.Any()).Count();
 
 			DeniedReason = grantApplication.GetReason(ApplicationStateInternal.ApplicationDenied);

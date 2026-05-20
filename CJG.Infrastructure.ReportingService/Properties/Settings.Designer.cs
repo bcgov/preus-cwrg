@@ -139,5 +139,14 @@ namespace CJG.Infrastructure.ReportingService.Properties {
                 return ((string)(this["SiteUrl"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("report_output\\CWRG EI Eligibility Check\\ei-eligibility-check-report-{0:yyyy-MM-dd}.csv")]
+        public string CsvFilePathTemplateEiCheck {
+            get {
+                return ((string)(this["CsvFilePathTemplateEiCheck"]));
+            }
+        }
     }
 }

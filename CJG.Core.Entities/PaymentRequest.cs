@@ -120,6 +120,11 @@ namespace CJG.Core.Entities
 		/// get - A collection of reconciliation payments associated to this payment request.
 		/// </summary>
 		public virtual ICollection<ReconciliationPayment> ReconciliationPayments { get; } = new List<ReconciliationPayment>();
+
+		/// <summary>
+		/// get - A collection of reconciliation payments associated to this payment request.
+		/// </summary>
+		public virtual ICollection<PaymentRequestAccountCode> PaymentRequestAccountCodes { get; set; } = new List<PaymentRequestAccountCode>();
 		#endregion
 
 		#region Constructors
@@ -136,13 +141,13 @@ namespace CJG.Core.Entities
 		/// <param name="claim"></param>
 		public PaymentRequest(GrantApplication grantApplication, PaymentRequestBatch batch, Claim claim)
 		{
-			this.GrantApplication = grantApplication ?? throw new ArgumentNullException(nameof(grantApplication));
-			this.GrantApplicationId = grantApplication.Id;
-			this.PaymentRequestBatch = batch ?? throw new ArgumentNullException(nameof(batch));
-			this.PaymentRequestBatchId = batch.Id;
-			this.Claim = claim ?? throw new ArgumentNullException(nameof(claim));
-			this.ClaimId = claim.Id;
-			this.ClaimVersion = claim.ClaimVersion;
+			GrantApplication = grantApplication ?? throw new ArgumentNullException(nameof(grantApplication));
+			GrantApplicationId = grantApplication.Id;
+			PaymentRequestBatch = batch ?? throw new ArgumentNullException(nameof(batch));
+			PaymentRequestBatchId = batch.Id;
+			Claim = claim ?? throw new ArgumentNullException(nameof(claim));
+			ClaimId = claim.Id;
+			ClaimVersion = claim.ClaimVersion;
 		}
 		#endregion
 
@@ -162,13 +167,13 @@ namespace CJG.Core.Entities
 				yield break;
 
 
-			if (this.Claim == null) this.Claim = context.Claims.Include(c => c.GrantApplication).Include(c => c.GrantApplication.PaymentRequests).FirstOrDefault(c => c.Id == this.ClaimId && c.ClaimVersion == this.ClaimVersion);
-			if (this.Claim.GrantApplication?.PaymentRequests == null || !this.Claim.GrantApplication.PaymentRequests.Any()) this.GrantApplication = context.GrantApplications.Include(ga => ga.PaymentRequests).FirstOrDefault(ga => ga.Id == this.GrantApplicationId);
+			if (Claim == null) Claim = context.Claims.Include(c => c.GrantApplication).Include(c => c.GrantApplication.PaymentRequests).FirstOrDefault(c => c.Id == ClaimId && c.ClaimVersion == ClaimVersion);
+			if (Claim.GrantApplication?.PaymentRequests == null || !Claim.GrantApplication.PaymentRequests.Any()) GrantApplication = context.GrantApplications.Include(ga => ga.PaymentRequests).FirstOrDefault(ga => ga.Id == GrantApplicationId);
 
 			// Payment amount cannot exceed the amount owing.
-			var amountPaidOrOwing = this.Claim.AmountPaidOrOwing();
-			if (this.PaymentAmount != amountPaidOrOwing)
-				yield return new ValidationResult($"The payment amount is invalid and should be {amountPaidOrOwing.ToString("c2")}.", new[] { nameof(this.PaymentAmount) });
+			var amountPaidOrOwing = Claim.AmountPaidOrOwing();
+			if (PaymentAmount != amountPaidOrOwing)
+				yield return new ValidationResult($"The payment amount is invalid and should be {amountPaidOrOwing.ToString("c2")}.", new[] { nameof(PaymentAmount) });
 
 			foreach (var validation in base.Validate(validationContext))
 			{

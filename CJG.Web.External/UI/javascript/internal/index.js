@@ -92,6 +92,9 @@ require('./participant');
 require('./training-provider-inventory');
 
 // Reports
+require('./system-settings');
+
+// Reports
 require('./reports');
 
 // Debug

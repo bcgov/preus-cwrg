@@ -1,30 +1,27 @@
-﻿using CJG.Application.Business.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using CJG.Application.Business.Models;
+using CJG.Application.Services.Exceptions;
 using CJG.Core.Entities;
 using CJG.Core.Entities.Helpers;
 using CJG.Core.Interfaces.Service;
 using CJG.Infrastructure.Entities;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Web;
-using CJG.Application.Services.Exceptions;
 
 namespace CJG.Application.Services
 {
 	public class PaymentRequestService : Service, IPaymentRequestService
 	{
-		#region Variables
 		private readonly IFiscalYearService _fiscalYearService;
 		private readonly IClaimService _claimService;
 		private readonly IGrantProgramService _grantProgramService;
 		private readonly INotificationService _notificationService;
 
 		private object generateRequestsLock = new object();
-		#endregion
 
-		#region Constructors
 		/// <summary>
 		/// 
 		/// </summary>
@@ -49,9 +46,7 @@ namespace CJG.Application.Services
 			_grantProgramService = grantProgramService;
 			_notificationService = notificationService;
 		}
-		#endregion
 
-		#region Methods
 		public void AddPaymentRequest(PaymentRequest paymentRequest)
 		{
 			paymentRequest.DateAdded = AppDateTime.UtcNow;
@@ -64,7 +59,7 @@ namespace CJG.Application.Services
 			var paymentRequest = _dbContext.PaymentRequests.Find(paymentRequestBatchId, trainingProgramId);
 			return paymentRequest;
 		}
-		
+
 		public PageList<PaymentRequestBatch> GetRequestBatches(int grantProgramId, int page, int quantity, string search)
 		{
 			var filtered = _dbContext.PaymentRequestBatches.AsNoTracking()
@@ -74,17 +69,14 @@ namespace CJG.Application.Services
 			var result = filtered.Skip((page - 1) * quantity).Take(quantity);
 			return new PageList<PaymentRequestBatch>(page, quantity, total, result.ToArray());
 		}
-		
+
 		public PaymentRequestBatch GeneratePaymentRequests(int grantProgramId)
 		{
 			lock (generateRequestsLock)
 			{
-				var claims = _claimService.GetApprovedClaimsForPaymentRequest(grantProgramId);
-
+				var claims = _claimService.GetApprovedClaimsForPaymentRequest(grantProgramId).ToList();
 				if (claims.Any())
-				{
 					return GeneratePaymentRequestBatch(grantProgramId, claims, PaymentBatchTypes.PaymentRequest);
-				}
 
 				return null;
 			}
@@ -94,12 +86,9 @@ namespace CJG.Application.Services
 		{
 			lock (generateRequestsLock)
 			{
-				var claims = _claimService.GetApprovedClaimsForAmountOwing(grantProgramId);
-
+				var claims = _claimService.GetApprovedClaimsForAmountOwing(grantProgramId).ToList();
 				if (claims.Any())
-				{
 					return GeneratePaymentRequestBatch(grantProgramId, claims, PaymentBatchTypes.AmountOwing);
-				}
 
 				return null;
 			}
@@ -120,7 +109,7 @@ namespace CJG.Application.Services
 		/// <param name="claims"></param>
 		/// <param name="batchType"></param>
 		/// <returns></returns>
-		public PaymentRequestBatch GeneratePaymentRequestBatch(int grantProgramId, IEnumerable<Claim> claims, PaymentBatchTypes batchType)
+		public PaymentRequestBatch GeneratePaymentRequestBatch(int grantProgramId, List<Claim> claims, PaymentBatchTypes batchType)
 		{
 			var grantProgram = _grantProgramService.Get(grantProgramId);
 			if (grantProgram.ExpenseAuthority == null)
@@ -187,6 +176,23 @@ namespace CJG.Application.Services
 						GLProjectCode = account.GLProjectCode
 					};
 
+					var claimPayment = claim.ClaimPayment;
+
+					if (claimPayment != null)
+					{
+						if (claimPayment.WDATariffCWRG)
+							AddAccountCode(paymentRequest, "111CWRD");
+
+						if (claimPayment.LMDATariffTRST)
+							AddAccountCode(paymentRequest, "111TRST");
+
+						if (claimPayment.LMDATariffTRSW)
+							AddAccountCode(paymentRequest, "111TRSW");
+
+						if (claimPayment.LMDATariffTRCO)
+							AddAccountCode(paymentRequest, "111TRCO");
+					}
+
 					claim.ClaimState = batchType == PaymentBatchTypes.PaymentRequest ? ClaimState.PaymentRequested : ClaimState.AmountOwing;
 				}
 
@@ -198,7 +204,7 @@ namespace CJG.Application.Services
 			_dbContext.PaymentRequestBatches.Add(paymentRequestBatch);
 
 			// Add notification for each application in payment request.
-			var notification_errors = new List<Exception>();
+			var notificationErrors = new List<Exception>();
 			foreach (var claim in claims)
 			{
 				try
@@ -212,14 +218,14 @@ namespace CJG.Application.Services
 				}
 				catch (Exception ex)
 				{
-					notification_errors.Add(ex);
+					notificationErrors.Add(ex);
 				}
 			}
 
 			_dbContext.CommitTransaction();
 
-			if (notification_errors.Any())
-				throw new NotificationException("Error(s) occured while attempting to send email notifications", new NotificationException(String.Join("\n", notification_errors.Select(e => e.Message))));
+			if (notificationErrors.Any())
+				throw new NotificationException("Error(s) occured while attempting to send email notifications", new NotificationException(String.Join("\n", notificationErrors.Select(e => e.Message))));
 
 			return paymentRequestBatch;
 		}
@@ -256,19 +262,42 @@ namespace CJG.Application.Services
 		/// <returns></returns>
 		public PageList<PaymentRequest> GetPaymentRequests(int page = 1, int quantity = 10, string search = null, string sort = nameof(PaymentRequest.DateAdded))
 		{
-			if (page <= 0) page = 1;
-			if (quantity <= 0 || quantity > 100) quantity = 10;
+			if (page <= 0)
+				page = 1;
+
+			if (quantity <= 0 || quantity > 100)
+				quantity = 10;
 
 			var isAmount = decimal.TryParse(search, out decimal amount);
-			var query = !String.IsNullOrWhiteSpace(search) ? _dbContext.PaymentRequests.Where(pr => pr.DocumentNumber.Contains(search) || pr.GrantApplication.OrganizationLegalName.Contains(search) || (isAmount && pr.PaymentAmount == amount)) : _dbContext.PaymentRequests.Where(pr => true);
+			var query = !string.IsNullOrWhiteSpace(search) ? _dbContext.PaymentRequests.Where(pr => pr.DocumentNumber.Contains(search) || pr.GrantApplication.OrganizationLegalName.Contains(search) || (isAmount && pr.PaymentAmount == amount)) : _dbContext.PaymentRequests.Where(pr => true);
 
 			var total = query.Count();
 
-			var orderBy = !String.IsNullOrWhiteSpace(sort) ? sort : $"{nameof(PaymentRequest.DateAdded)} desc";
+			var orderBy = !string.IsNullOrWhiteSpace(sort) ? sort : $"{nameof(PaymentRequest.DateAdded)} desc";
 			query = query.OrderByProperty(orderBy).Skip((page - 1) * quantity).Take(quantity);
 
 			return new PageList<PaymentRequest>(page, quantity, total, query.ToArray());
 		}
-		#endregion
+
+		private void AddAccountCode(PaymentRequest paymentRequest, string projectCode)
+		{
+			var accountCode = GetAccountCodeBy(projectCode);
+			if (accountCode == null)
+				return;
+
+			paymentRequest.PaymentRequestAccountCodes.Add(new PaymentRequestAccountCode
+			{
+				GLClientNumber = accountCode.GLClientNumber,
+				GLRESP = accountCode.GLRESP,
+				GLServiceLine = accountCode.GLServiceLine,
+				GLSTOB = paymentRequest.PaymentType == PaymentTypes.Accrual ? accountCode.GLSTOBAccrual : accountCode.GLSTOBNormal,
+				GLProjectCode = accountCode.GLProjectCode
+			});
+		}
+
+		private AccountCode GetAccountCodeBy(string projectCode)
+		{
+			return _dbContext.AccountCodes.FirstOrDefault(ac => ac.GLProjectCode == projectCode);
+		}
 	}
 }

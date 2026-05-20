@@ -247,6 +247,7 @@ namespace CJG.Infrastructure.EF
 
 		#region Payment Requests
 		public virtual DbSet<PaymentRequest> PaymentRequests { get; set; }
+		public virtual DbSet<PaymentRequestAccountCode> PaymentRequestAccountCodes { get; set; }
 		public virtual DbSet<PaymentRequestBatch> PaymentRequestBatches { get; set; }
 		public virtual DbSet<AccountCode> AccountCodes { get; set; }
 		public virtual DbSet<ReconciliationReport> ReconciliationReports { get; set; }
@@ -738,6 +739,16 @@ namespace CJG.Infrastructure.EF
 			modelBuilder.Entity<PaymentRequestBatch>()
 				.HasRequired(pr => pr.GrantProgram)
 				.WithMany(gp => gp.PaymentRequestBatches)
+				.WillCascadeOnDelete(false);
+
+			modelBuilder.Entity<PaymentRequestAccountCode>()
+				.HasRequired(pra => pra.PaymentRequestBatch)
+				.WithMany()
+				.WillCascadeOnDelete(false);
+
+			modelBuilder.Entity<PaymentRequestAccountCode>()
+				.HasRequired(pra => pra.Claim)
+				.WithMany()
 				.WillCascadeOnDelete(false);
 
 			modelBuilder.Entity<ReconciliationReport>()

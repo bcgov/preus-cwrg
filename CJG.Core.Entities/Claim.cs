@@ -228,7 +228,8 @@ namespace CJG.Core.Entities
 			if (GrantApplication == null && GrantApplicationId == 0)
 				yield return new ValidationResult("The claim must be associated with a training program.", new[] { nameof(GrantApplication) });
 
-			if (GrantApplication == null) GrantApplication = context.GrantApplications.Find(GrantApplicationId);
+			if (GrantApplication == null)
+				GrantApplication = context.GrantApplications.Find(GrantApplicationId);
 
 			if (entry.State == EntityState.Added)
 			{
@@ -261,7 +262,7 @@ namespace CJG.Core.Entities
 					yield return new ValidationResult("The claim version cannot be changed.", new[] { nameof(ClaimVersion) });
 
 				// A submitted claim (NewClaim) must have a FileNumber.
-				if (ClaimState == ClaimState.Unassessed && String.IsNullOrEmpty(ClaimNumber))
+				if (ClaimState == ClaimState.Unassessed && string.IsNullOrEmpty(ClaimNumber))
 					yield return new ValidationResult("The claim must have a file number before it can be submitted for assessment.", new[] { nameof(ClaimNumber), nameof(ClaimState) });
 
 				// A submitted claim (NewClaim) must have a DateSubmitted.
@@ -342,7 +343,9 @@ namespace CJG.Core.Entities
 					yield return new ValidationResult($"The total claim assessed reimbursement must be equal to the sum of the assessed participant reimbursements ${sum_assessed_reimbursements}.", new[] { nameof(TotalAssessedReimbursement) });
 
 				// load TrainingCost before validating it
-				if (GrantApplication.TrainingCost == null) GrantApplication.TrainingCost = context.Set<TrainingCost>().SingleOrDefault(x => x.GrantApplicationId == GrantApplication.Id);
+				if (GrantApplication.TrainingCost == null)
+					GrantApplication.TrainingCost = context.Set<TrainingCost>().SingleOrDefault(x => x.GrantApplicationId == GrantApplication.Id);
+
 				if (sum_reimbursements > GrantApplication.TrainingCost.AgreedCommitment)
 					yield return new ValidationResult($"Total claimed reimbursement ${sum_reimbursements} must not exceed the agreement amount ${GrantApplication.TrainingCost.AgreedCommitment}.", new[] { nameof(TotalClaimReimbursement) });
 

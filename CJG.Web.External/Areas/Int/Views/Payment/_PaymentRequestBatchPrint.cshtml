@@ -107,17 +107,29 @@
                             <td class="pdf-label">STOB</td>
                             <td class="pdf-label">Project Code</td>
                         </tr>
-                        <tr>
-                            <td class="pdf-text">@item.BusinessNumber</td>
-                            <td class="pdf-text@(item.IsAccrual ? " accrual" : "")">
-                                @item.PaymentType
-                            </td>
-                            <td class="pdf-text">@item.ClientNumb</td>
-                            <td class="pdf-text">@item.RESP</td>
-                            <td class="pdf-text">@item.ServiceLine</td>
-                            <td class="pdf-text">@item.STOB</td>
-                            <td class="pdf-text">@item.ProjectCode</td>
-                        </tr>
+                        @{ var accountIndex = 0; }
+                        @foreach (var accountCode in item.AccountCodes)
+                        {
+                            <tr>
+                                @if (accountIndex == 0)
+                                {
+                                    <td class="pdf-text">@item.BusinessNumber</td>
+                                }
+                                else 
+                                {
+                                    <td colspan="4" class="no-border"></td>
+                                }
+                                <td class="pdf-text@(item.IsAccrual ? " accrual" : "")">
+                                    @item.PaymentType
+                                </td>
+                                <td class="pdf-text">@accountCode.ClientNumb</td>
+                                <td class="pdf-text">@accountCode.RESP</td>
+                                <td class="pdf-text">@accountCode.ServiceLine</td>
+                                <td class="pdf-text">@accountCode.STOB</td>
+                                <td class="pdf-text">@accountCode.ProjectCode</td>
+                            </tr>
+                            accountIndex++;
+                        }
                     </tbody>
                 </table>
             </div>

@@ -29,6 +29,7 @@ namespace CJG.Core.Entities
 		public decimal UnusedFunds { get; set; }
 
 		public bool? AttestationNotApplicable { get; set; }
+		public bool? ReviewedByAdjudicatorAnalyst { get; set; }
 
 		public virtual ICollection<Attachment> Documents { get; set; } = new List<Attachment>();
 		public virtual ICollection<AttestationParticipant> Participants { get; set; } = new List<AttestationParticipant>();
