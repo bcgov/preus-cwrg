@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DataAnnotationsExtensions;
@@ -23,6 +23,6 @@ namespace CJG.Core.Entities
 		public int RowSequence { get; set; }
 
 		public bool IsWDA => Code.ToLower() == "wda";
-		public bool IsLMDA => Code.ToLower() == "lmda" || Code.ToLower() == "provincial";
+		public bool IsLMDA => Code.ToLower() == "lmda";
 	}
 }
