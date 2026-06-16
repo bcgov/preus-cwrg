@@ -21,22 +21,32 @@
                                placeholder="Intiative Name"
                                ng-model="initiative.Name"
                                ng-validation="errors.Initiatives_{{$index}}_.Name"
-                               ng-show="section.editing"/>
-                        <span ng-bind-html="initiative.Name" ng-show="!section.editing"></span>
+                               ng-show="section.editing" />
+                        <span ng-bind-html="initiative.Name" ng-show="!section.editing" style="font-weight: bold;"></span>
                         <input type="text"
                                class="input--small"
                                placeholder="Intiative Code"
                                style="margin-right: 2em"
                                ng-model="initiative.Code"
                                ng-validation="errors.Initiatives_{{$index}}_.Code"
-                               ng-show="section.editing"/>
+                               ng-show="section.editing" />
                         <span ng-show="!section.editing">
                             [<span ng-bind-html="initiative.Code" ng-show="!section.editing"></span>]
                         </span>
+                        <span ng-show="section.editing">
+                            <input type="checkbox"
+                                   id="showInReport_{{$index}}"
+                                   ng-model="initiative.ShowInProgramFundingReport"
+                                   ng-show="section.editing" />
+                            <label for="showInReport_{{$index}}">Use in LMDA/WDA Report</label>
+                        </span>
+                        <span ng-show="!section.editing">
+                            <span ng-show="!section.editing" style="margin-left: 0.25em;">{{ initiative.ShowInProgramFundingReport ? " - Used in LMDA/WDA Report" : " - Not used in LMDA/WDA Report" }}</span>
+                        </span>
 
-                        <div ng-show="section.editing" style="display: inline-block">
+                        <div ng-show="section.editing" style="display: inline-block; margin-left: 2em;">
                             <span>
-                                <span ng-show="!initiative.IsInUse || initiative.Id === 0" ng-click="removeItem(initiative)" style="cursor: pointer;">Remove Item</span>
+                                <span ng-show="!initiative.IsInUse || initiative.Id === 0" ng-click="removeItem(initiative)" style="cursor: pointer; text-decoration: underline;">Remove Item</span>
                                 <span ng-show="initiative.IsInUse && initiative.Id > 0">In Use</span>
                             </span>
                             <span style="margin-left: 2em">
