@@ -712,6 +712,10 @@
     <Compile Include="Migrations\202605132243585_v02.24.03.Designer.cs">
       <DependentUpon>202605132243585_v02.24.03.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202606122219011_v02.25.00.cs" />
+    <Compile Include="Migrations\202606122219011_v02.25.00.Designer.cs">
+      <DependentUpon>202606122219011_v02.25.00.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Content Include="Migrations\v02.02.03\PostDeploy\Seed\03 GrantOpenings.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1321,6 +1325,9 @@
     <Content Include="Migrations\v02.16.00\PostDeploy\Seed\01_DeactivateAndAddNewExitSurveyQuestionsAndOptions.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Migrations\v02.25.00\PostDeploy\Seed\01_UpdateInitiatives.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Migrations\v02.24.01\PostDeploy\Seed\01_InsertTariffAccountCodes.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1879,6 +1886,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202605132243585_v02.24.03.resx">
       <DependentUpon>202605132243585_v02.24.03.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202606122219011_v02.25.00.resx">
+      <DependentUpon>202606122219011_v02.25.00.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

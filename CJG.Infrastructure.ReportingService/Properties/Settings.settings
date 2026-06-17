@@ -41,7 +41,7 @@
     <Setting Name="SiteUrl" Type="System.String" Scope="Application">
       <Value Profile="(Default)">https://communityworkforceresponsegrants.gov.bc.ca/</Value>
     </Setting>
-    <Setting Name="CsvFilePathTemplateEiCheck" Type="System.String" Scope="User">
+    <Setting Name="CsvFilePathTemplateEiCheck" Type="System.String" Scope="Application">
       <Value Profile="(Default)">report_output\CWRG EI Eligibility Check\ei-eligibility-check-report-{0:yyyy-MM-dd}.csv</Value>
     </Setting>
   </Settings>

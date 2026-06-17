@@ -13,6 +13,8 @@ namespace CJG.Web.External.Areas.Int.Models.ProgramInitiatives
 	    [Required]
 	    public string Code { get; set; }
 
+		public bool ShowInProgramFundingReport { get; set; }
+
 		public int RowSequence { get; set; }
 
 		public string RowVersion { get; set; }
@@ -29,6 +31,7 @@ namespace CJG.Web.External.Areas.Int.Models.ProgramInitiatives
 			Id = initiative.Id;
 			Name = initiative.Name;
 			Code = initiative.Code;
+			ShowInProgramFundingReport = initiative.ShowInProgramFundingReport;
 			RowSequence = initiative.RowSequence;
 			RowVersion = Convert.ToBase64String(initiative.RowVersion);
 		}
