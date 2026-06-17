@@ -216,7 +216,8 @@ namespace CJG.Application.Services
 			var statesForTotalNumberOfAgreements = StateExtensions.GetInternalStatesForSummary();
 
 			var statesForProcessedPayments = new List<ApplicationStateInternal> {
-				ApplicationStateInternal.CompletionReporting
+				ApplicationStateInternal.CompletionReporting,
+				ApplicationStateInternal.Closed
 			};
 
 			var processedPaymentsTotals = 0m;
