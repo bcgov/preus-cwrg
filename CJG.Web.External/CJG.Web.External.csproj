@@ -576,6 +576,9 @@
     <Content Include="UI\javascript\internal\completion-report\index.js" />
     <Content Include="UI\javascript\internal\debug\index.js" />
     <Content Include="UI\javascript\internal\debug\notifications-service-view.js" />
+    <Content Include="UI\javascript\internal\participant-funding-sources\index.js" />
+    <Content Include="UI\javascript\internal\participant-funding-sources\participant-funding-sources-items.js" />
+    <Content Include="UI\javascript\internal\participant-funding-sources\participant-funding-sources-view.js" />
     <Content Include="UI\javascript\internal\reports\program-funding-budget-dashboard.js" />
     <Content Include="UI\javascript\internal\program-initiatives\program-initiatives-items.js" />
     <Content Include="UI\javascript\internal\program-initiatives\program-initiatives-view.js" />
@@ -999,6 +1002,8 @@
     <Content Include="Areas\Int\Views\ProgramFundingReport\_DirectorDashboard.cshtml" />
     <Content Include="Areas\Int\Views\ClaimAssessment\_ClaimAssessmentPaidTariffCodes.cshtml" />
     <Content Include="Areas\Int\Views\SystemSettings\Index.cshtml" />
+    <Content Include="Areas\Int\Views\ParticipantFundingSources\_FundingSources.cshtml" />
+    <Content Include="Areas\Int\Views\ParticipantFundingSources\ParticipantFundingSourcesView.cshtml" />
     <None Include="NLog.Training.config">
       <DependentUpon>NLog.config</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1330,6 +1335,7 @@
     <Compile Include="Areas\Ext\Models\TrainingProviders\TrainingProviderViewModel.cs" />
     <Compile Include="Areas\Ext\Models\ChangeRequest\ApplicationAddressViewModel.cs" />
     <Compile Include="Areas\Int\Controllers\AccountsReceivableController.cs" />
+    <Compile Include="Areas\Int\Controllers\ParticipantFundingSourcesController.cs" />
     <Compile Include="Areas\Int\Controllers\SystemSettingsController.cs" />
     <Compile Include="Areas\Int\Controllers\ApplicationEvaluationController.cs" />
     <Compile Include="Areas\Int\Controllers\AttestationController.cs" />
@@ -1496,9 +1502,11 @@
     <Compile Include="Areas\Int\Models\Organizations\OrganizationProfileViewModel.cs" />
     <Compile Include="Areas\Int\Models\Organizations\OrganizationListViewModel.cs" />
     <Compile Include="Areas\Int\Models\Organizations\OrganizationsViewModel.cs" />
+    <Compile Include="Areas\Int\Models\ParticipantFundingStreams\ParticipantFundingStreamModel.cs" />
     <Compile Include="Areas\Int\Models\ParticipantLmdaEligibilityModel.cs" />
     <Compile Include="Areas\Int\Models\ParticipantSurveyInfoViewModel.cs" />
     <Compile Include="Areas\Int\Models\ProgramFundingBudgetSummaryModel.cs" />
+    <Compile Include="Areas\Int\Models\ParticipantFundingStreams\ParticipantFundingStreamsModel.cs" />
     <Compile Include="Areas\Int\Models\ProgramInitiatives\ProgramInitiativesModel.cs" />
     <Compile Include="Areas\Int\Models\ProgramInitiatives\ProgramInitiativeModel.cs" />
     <Compile Include="Areas\Int\Models\ProgramNotifications\ProgramNotificationPreviewModel.cs" />
