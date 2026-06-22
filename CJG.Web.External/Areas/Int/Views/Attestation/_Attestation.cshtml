@@ -73,7 +73,7 @@
                             <th>Approved Cost</th>
                             <th>Cost Type</th>
                             <th>Amount Spent ($)</th>
-                            <th>Initiative</th>
+                            <th>Participant Funding Source</th>
                         </tr>
                         <tr ng-repeat="cost in participant.Costs" @*class="participant-costs"*@>
                             <td ng-if="$index == 0" rowspan="{{ participant.Costs.length }}" class="participant-name">
@@ -92,7 +92,7 @@
                                 <div class="form__control">
                                     <div class="control-wrapper">
                                         <div class="wrapper--dropdown selectmenu input--medium">
-                                            <select ng-model="participant.ProgramInitiativeId" ng-options="item.Key as item.Value for item in programInitiatives" class="input--medium" ng-editing></select>
+                                            <select ng-model="participant.ParticipantFundingStreamId" ng-options="item.Key as item.Value for item in participantFundingSources" class="input--medium" ng-editing></select>
                                         </div>
                                     </div>
                                 </div>

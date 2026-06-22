@@ -70,7 +70,7 @@ namespace CJG.Web.External.Areas.Int.Models.Attestation
 					TotalApprovedCost = ap.TotalApprovedCost,
 					TotalAmountSpent = totalAmountSpent,
 					UnusedFunds = ap.TotalApprovedCost - totalAmountSpent,
-					ProgramInitiativeId = ap.ProgramInitiativeId,
+					ParticipantFundingStreamId = ap.ParticipantFundingStreamId,
 					TariffAffected = ap.ParticipantForm.AffectedByTariffs ?? false,
 					TariffCategory = ap.ParticipantForm.AffectedByTariffs.HasValue
 					                 && ap.ParticipantForm.AffectedByTariffs.Value
