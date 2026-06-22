@@ -17,8 +17,8 @@ namespace CJG.Web.External.Areas.Int.Models.Attestation
 		public decimal TotalAmountSpent { get; set; }
 		public decimal UnusedFunds { get; set; }
 
-		public int? ProgramInitiativeId { get; set; }
-		public string ProgramInitiative { get; set; }
+		public int? ParticipantFundingStreamId { get; set; }
+		public string ParticipantFundingStream { get; set; }
 
 		public List<AttestationParticipantCostModel> Costs { get; set; }
 

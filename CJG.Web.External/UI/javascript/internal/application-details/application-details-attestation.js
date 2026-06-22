@@ -48,8 +48,8 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
     documents: []
   };
 
-  if (typeof ($scope.programInitiatives) === 'undefined')
-    $scope.programInitiatives = [];
+  if (typeof ($scope.participantFundingSources) === 'undefined')
+    $scope.participantFundingSources = [];
 
   angular.extend(this, $controller('Section', { $scope: $scope, $attrs: $attrs }));
 
@@ -65,11 +65,11 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
     });
   }
 
-  function loadProgramInitiatives() {
+  function loadParticipantFundingSources() {
     return $scope.load({
-      url: '/Int/Application/Summary/ProgramInitiatives',
-      set: 'programInitiatives',
-      condition: !$scope.programInitiatives || !$scope.programInitiatives.length,
+      url: '/Int/Application/Summary/ParticipantFundingSources',
+      set: 'participantFundingSources',
+      condition: !$scope.participantFundingSources || !$scope.participantFundingSources.length,
       localCache: false
     });
   }
@@ -81,7 +81,7 @@ app.controller('Attestation', function ($scope, $attrs, $controller) {
    **/
   $scope.init = function () {
     return Promise.all([
-      loadProgramInitiatives(),
+      loadParticipantFundingSources(),
       loadAttestationDetails()
     ]).catch(angular.noop);
   }

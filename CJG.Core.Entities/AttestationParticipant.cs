@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,10 +20,17 @@ namespace CJG.Core.Entities
 		[ForeignKey(nameof(ParticipantFormId))]
 		public virtual ParticipantForm ParticipantForm { get; set; }
 
+		[Obsolete("This has been deprecated in favour of the Funding Stream")]
 		public int? ProgramInitiativeId { get; set; }
 
+		[Obsolete("This has been deprecated in favour of the Funding Stream")]
 		[ForeignKey(nameof(ProgramInitiativeId))]
 		public virtual ProgramInitiative ProgramInitiative { get; set; }
+
+		public int? ParticipantFundingStreamId { get; set; }
+
+		[ForeignKey(nameof(ParticipantFundingStreamId))]
+		public virtual ParticipantFundingStream ParticipantFundingStream { get; set; }
 
 		// Maybe not used? Saved for history.
 		public decimal TotalApprovedCost { get; set; }
