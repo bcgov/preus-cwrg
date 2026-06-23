@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "Participant Funding Source Management";
+}
+<div ng-controller="ParticipantFundingSourcesManagement">
+    <div class="row row--alert" ng-if="alert.message">
+        <div class="alert alert--default" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message">
+        </div>
+    </div>
+    <div class="form-section">
+        <div>
+            <h2 class="header__title">Participant Funding Sources Management</h2>
+        </div>
+    </div>
+
+    <div class="details-block">
+        <ul class="panel-section-list">
+            <li>@Html.Partial("~/Areas/Int/Views/ParticipantFundingSources/_FundingSources.cshtml")</li>
+        </ul>
+    </div>
+</div>

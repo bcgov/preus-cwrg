@@ -70,7 +70,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
 			ProgramTitleLabel = new ProgramTitleLabelViewModel(grantApplication);
 			ParticipantDueDate = grantApplication.GetParticipantReportingDueDate();
 			MaxParticipants = grantApplication.TrainingCost.GetMaxParticipants();
-
+			
 			ParticipantCount = grantApplication.RequireAllParticipantsBeforeSubmission
 				? grantApplication.ParticipantForms.Count(pf => !pf.IsExcludedFromClaim && pf.Approved.HasValue && pf.Approved.Value)
 				: grantApplication.ParticipantForms.Count(pf => !pf.IsExcludedFromClaim);
@@ -79,6 +79,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
 
 			var claim = grantApplication.GetCurrentClaim();
 			var successStory = successStoryService.GetSuccessStory(grantApplication.Id);
+			var furthestTrainingEndDate = grantApplication.GetFurthestTrainingEndDate();
 
 			if (ClaimType == ClaimTypes.SingleAmendableClaim)
 				ParticipantsWithCostCount = claim == null ? 0 : participantService.GetParticipantsWithClaimEligibleCostCount(claim.Id, claim.ClaimVersion);
@@ -117,7 +118,7 @@ namespace CJG.Web.External.Areas.Ext.Models.Reporting
 			AllowAttestations = claimApproved;
 
 			ProofOfPaymentDueDate = (claimStateDate ?? grantApplication.StartDate).AddDays(30);
-			AttestationDueDate = grantApplication.EndDate;  // Completion is due 45 days after training ends, so the same day as the 45 days training-end offset
+			AttestationDueDate = furthestTrainingEndDate.AddDays(14);
 
 			ProofOfPayment = new ProofOfPaymentStatusViewModel { ProofOfPaymentStatus = ProofOfPaymentReportStatus.NotStarted };
 			if (proofOfPayment != null)

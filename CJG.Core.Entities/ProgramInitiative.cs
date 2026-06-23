@@ -16,6 +16,9 @@ namespace CJG.Core.Entities
 		[MaxLength(50)]
 		public string Code { get; set; }
 
+		[DefaultValue(true)]
+		public bool ShowInProgramFundingReport { get; set; }
+
 		[DefaultValue(true), Index("IX_Active")]
 		public bool IsActive { get; set; }
 
@@ -23,6 +26,6 @@ namespace CJG.Core.Entities
 		public int RowSequence { get; set; }
 
 		public bool IsWDA => Code.ToLower() == "wda";
-		public bool IsLMDA => Code.ToLower() == "lmda" || Code.ToLower() == "provincial";
+		public bool IsLMDA => Code.ToLower() == "lmda";
 	}
 }

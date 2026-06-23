@@ -1,0 +1,60 @@
+﻿<div ng-controller="ParticipantFundingSourcesItems" class="form-section">
+    <span class="panel-section-item">
+        <span class="panel-section-title">Participant Funding Sources</span>
+        <span class="panel-section-buttons">
+            <span><button class="btn btn--empty" style="pointer-events: none;" tabindex="-1">&nbsp;</button></span>
+            <section-edit-buttons ng-model="section.editing"></section-edit-buttons>
+        </span>
+    </span>
+
+    <div class="panel-section-content" ng-if="section.show">
+        <div ng-show="model.FundingStreams.length == 0" class="form-section-container font-weight-bold">There are no funding streams to display.</div>
+        <div class="form-section-container evaluation-questions">
+            <div ng-repeat="fundingStream in model.FundingStreams | orderBy: RowSequence">
+                <hr ng-show="!$first" />
+                <div class="form__group">
+                    <div class="control-wrapper form-control">
+                        <input type="text"
+                               class="input--medium"
+                               style="margin-right: 2em"
+                               placeholder="Stream Name"
+                               ng-model="fundingStream.Name"
+                               ng-validation="errors.FundingStreams_{{$index}}_.Name"
+                               ng-show="section.editing" />
+                        <span ng-bind-html="fundingStream.Name" ng-show="!section.editing" style="font-weight: bold;"></span>
+                        <span ng-show="section.editing">
+                            <input type="checkbox"
+                                   id="isActive_{{$index}}"
+                                   ng-model="fundingStream.IsActive"
+                                   ng-show="section.editing"
+                                   ng-disabled="fundingStream.IsSystem" />
+                            <label for="isActive_{{$index}}">Is Active</label>
+                        </span>
+                        <span ng-show="!section.editing">
+                            <span ng-show="!section.editing" style="margin-left: 0.25em;">{{ fundingStream.IsActive ? " Active " : " Not Active " }}</span>
+                        </span>
+                        <div ng-show="section.editing" style="display: inline-block; margin-left: 2em;">
+                            <span>
+                                <span ng-show="!fundingStream.IsInUse || fundingStream.Id === 0" ng-disabled="fundingStream.IsSystem" ng-click="removeItem(fundingStream)" style="cursor: pointer; text-decoration: underline;">Remove Item</span>
+                                <span ng-show="fundingStream.IsInUse && fundingStream.Id > 0">In Use</span>
+                            </span>
+                            <span style="margin-left: 2em">
+                                Move Item
+                                <span class="small up-arrow" ng-if="!$first" ng-click="moveFundingStream(fundingStream, 1)"></span>
+                                <span class="small down-arrow" ng-if="!$last" ng-click="moveFundingStream(fundingStream, 0)"></span>
+                            </span>
+                        </div>
+                        <span ng-if="section.editing && fundingStream.IsSystem" style="padding-left: 1em;">
+                            <em>This is a system Funding Stream. It cannot be made inactive or deleted.</em>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span class="panel-section-buttons">
+            <span style="margin: 0 0 0 20px;" ng-show="section.editing">
+                <button class="btn btn--primary btn--forward" ng-click="createFundingStream()">Add New Funding Stream</button>
+            </span>
+        </span>
+    </div>
+</div>

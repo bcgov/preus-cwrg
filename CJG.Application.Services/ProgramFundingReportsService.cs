@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -39,7 +39,7 @@ namespace CJG.Application.Services
 
 			var programFundingBudgets = _dbContext.ProgramFundingBudgets
 				.Where(d => d.FiscalYearId == fiscalYear.Id)
-				.Where(d => d.ProgramInitiativeId != null)
+				.Where(d => d.ProgramInitiativeId != null && d.ProgramInitiative.ShowInProgramFundingReport)
 				.OrderBy(d => d.ProgramInitiative.RowSequence)
 				.AsEnumerable();
 
@@ -216,7 +216,8 @@ namespace CJG.Application.Services
 			var statesForTotalNumberOfAgreements = StateExtensions.GetInternalStatesForSummary();
 
 			var statesForProcessedPayments = new List<ApplicationStateInternal> {
-				ApplicationStateInternal.CompletionReporting
+				ApplicationStateInternal.CompletionReporting,
+				ApplicationStateInternal.Closed
 			};
 
 			var processedPaymentsTotals = 0m;

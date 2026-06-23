@@ -37,6 +37,9 @@ require('./evaluation-form');
 // Program Initiatives Management
 require('./program-initiatives');
 
+// Participant Funding Sources Management
+require('./participant-funding-sources');
+
 // Notification Management
 require('./notification');
 

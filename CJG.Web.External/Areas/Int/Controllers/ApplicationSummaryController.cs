@@ -38,6 +38,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 		private readonly IAuthorizationService _authorizationService;
 		private readonly IRiskClassificationService _riskClassificationService;
 		private readonly IProgramInitiativeService _programInitiativeService;
+		private readonly IParticipantFundingStreamService _participantFundingStreamService;
 		private readonly IGrantAgreementService _grantAgreementService;
 		private readonly IDeliveryPartnerService _deliveryPartnerService;
 		private readonly IAttachmentService _attachmentService;
@@ -50,6 +51,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			IGrantApplicationService grantApplicationService,
 			IRiskClassificationService riskClassificationService,
 			IProgramInitiativeService programInitiativeService,
+			IParticipantFundingStreamService participantFundingStreamService,
 			IGrantAgreementService grantAgreementService,
 			IDeliveryPartnerService deliveryPartnerService,
 			IAttachmentService attachmentService,
@@ -61,6 +63,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			_authorizationService = authorizationService;
 			_riskClassificationService = riskClassificationService;
 			_programInitiativeService = programInitiativeService;
+			_participantFundingStreamService = participantFundingStreamService;
 			_grantAgreementService = grantAgreementService;
 			_deliveryPartnerService = deliveryPartnerService;
 			_attachmentService = attachmentService;
@@ -189,6 +192,25 @@ namespace CJG.Web.External.Areas.Int.Controllers
 				HandleAngularException(ex);
 			}
 			return Json(programInitiatives, JsonRequestBehavior.AllowGet);
+		}
+
+		[HttpGet]
+		[Route("Application/Summary/ParticipantFundingSources")]
+		public JsonResult GetParticipantFundingSources()
+		{
+			var fundingSources = new KeyValuePair<int, string>[] { };
+			try
+			{
+				fundingSources = _participantFundingStreamService
+					.GetAll(true)
+					.Select(x => new KeyValuePair<int, string>(x.Id, x.Caption))
+					.ToArray();
+			}
+			catch (Exception ex)
+			{
+				HandleAngularException(ex);
+			}
+			return Json(fundingSources, JsonRequestBehavior.AllowGet);
 		}
 
 		/// <summary>

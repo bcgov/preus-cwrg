@@ -174,7 +174,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 						continue;
 
 					participant.DateUpdated = AppDateTime.UtcNow;
-					participant.ProgramInitiativeId = participantModel.ProgramInitiativeId;
+					participant.ParticipantFundingStreamId = participantModel.ParticipantFundingStreamId;
 
 					foreach(var cost in participantModel.Costs)
 					{

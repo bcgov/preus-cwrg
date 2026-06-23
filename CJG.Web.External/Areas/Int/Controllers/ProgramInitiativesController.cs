@@ -87,26 +87,28 @@ namespace CJG.Web.External.Areas.Int.Controllers
 						.Where(i => !postedItemIds.Contains(i.Id))
 						.ToList();
 
-                    foreach (var question in model.Initiatives)
+                    foreach (var initiativeModel in model.Initiatives)
                     {
                         ProgramInitiative programInitiative;
-                        if (question.Id != 0)
+                        if (initiativeModel.Id != 0)
                         {
-                            programInitiative = initiativeList.First(x => x.Id == question.Id);
+                            programInitiative = initiativeList.First(x => x.Id == initiativeModel.Id);
 
-                            programInitiative.Name = question.Name ?? string.Empty;
-                            programInitiative.Code = question.Code ?? string.Empty;
+                            programInitiative.Name = initiativeModel.Name ?? string.Empty;
+                            programInitiative.Code = initiativeModel.Code ?? string.Empty;
+                            programInitiative.ShowInProgramFundingReport = initiativeModel.ShowInProgramFundingReport;
                             programInitiative.IsActive = true;
-                            programInitiative.RowSequence = question.RowSequence;
-                            programInitiative.RowVersion = Convert.FromBase64String(question.RowVersion);
+                            programInitiative.RowSequence = initiativeModel.RowSequence;
+                            programInitiative.RowVersion = Convert.FromBase64String(initiativeModel.RowVersion);
                         }
                         else
                         {
                             programInitiative = new ProgramInitiative();
-                            programInitiative.Name = question.Name;
-                            programInitiative.Code = question.Code;
+                            programInitiative.Name = initiativeModel.Name;
+                            programInitiative.Code = initiativeModel.Code;
+                            programInitiative.ShowInProgramFundingReport = initiativeModel.ShowInProgramFundingReport;
                             programInitiative.IsActive = true;
-                            programInitiative.RowSequence = question.RowSequence;
+                            programInitiative.RowSequence = initiativeModel.RowSequence;
 
                             initiativeList.Add(programInitiative);
                         }
