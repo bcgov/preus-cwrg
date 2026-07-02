@@ -153,12 +153,18 @@ namespace CJG.Application.Services
 					ApplicationStateInternal.Closed
 				});
 
+				var commitmentTotalForSlippage = GetCommitmentAmountFor(grantApplications, budget.ProgramInitiative, new List<ApplicationStateInternal>
+				{
+					ApplicationStateInternal.CompletionReporting,
+					ApplicationStateInternal.Closed
+				});
+
 				var receivablesTotal = GetReceivableValues(fiscalYear, budget.ProgramInitiative);
 				var claimTotal = GetClaimTotal(grantApplications, defaultGrantProgram, budget.ProgramInitiative);
 
 				var directorsReportCommittedScheduleA = commitmentTotal;
 				var directorsReportClaimsProcessed = claimTotal;
-				var directorsReportSlippage = commitmentTotal - claimTotal;
+				var directorsReportSlippage = commitmentTotalForSlippage - claimTotal;
 				var directorsReportReceivables = receivablesTotal;
 				var directorsReportYtdActual = directorsReportClaimsProcessed - directorsReportReceivables;
 
