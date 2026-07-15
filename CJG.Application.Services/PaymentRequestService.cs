@@ -181,16 +181,16 @@ namespace CJG.Application.Services
 					if (claimPayment != null)
 					{
 						if (claimPayment.WDATariffCWRG)
-							AddAccountCode(paymentRequest, "111CWRD");
+							AddAccountCode(paymentRequest, paymentRequestBatch, "111CWRD");
 
 						if (claimPayment.LMDATariffTRST)
-							AddAccountCode(paymentRequest, "111TRST");
+							AddAccountCode(paymentRequest, paymentRequestBatch, "111TRST");
 
 						if (claimPayment.LMDATariffTRSW)
-							AddAccountCode(paymentRequest, "111TRSW");
+							AddAccountCode(paymentRequest, paymentRequestBatch, "111TRSW");
 
 						if (claimPayment.LMDATariffTRCO)
-							AddAccountCode(paymentRequest, "111TRCO");
+							AddAccountCode(paymentRequest, paymentRequestBatch, "111TRCO");
 					}
 
 					claim.ClaimState = batchType == PaymentBatchTypes.PaymentRequest ? ClaimState.PaymentRequested : ClaimState.AmountOwing;
@@ -279,7 +279,7 @@ namespace CJG.Application.Services
 			return new PageList<PaymentRequest>(page, quantity, total, query.ToArray());
 		}
 
-		private void AddAccountCode(PaymentRequest paymentRequest, string projectCode)
+		private void AddAccountCode(PaymentRequest paymentRequest, PaymentRequestBatch paymentRequestBatch, string projectCode)
 		{
 			var accountCode = GetAccountCodeBy(projectCode);
 			if (accountCode == null)
@@ -287,6 +287,9 @@ namespace CJG.Application.Services
 
 			paymentRequest.PaymentRequestAccountCodes.Add(new PaymentRequestAccountCode
 			{
+				ClaimId = paymentRequest.ClaimId,
+				ClaimVersion = paymentRequest.ClaimVersion,
+				PaymentRequestBatch = paymentRequestBatch,
 				GLClientNumber = accountCode.GLClientNumber,
 				GLRESP = accountCode.GLRESP,
 				GLServiceLine = accountCode.GLServiceLine,
