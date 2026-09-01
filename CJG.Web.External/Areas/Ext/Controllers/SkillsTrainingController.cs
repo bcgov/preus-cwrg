@@ -229,8 +229,8 @@ namespace CJG.Web.External.Areas.Ext.Controllers
                     if (!model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational.HasValue)
 	                    ModelState.AddModelError("SkillsTrainingFocusType", "Please select the Skills Training Focus type.");
 
-                    if (!model.SkillTrainingDetails.ShortTermOccupationalCert.HasValue)
-	                    ModelState.AddModelError("ShortTermOccupationalCert", "Please indicate whether Short-term Occupational Certificates are included.");
+                    //if (!model.SkillTrainingDetails.ShortTermOccupationalCert.HasValue)
+	                   // ModelState.AddModelError("ShortTermOccupationalCert", "Please indicate whether Short-term Occupational Certificates are included.");
 
                     if (!model.SkillTrainingDetails.OnTheJobTraining.HasValue)
 	                    ModelState.AddModelError("OnTheJobTraining", "Please indicate whether on-the-job training is included.");
@@ -247,7 +247,6 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 						}
 					}
 
-					ModelState.Remove(nameof(model.SkillTrainingDetails.ShortTermOccupationalCert));
 					ModelState.Remove(nameof(model.SkillTrainingDetails.OnTheJobTraining));
 				}
 
@@ -375,12 +374,6 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 					ModelState.Remove(nameof(model.ServiceLineId));
 					ModelState.Remove(nameof(model.SkillTrainingDetails.ServiceLineBreakdownId));
 					ModelState.Remove(nameof(model.SkillTrainingDetails.EligibleExpenseBreakdownId));
-
-					if (!model.SkillTrainingDetails.ShortTermOccupationalCert.HasValue)
-						ModelState.AddModelError("ShortTermOccupationalCert", "Please indicate whether Short-term Occupational Certificates are included");
-
-					if (!model.SkillTrainingDetails.OnTheJobTraining.HasValue)
-						ModelState.AddModelError("OnTheJobTraining", "Please indicate whether on-the-job training is included");
 				}
 				else
 				{
@@ -394,7 +387,6 @@ namespace CJG.Web.External.Areas.Ext.Controllers
 						}
 					}
 
-					ModelState.Remove(nameof(model.SkillTrainingDetails.ShortTermOccupationalCert));
 					ModelState.Remove(nameof(model.SkillTrainingDetails.OnTheJobTraining));
 				}
 
