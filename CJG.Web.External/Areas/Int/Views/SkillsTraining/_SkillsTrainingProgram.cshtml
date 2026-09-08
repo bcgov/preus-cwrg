@@ -78,10 +78,12 @@
                         <div class="form__group form__group--radio">
                             <div class="form__control">
                                 <div class="control-wrapper" ng-validation="errors.SkillsTrainingFocusTypeIsOccupational">
-                                    <input type="radio" ng-model="model.SkillsTrainingFocusTypeIsOccupational" id="skills-training-focus-occ-{{section.name}}" name="skills-training-focus-occ-{{section.name}}" ng-value="true" class="form__group--radio" ng-editing />
+                                    <input type="radio" ng-model="model.SkillsTrainingFocusTypeIsOccupational" id="skills-training-focus-occ-{{section.name}}" name="skills-training-focus-occ-{{section.name}}" ng-value="0" class="form__group--radio" ng-editing />
                                     <label for="skills-training-focus-occ-{{section.name}}">Occupational skills training</label>
-                                    <input type="radio" ng-model="model.SkillsTrainingFocusTypeIsOccupational" id="skills-training-focus-app-{{section.name}}" name="skills-training-focus-app-{{section.name}}" ng-value="false" class="form__group--radio" ng-editing />
-                                    <label for="skills-training-focus-app-{{section.name}}">Apprenticeship Foundation Program</label>
+                                    <input type="radio" ng-model="model.SkillsTrainingFocusTypeIsOccupational" id="skills-training-focus-stt-{{section.name}}" name="skills-training-focus-app-{{section.name}}" ng-value="2" class="form__group--radio" ng-editing />
+                                    <label for="skills-training-focus-stt-{{section.name}}">Short Term Training</label>
+                                    <input type="radio" ng-model="model.SkillsTrainingFocusTypeIsOccupational" id="skills-training-focus-app-{{section.name}}" name="skills-training-focus-app-{{section.name}}" ng-value="1" class="form__group--radio" ng-editing />
+                                    <label for="skills-training-focus-app-{{section.name}}">Apprenticeship or Apprenticeship Foundational Training</label>
                                 </div>
                             </div>
                         </div>

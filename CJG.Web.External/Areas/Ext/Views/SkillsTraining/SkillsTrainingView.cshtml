@@ -127,32 +127,27 @@
                     <div class="label-wrapper"><label class="form__label">Skills Training Focus <abbr title="Required">*</abbr></label></div>                    
                     <div class="form__control" ng-validation="errors.SkillsTrainingFocusType">
                         <div>
-                            <input type="radio" id="stfOccupational" ng-value="true" ng-model="model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational" name="model.SkillsTrainingFocusTypeIsOccupational">
+                            <input type="radio" id="stfOccupational" ng-value="0" ng-model="model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational" name="model.SkillsTrainingFocusTypeIsOccupational">
                             <label for="stfOccupational">Occupational skills training</label>
                         </div>
                         <div>
-                            <input type="radio" id="stfApprentiship" ng-value="false" ng-model="model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational" name="model.SkillsTrainingFocusTypeIsOccupational">
-                            <label for="stfApprentiship">Apprenticeship Foundation Program</label>
+                            <input type="radio" id="stfShortTermTraining" ng-value="2" ng-model="model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational" name="model.SkillsTrainingFocusTypeIsOccupational">
+                            <label for="stfShortTermTraining">Short Term Training</label>
                         </div>
+                        <div>
+                            <input type="radio" id="stfApprenticeship" ng-value="1" ng-model="model.SkillTrainingDetails.SkillsTrainingFocusTypeIsOccupational" name="model.SkillsTrainingFocusTypeIsOccupational">
+                            <label for="stfApprenticeship">Apprenticeship or Apprenticeship Foundational Training</label>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="notice notice--icon">
+                        <p><strong>Occupational Skills Training</strong> - Training through public post-secondary institutions, private training providers, or other training organizations, leading to a certificate, diploma or licence with the aim of obtaining sustainable employment (e.g., Early Childhood Education Certificate, Class 1 Driver’s Licence).</p>
+                        <p><strong>Short-Term Training</strong> - Short duration training certificates/courses, usually of one or two days, needed to meet specific job or industry requirements (e.g.: First Aid certifications, FOODSAFE, Workplace Hazardous Materials Information System WHMIS).</p>
+                        <p><strong>Apprenticeship or Apprenticeship Foundation Training</strong> - Foundation or Apprenticeship Training recognized by SkilledTradesBC.</p>
                     </div>
                 </div>
                 <div class="form__group">
-                    <div class="form__control" ng-validation="errors.SkillsTraining">
-                        <label class="form__label">Will your training project include Short-term Occupational Certificates (STOC)? <abbr title="Required">*</abbr></label>
-                        <div class="form__control" ng-validation="errors.ShortTermOccupationalCert">
-                            <div class="form-item">
-                                <input type="radio" id="StocYes" ng-value="true" ng-model="model.SkillTrainingDetails.ShortTermOccupationalCert" name="model.ShortTermOccupationalCert">
-                                <label for="StocYes">Yes</label>
-                            </div>
-                            <div class="form-item">
-                                <input type="radio" id="StocNo" ng-value="false" ng-model="model.SkillTrainingDetails.ShortTermOccupationalCert" name="model.ShortTermOccupationalCert">
-                                <label for="StocNo">No</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form__group">
-                    <label class="form__label">Will your training project include on-the-job training? <abbr title="Required">*</abbr></label>
+                    <label class="form__label">Will your training project include a practicum or on-the-job training?<abbr title="Required">*</abbr></label>
                     <div class="form__control" ng-validation="errors.OnTheJobTraining">
                         <div class="form-item">
                             <input type="radio" id="OntheJobYes" ng-value="true" ng-model="model.SkillTrainingDetails.OnTheJobTraining" name="model.OnTheJobTraining">

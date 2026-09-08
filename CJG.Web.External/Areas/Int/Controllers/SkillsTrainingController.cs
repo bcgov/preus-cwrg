@@ -146,16 +146,10 @@ namespace CJG.Web.External.Areas.Int.Controllers
 
                     if (!model.ShowSkillsTrainingFocusDropDown)
                     {
-						trainingProgram.ShortTermOccupationalCert =
-							(model.OccupationalTraining == Models.SkillsTraining.SkillsTrainingProgramViewModel.OccupationalSkillsTraining.STOCandOntheJob) ||
-							(model.OccupationalTraining == Models.SkillsTraining.SkillsTrainingProgramViewModel.OccupationalSkillsTraining.STOC);
+	                    trainingProgram.OnTheJobTraining = model.OccupationalTraining == Models.SkillsTraining.SkillsTrainingProgramViewModel.OccupationalSkillsTraining.STOCandOntheJob
+	                                                       || model.OccupationalTraining == Models.SkillsTraining.SkillsTrainingProgramViewModel.OccupationalSkillsTraining.OntheJob;
 
-						trainingProgram.OnTheJobTraining =
-							(model.OccupationalTraining == Models.SkillsTraining.SkillsTrainingProgramViewModel.OccupationalSkillsTraining.STOCandOntheJob) ||
-							(model.OccupationalTraining == Models.SkillsTraining.SkillsTrainingProgramViewModel.OccupationalSkillsTraining.OntheJob);
-
-
-						trainingProgram.SkillsTrainingFocusType = model.SkillsTrainingFocusTypeIsOccupational ?? false ? 0 : 1;
+						trainingProgram.SkillsTrainingFocusType = model.SkillsTrainingFocusTypeIsOccupational;
 					}
 
 					_trainingProgramService.Update(trainingProgram);
