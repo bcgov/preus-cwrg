@@ -176,7 +176,7 @@ namespace CJG.Core.Entities
 		/// Skills Training Focus (one of the following two choices)
 		///		null nothing selected
 		///      0   Occupational skills training
-		///      1   Apprenticeship or Apprenticeship Foundational Training (previously 'Apprenticeship Foundation Program')
+		///      1   Apprenticeship Foundation or Apprenticeship Training (previously 'Apprenticeship Foundation Program')
 		///      2   Short Term Training
 		///        Effective on Mar 15, 2022
 		/// </summary>
@@ -509,11 +509,13 @@ namespace CJG.Core.Entities
 			switch (SkillsTrainingFocusType.Value)
 			{
 				case 0:
-					return "Occupational skills training";
+					return "Occupational Skills Training";
+
 				case 1:
-					return "Apprenticeship or Apprenticeship Foundational Training";
+					return "Apprenticeship Foundation or Apprenticeship Training";
+			
 				case 2:
-					return "Short Term Training";
+					return "Short-term Training";
 			}
 
 			return string.Empty;
