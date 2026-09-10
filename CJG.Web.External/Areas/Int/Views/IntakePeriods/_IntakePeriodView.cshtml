@@ -1,6 +1,6 @@
 ﻿<div ng-controller="IntakePeriodView">
     <div class="dialog-header">
-        <h3>{{ngDialogData.intakePeriod.Id ? 'Edit ' + ngDialogData.intakePeriod.Caption : 'Add Intake Period'}}</h3>
+        <h3>{{ngDialogData.intakePeriod.Id ? 'Edit ' + ngDialogData.intakePeriod.Caption.replace('Intake', 'Training Intake') : 'Add Training Intake Period'}}</h3>
     </div>
     <div class="dialog-content intake-period-dialog-content">
         <div class="modal-content">
@@ -20,10 +20,10 @@
                     <input type="hidden" ng-model="ngDialogData.intakePeriod.FiscalId" ng-value="ngDialogData.intakePeriod.FiscalId" />
 
                     <div class="form__group" ng-if="ngDialogData.intakePeriod.Id <= 0">
-                        <div class="form__label">Intake Period Name</div>
+                        <div class="form__label">Name</div>
                         <div class="form__control">
                             <div class="control-wrapper">
-                                {{ngDialogData.intakePeriod.Caption}}
+                                {{ngDialogData.intakePeriod.Caption.replace('Intake', 'Training Intake')}}
                             </div>
                         </div>
                     </div>

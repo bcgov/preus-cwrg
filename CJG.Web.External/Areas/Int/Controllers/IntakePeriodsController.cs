@@ -267,7 +267,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 					}
 					else
 					{
-						throw new InvalidOperationException("An Intake Period by that Id could not be found.");
+						throw new InvalidOperationException("A Training Intake Period by that Id could not be found.");
 					}
 				}
 				else
@@ -303,7 +303,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 				{
 					var intakePeriod = _trainingPeriodService.Get(model.Id);
 					if (intakePeriod == null)
-						throw new InvalidOperationException("An Intake Period by that Id could not be found.");
+						throw new InvalidOperationException("A Training Intake Period by that Id could not be found.");
 
 					var fiscal = intakePeriod.FiscalYear; // Lazy load FiscalYear
 					var stream = intakePeriod.GrantStream; // Lazy load GrantStream

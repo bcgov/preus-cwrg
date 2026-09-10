@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Manage Intake Periods";
+    ViewBag.Title = "Manage Training Intake Periods";
 }
 <div id="manage-intake-periods">
     <div ng-controller="IntakePeriodsView" ng-fiscal-year-id="@ViewBag.FiscalYearId" ng-grant-program-id="@ViewBag.GrantProgramId" ng-grant-stream-id="@ViewBag.GrantStreamId" ng-app-date="@ViewBag.AppDateTime">
@@ -7,7 +7,7 @@
             <div class="alert" ng-class="'alert--' + alert.type" role="alert" ng-bind-html="alert.message"></div>
         </div>
         <div>
-            <h2 class="header__title">Manage Intake Periods</h2>
+            <h2 class="header__title">Manage Training Intake Periods</h2>
         </div>
         <div class="row row--alert" ng-if="model.SummaryMessage">
             <div class="alert alert--default" ng-class="'alert--' + model.SummaryType" role="alert" ng-bind-html="model.SummaryMessage">
@@ -57,7 +57,7 @@
             <table class="table--datatable-horizontal nowrap table--intake-periods">
                 <thead>
                     <tr>
-                        <th width="325">Intake Period</th>
+                        <th width="325">Training Intake Period</th>
                         <th><b>Start Date</b></th>
                         <th><b>End Date</b></th>
                         <th><b>Status</b></th>
@@ -67,7 +67,7 @@
                 <tbody ng-if="model.TrainingPeriods.length > 0">
                     <tr ng-repeat="trainingPeriod in model.TrainingPeriods">
                         <td>
-                            <strong>{{trainingPeriod.Caption}}</strong>
+                            <strong>{{trainingPeriod.Caption.replace('Intake', 'Training Intake')}}</strong>
                         </td>
                         <td>
                             {{trainingPeriod.FormattedStartDate}}
@@ -87,7 +87,7 @@
                 <tbody ng-if="model.TrainingPeriods.length == 0">
                     <tr>
                         <td colspan="5">
-                            No Intake Periods found
+                            No Training Intake Periods found
                         </td>
                     </tr>
                 </tbody>
