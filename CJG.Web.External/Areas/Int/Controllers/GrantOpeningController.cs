@@ -1,4 +1,7 @@
-﻿using CJG.Application.Services;
+﻿using System;
+using System.Linq;
+using System.Web.Mvc;
+using CJG.Application.Services.Exceptions;
 using CJG.Core.Entities;
 using CJG.Core.Interfaces.Service;
 using CJG.Infrastructure.Identity;
@@ -6,29 +9,20 @@ using CJG.Web.External.Areas.Int.Models.GrantOpenings;
 using CJG.Web.External.Controllers;
 using CJG.Web.External.Helpers;
 using CJG.Web.External.Helpers.Filters;
-using System;
-using System.Linq;
-using System.Web.Mvc;
-using CJG.Application.Services.Exceptions;
 
 namespace CJG.Web.External.Areas.Int.Controllers
 {
-	[RouteArea("Int")]
+    [RouteArea("Int")]
 	[RoutePrefix("Admin/Grant")]
 	[AuthorizeAction(Privilege.GM1, Privilege.SM)]
 	public class GrantOpeningController : BaseController
 	{
-		#region Variables
 		private readonly IStaticDataService _staticDataService;
 		private readonly IGrantProgramService _grantProgramService;
 		private readonly IGrantOpeningService _grantOpeningService;
 		private readonly IGrantStreamService _grantStreamService;
 		private readonly IGrantApplicationService _grantApplicationService;
 		private readonly ITrainingPeriodService _trainingPeriodService;
-
-		#endregion
-
-		#region Constructors
 
 		/// <summary>
 		/// Creates a new instance of a <paramtyperef name="GrantOpeningController"/> object.
@@ -55,9 +49,7 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			_grantApplicationService = grantApplicationService;
 			_trainingPeriodService = trainingPeriodService;
 		}
-		#endregion
 
-		#region Endpoints
 		/// <summary>
 		/// Return the grant opening management dashboard view.
 		/// </summary>
@@ -399,7 +391,6 @@ namespace CJG.Web.External.Areas.Int.Controllers
 			}
 			return Json(model);
 		}
-		#endregion
 
 		#region Dropdowns
 		/// <summary>

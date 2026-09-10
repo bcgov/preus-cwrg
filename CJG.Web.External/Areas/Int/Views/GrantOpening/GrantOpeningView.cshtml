@@ -42,7 +42,7 @@
                         <b>Stream Totals</b>
                     </th>
                     <th ng-repeat="trainingPeriodHeader in model.TemplateTrainingPeriods">
-                        <b>{{trainingPeriodHeader.Caption}}</b>
+                        <b>{{trainingPeriodHeader.Caption.replace('Intake', 'Training Intake')}}</b>
                     </th>
                 </tr>
                 </thead>
