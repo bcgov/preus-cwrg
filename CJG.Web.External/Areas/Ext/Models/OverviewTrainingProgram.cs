@@ -1,14 +1,13 @@
-﻿using CJG.Application.Services;
-using CJG.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CJG.Application.Services;
+using CJG.Core.Entities;
 
 namespace CJG.Web.External.Areas.Ext.Models
 {
-	public class OverviewTrainingProgram
+    public class OverviewTrainingProgram
 	{
-		#region Properties
 		public int Id { get; set; }
 		public TrainingProgramStates TrainingProgramState { get; set; }
 		public string CourseTitle { get; set; }
@@ -34,64 +33,46 @@ namespace CJG.Web.External.Areas.Ext.Models
 		public decimal? TotalCost { get; set; }
 		public string RowVersion { get; set; }
 		public string CourseLink { get; set; }
-		public string ShortTermOccupationalCertText { get; set; }
 		public string OnTheJobTrainingText { get; set; }
 		public string SkillsTrainingFocusText { get; set; }
 		public bool ShowSkillsTrainingFocusDropDown { get; set; }
-		#endregion
 
-		#region Constructors
 		public OverviewTrainingProgram()
 		{
-
 		}
+
 		public OverviewTrainingProgram(TrainingProgram trainingProgram)
 		{
 			Utilities.MapProperties(trainingProgram, this);
-			this.TrainingProgramState = trainingProgram.TrainingProgramState;
-			this.DeliveryMethods = trainingProgram.DeliveryMethods;
-			this.SkillLevel = trainingProgram.SkillLevel;
-			this.SkillFocus = trainingProgram.SkillFocus;
-			this.EligibleExpenseBreakdown = trainingProgram.EligibleCostBreakdown?.EligibleExpenseBreakdown.Caption;
-			this.ServiceLineBreakdown = trainingProgram.ServiceLineBreakdown?.Caption;
-			this.InDemandOccupation = trainingProgram.InDemandOccupation;
-			this.TrainingLevel = trainingProgram.TrainingLevel;
-			this.UnderRepresentedGroups = trainingProgram.UnderRepresentedGroups;
-			this.ExpectedQualification = trainingProgram.ExpectedQualification;
-			this.StartDate = trainingProgram.StartDate.ToLocalTime();
-			this.EndDate = trainingProgram.EndDate.ToLocalTime();
-			this.CourseLink = trainingProgram.CourseLink;
+			TrainingProgramState = trainingProgram.TrainingProgramState;
+			DeliveryMethods = trainingProgram.DeliveryMethods;
+			SkillLevel = trainingProgram.SkillLevel;
+			SkillFocus = trainingProgram.SkillFocus;
+			EligibleExpenseBreakdown = trainingProgram.EligibleCostBreakdown?.EligibleExpenseBreakdown.Caption;
+			ServiceLineBreakdown = trainingProgram.ServiceLineBreakdown?.Caption;
+			InDemandOccupation = trainingProgram.InDemandOccupation;
+			TrainingLevel = trainingProgram.TrainingLevel;
+			UnderRepresentedGroups = trainingProgram.UnderRepresentedGroups;
+			ExpectedQualification = trainingProgram.ExpectedQualification;
+			StartDate = trainingProgram.StartDate.ToLocalTime();
+			EndDate = trainingProgram.EndDate.ToLocalTime();
+			CourseLink = trainingProgram.CourseLink;
 
-			this.TotalCost = trainingProgram.EligibleCostBreakdown?.EstimatedCost;
+			TotalCost = trainingProgram.EligibleCostBreakdown?.EstimatedCost;
 			if (trainingProgram.TrainingProviders.Any())
 			{
-				this.AssociatedProvider = new OverviewTrainingProvider(trainingProgram.TrainingProviders.First());
+				AssociatedProvider = new OverviewTrainingProvider(trainingProgram.TrainingProviders.First());
 			}
 
-			this.ShortTermOccupationalCertText = trainingProgram.ShortTermOccupationalCert ?? false ?
-				"Short-term Occupational Certificates (STOC) is included with this training project." :
-				"Short-term Occupational Certificates (STOC) is not included with this training project.";
-
-			this.OnTheJobTrainingText = trainingProgram.OnTheJobTraining ?? false ?
+			OnTheJobTrainingText = trainingProgram.OnTheJobTraining ?? false ?
 				"On-the-job training is included with this training project." :
 				"On-the-job training is not included with this training project.";
 
+            SkillsTrainingFocusText = trainingProgram.SkillsTrainingFocusType.HasValue
+	            ? trainingProgram.GetSkillTrainingFocusType()
+	            : "The Skills Training Focus was not selected";
 
-            if (trainingProgram.SkillsTrainingFocusType.HasValue)
-            {
-				this.SkillsTrainingFocusText = trainingProgram.SkillsTrainingFocusType.Value == 0 ?
-					"Occupational skills training" :
-					"Apprenticeship Foundation Program";
-			}
-            else
-            {
-				this.SkillsTrainingFocusText = "The Skills Training Focus was not selected";
-			}
-
-
-
-			this.ShowSkillsTrainingFocusDropDown = trainingProgram.GrantApplication.ShowSkillsTrainingFocusDropDown();
+			ShowSkillsTrainingFocusDropDown = trainingProgram.GrantApplication.ShowSkillsTrainingFocusDropDown();
 		}
-		#endregion
 	}
 }

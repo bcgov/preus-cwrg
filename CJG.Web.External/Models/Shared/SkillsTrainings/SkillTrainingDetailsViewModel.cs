@@ -13,7 +13,6 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 {
 	public class SkillTrainingDetailsViewModel : BaseTrainingProgramViewModel
 	{
-		#region Properties
 		public int? EligibleExpenseTypeId { get; set; }
 
 		[Required(ErrorMessage = "Skill Training Focus is required")]
@@ -27,10 +26,8 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 
 		public bool? ShortTermOccupationalCert { get; set; }
 		public bool? OnTheJobTraining { get; set; }
-		public bool? SkillsTrainingFocusTypeIsOccupational { get; set; }
-		#endregion
+		public int? SkillsTrainingFocusTypeIsOccupational { get; set; }
 
-		#region Constructors
 		/// <summary>
 		/// Creates a new instance of a <typeparamref name="SkillTrainingModel"/> object.
 		/// </summary>
@@ -89,11 +86,9 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 				IsApproved = trainingProgram.RequestedTrainingProvider?.Id > 0
 			};
 
-			ShortTermOccupationalCert = trainingProgram.ShortTermOccupationalCert;
+			//ShortTermOccupationalCert = trainingProgram.ShortTermOccupationalCert;
 			OnTheJobTraining = trainingProgram.OnTheJobTraining;
-
-            if (trainingProgram.SkillsTrainingFocusType.HasValue)
-	            SkillsTrainingFocusTypeIsOccupational = trainingProgram.SkillsTrainingFocusType.Value == 0;
+	        SkillsTrainingFocusTypeIsOccupational = trainingProgram.SkillsTrainingFocusType.Value;
 
             var grantOpeningTrainingPeriod = trainingProgram.GrantApplication.GrantOpening.TrainingPeriod;
 
@@ -105,9 +100,7 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 			DeliveryEndDateMinDate = grantOpeningTrainingPeriod.StartDate.ToLocalTime();
 			DeliveryEndDateMaxDate = grantOpeningTrainingPeriod.EndDate.AddYears(1).ToLocalTime();
 		}
-		#endregion
 
-		#region Methods
 		/// <summary>
 		/// Map the model properties to the appropriate training program.
 		/// Also Add/Update the eligible cost breakdown and attachments associated with this component.
@@ -322,15 +315,11 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 				trainingProgram.ServiceLineBreakdownId = serviceLineBreakdowns?.Id;
 			}
 
-			trainingProgram.ShortTermOccupationalCert = ShortTermOccupationalCert;
+			//trainingProgram.ShortTermOccupationalCert = ShortTermOccupationalCert;
 			trainingProgram.OnTheJobTraining = OnTheJobTraining;
+	        trainingProgram.SkillsTrainingFocusType = SkillsTrainingFocusTypeIsOccupational.Value;
 
-            if (SkillsTrainingFocusTypeIsOccupational.HasValue)
-            {
-				trainingProgram.SkillsTrainingFocusType = SkillsTrainingFocusTypeIsOccupational.Value ? 0 : 1; ;
-			}			
-
-			if (!internalUser)
+            if (!internalUser)
 			{
 				eligibleCost.EstimatedCost = eligibleCost.CalculateEstimateCost();
 				eligibleCost.EstimatedReimbursement = eligibleCost.CalculateEstimatedReimbursement();
@@ -440,7 +429,5 @@ namespace CJG.Web.External.Models.Shared.SkillsTrainings
 
 			return applicationAddressService.VerifyOrCreateRegion(targetRegion, targetCountry);
 		}
-
-		#endregion
 	}
 }

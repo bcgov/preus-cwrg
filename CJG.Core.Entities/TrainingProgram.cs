@@ -162,6 +162,7 @@ namespace CJG.Core.Entities
 		///        Will your training project include Short-term Occupational Certificate
 		///        Effective on Mar 15, 2022
 		/// </summary>
+		[Obsolete("This is no longer used. Kept here till it is deemed acceptable to remove.")]
 		public bool? ShortTermOccupationalCert { get; set; }
 
 		/// <summary>
@@ -175,7 +176,8 @@ namespace CJG.Core.Entities
 		/// Skills Training Focus (one of the following two choices)
 		///		null nothing selected
 		///      0   Occupational skills training
-		///      1   Apprenticeship Foundation Program
+		///      1   Apprenticeship Foundation or Apprenticeship Training (previously 'Apprenticeship Foundation Program')
+		///      2   Short Term Training
 		///        Effective on Mar 15, 2022
 		/// </summary>
 		public int? SkillsTrainingFocusType { get; set; }
@@ -497,6 +499,26 @@ namespace CJG.Core.Entities
 			{
 				yield return validation;
 			}
+		}
+
+		public string GetSkillTrainingFocusType()
+		{
+			if (!SkillsTrainingFocusType.HasValue)
+				return string.Empty;
+
+			switch (SkillsTrainingFocusType.Value)
+			{
+				case 0:
+					return "Occupational Skills Training";
+
+				case 1:
+					return "Apprenticeship Foundation or Apprenticeship Training";
+			
+				case 2:
+					return "Short-term Training";
+			}
+
+			return string.Empty;
 		}
 
 		public void Clone(TrainingProgram tp)

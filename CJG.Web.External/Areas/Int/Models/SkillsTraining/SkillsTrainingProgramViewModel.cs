@@ -53,7 +53,7 @@ namespace CJG.Web.External.Areas.Int.Models.SkillsTraining
 
 		public bool ShowSkillsTrainingFocusDropDown { get; set; }
 		public OccupationalSkillsTraining OccupationalTraining { get; set; }
-		public bool? SkillsTrainingFocusTypeIsOccupational { get; set; }
+		public int? SkillsTrainingFocusTypeIsOccupational { get; set; }
 
 		[CustomValidation(typeof(ProgramDescriptionViewModelValidation), "ValidateCIPS")]
 		public int? CipsCode1Id { get; set; }
@@ -107,9 +107,7 @@ namespace CJG.Web.External.Areas.Int.Models.SkillsTraining
 	            SetOccupationalTrainingType(trainingProgram);
 
 	            if (trainingProgram.SkillsTrainingFocusType.HasValue)
-                {
-					SkillsTrainingFocusTypeIsOccupational = trainingProgram.SkillsTrainingFocusType.Value == 0;
-				}
+		            SkillsTrainingFocusTypeIsOccupational = trainingProgram.SkillsTrainingFocusType;
             }
 
             var cipsCodes = cipsCodesService.GetListOfCipsCodes(trainingProgram.CipsCode?.Id ?? 0);
@@ -122,7 +120,7 @@ namespace CJG.Web.External.Areas.Int.Models.SkillsTraining
 
 		private void SetOccupationalTrainingType(TrainingProgram trainingProgram)
 		{
-			var shortTermOccupationalCert = trainingProgram.ShortTermOccupationalCert ?? false;
+			var shortTermOccupationalCert = trainingProgram.SkillsTrainingFocusType != null && trainingProgram.SkillsTrainingFocusType == 2;
 			var onTheJobTraining = trainingProgram.OnTheJobTraining ?? false;
 
 			if (shortTermOccupationalCert && onTheJobTraining)

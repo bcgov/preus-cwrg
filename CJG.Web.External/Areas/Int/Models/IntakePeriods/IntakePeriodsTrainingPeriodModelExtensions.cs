@@ -8,7 +8,7 @@ namespace CJG.Web.External.Areas.Int.Models.IntakePeriods
 		public static void GetEmptyModel(this IntakePeriodsTrainingPeriodModel model, FiscalYear fiscalYear, int grantProgramId, int grantStreamId, int intakePeriods)
 		{
 			model.Id = 0;
-			model.Caption = $"Intake Period {intakePeriods + 1}";
+			model.Caption = $"Intake Period {intakePeriods + 1}";  // We do not append the 'Training Intake' here since it will pollute the data that relies on just 'Intake Period'.
 			model.IsActive = true;
 			model.MinimumDate = fiscalYear.StartDate;
 			model.MaximumDate = fiscalYear.EndDate;
@@ -20,7 +20,7 @@ namespace CJG.Web.External.Areas.Int.Models.IntakePeriods
 
 			if (AppDateTime.UtcNow > fiscalYear.EndDate)
 			{
-				model.WarningMessage = "Intake periods in past fiscal years cannot be adjusted.";
+				model.WarningMessage = "Training Intake periods in past fiscal years cannot be adjusted.";
 				model.StartDateDisabled = true;
 				model.EndDateDisabled = true;
 			}
@@ -42,7 +42,7 @@ namespace CJG.Web.External.Areas.Int.Models.IntakePeriods
 
 			if (AppDateTime.UtcNow > fiscalYear.EndDate)
 			{
-                model.WarningMessage = "Intake periods in past fiscal years cannot be adjusted.";
+                model.WarningMessage = "Training Intake periods in past fiscal years cannot be adjusted.";
                 model.StartDateDisabled = true;
                 model.EndDateDisabled = true;
 
@@ -51,7 +51,7 @@ namespace CJG.Web.External.Areas.Int.Models.IntakePeriods
 
 			if (intakePeriod.HasClosedGrantOpenings())
 			{
-				model.WarningMessage = "This Intake Period is associated with a closed Grant Opening. Therefore the Start and End dates cannot be changed.";
+				model.WarningMessage = "This Training Intake Period is associated with a closed Grant Opening. Therefore the Start and End dates cannot be changed.";
 				model.StartDateDisabled = true;
 				model.EndDateDisabled = true;
 
@@ -61,7 +61,7 @@ namespace CJG.Web.External.Areas.Int.Models.IntakePeriods
 			if (intakePeriod.HasOpenGrantOpenings())
 			{
 				model.StartDateDisabled = true;
-				model.WarningMessage = "Please note. Changing the Intake Period End Date will also change the associated Grant Opening Close Date.";
+				model.WarningMessage = "Please note. Changing the Training Intake Period End Date will also change the associated Grant Opening Close Date.";
 			}
 		}
 
@@ -107,7 +107,7 @@ namespace CJG.Web.External.Areas.Int.Models.IntakePeriods
 				return new TrainingPeriodStatusModel
 				{
 					TargetStatus = targetStatus,
-					DialogMessage = "Intake periods in past fiscal years cannot be adjusted.",
+					DialogMessage = "Training Intake periods in past fiscal years cannot be adjusted.",
 					ShowYesAndNoButtons = false
 				};
 			}
@@ -117,7 +117,7 @@ namespace CJG.Web.External.Areas.Int.Models.IntakePeriods
 				return new TrainingPeriodStatusModel
 				{
 					TargetStatus = targetStatus,
-					DialogMessage = "Are you sure you want to enable this intake period?",
+					DialogMessage = "Are you sure you want to enable this training intake period?",
 					ShowYesAndNoButtons = true
 				};
 			}
@@ -127,7 +127,7 @@ namespace CJG.Web.External.Areas.Int.Models.IntakePeriods
 				return new TrainingPeriodStatusModel
 				{
 					TargetStatus = targetStatus,
-					DialogMessage = $"This intake period is associated with the {grantProgramName}, {grantStreamName} grant opening. You must close the grant opening before you can disable this intake period.",
+					DialogMessage = $"This training intake period is associated with the {grantProgramName}, {grantStreamName} grant opening. You must close the grant opening before you can disable this training intake period.",
 					ShowYesAndNoButtons = false
 				};
 			}
@@ -137,17 +137,15 @@ namespace CJG.Web.External.Areas.Int.Models.IntakePeriods
 				return new TrainingPeriodStatusModel
 				{
 					TargetStatus = targetStatus,
-					DialogMessage = $"There are {draftApplications} unsubmitted applications for this intake period. Are you sure you want to disable this intake period?",
+					DialogMessage = $"There are {draftApplications} unsubmitted applications for this training intake period. Are you sure you want to disable this training intake period?",
 					ShowYesAndNoButtons = true
 				};
-
-
 			}
 
 			return new TrainingPeriodStatusModel
 			{
 				TargetStatus = targetStatus,
-				DialogMessage = "Are you sure you want to disable this intake period?",
+				DialogMessage = "Are you sure you want to disable this training intake period?",
 				ShowYesAndNoButtons = true
 			};
 		}

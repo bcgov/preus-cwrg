@@ -12,7 +12,7 @@
                 </div>
 
                 <div>
-                    {{ngDialogData.model.TrainingPeriodCaption}}
+                    {{ngDialogData.model.TrainingPeriodCaption.replace('Intake', 'Training Intake')}}
                     ({{toPST(ngDialogData.model.TrainingPeriodStartDate)}}
                     to
                     {{toPST(ngDialogData.model.TrainingPeriodEndDate)}})
